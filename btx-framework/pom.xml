@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>top.cheesetree.btx.framework</groupId>
+        <artifactId>btx-framework-parent</artifactId>
+        <relativePath>../btx-framework-parent</relativePath>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>btx-framework</artifactId>
+    <modules>
+        <module>btx-framework-boot-cache</module>
+        <module>btx-framework-boot</module>
+        <module>btx-framework-boot-database-hikari</module>
+        <module>btx-framework-core</module>
+        <module>btx-framework-boot-security</module>
+        <module>btx-framework-boot-session</module>
+    </modules>
+    <groupId>top.cheesetree.btx.framework</groupId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+    <url>https://github.com/cheesetree/btx-framework-root</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>top.cheesetree.btx.framework</groupId>
+                <artifactId>
+                    btx-framework-boot-cache
+                </artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.cheesetree.btx.framework</groupId>
+                <artifactId>
+                    btx-framework-boot
+                </artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.cheesetree.btx.framework</groupId>
+                <artifactId>
+                    btx-framework-core
+                </artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
