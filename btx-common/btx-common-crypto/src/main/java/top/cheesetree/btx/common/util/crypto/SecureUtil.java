@@ -1,19 +1,26 @@
 package top.cheesetree.btx.common.util.crypto;
 
 
-import top.cheesetree.btx.common.util.crypto.sm.Encode;
 import top.cheesetree.btx.common.util.crypto.sm.SM3Digest;
 import top.cheesetree.btx.common.util.crypto.sm.SM4;
 import top.cheesetree.btx.common.util.crypto.sm.SM4Context;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 
 public class SecureUtil {
     /**
@@ -24,21 +31,19 @@ public class SecureUtil {
         MD5, //
         TDES, // 3DES(CBC/PKCS5Padding)
         AES_CBC_P5, // CBC/PKCS5Padding)
-        SHA256, SM3, // SM3
-        SM4_CBC_P7// CBC/PKCS7Padding
+        SHA256, SM3,
+        SM4_CBC_P7,// CBC/PKCS7Padding
+        HMAC_SHA256,
+        RSA
     }
 
     ;
-    private final static String ENCODING = "UTF-8";
+    private final static Charset ENCODING = StandardCharsets.UTF_8;
     private final static String AES_IV = "RVJXRTkwV0VXRVc=";
     private final static String TDES_IV = "MjEyMWl+";
     private final static String AES_KEY_ALGORITHM = "AES";
     private final static String TDES_KEY_ALGORITHM = "DESede";
 
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(encrypt(ChpMode.AES_CBC_P5, "Root_123456", "nbwd@2020"));
-    }
 
     /**
      * 加密
@@ -56,17 +61,20 @@ public class SecureUtil {
         try {
             switch (cm) {
                 case AES:
-                    ret = Encode.encodeHexString(AESEncode(message, sKey, "AES/ECB/PKCS5Padding", AES_IV.getBytes(ENCODING), true), false);
+                    ret = Encode.encodeHexString(AESEncode(message, sKey, "AES/ECB/PKCS5Padding",
+                            AES_IV.getBytes(ENCODING), true), false);
                     break;
                 case AES_CBC_P5:
-                    ret = Encode.encodeHexString(AESEncode(message, sKey, "AES/CBC/PKCS5Padding", AES_IV.getBytes(ENCODING), false),
+                    ret = Encode.encodeHexString(AESEncode(message, sKey, "AES/CBC/PKCS5Padding",
+                                    AES_IV.getBytes(ENCODING), false),
                             false);
                     break;
                 case MD5:
                     ret = MD5Encode(message);
                     break;
                 case TDES:
-                    ret = Encode.encodeHexString(TDESEncode(message, sKey, "DESede/CBC/PKCS5Padding", TDES_IV.getBytes(ENCODING), false));
+                    ret = Encode.encodeHexString(TDESEncode(message, sKey, "DESede/CBC/PKCS5Padding",
+                            TDES_IV.getBytes(ENCODING), false));
                     break;
                 case SHA256:
                     ret = SHA(message, 256);
@@ -82,7 +90,7 @@ public class SecureUtil {
             }
         } catch (Exception err) {
             err.printStackTrace();
-            throw new Exception("加密失败" + err.toString());
+            throw new Exception("加密失败" + err);
         }
 
         return ret;
@@ -104,20 +112,24 @@ public class SecureUtil {
         try {
             switch (cm) {
                 case AES:
-                    ret = new String(AESDecode(Encode.decodeHex(message), sKey, "AES/ECB/PKCS5Padding", AES_IV.getBytes(ENCODING), true),
+                    ret = new String(AESDecode(Encode.decodeHex(message), sKey, "AES/ECB/PKCS5Padding",
+                            AES_IV.getBytes(ENCODING), true),
                             ENCODING);
                     break;
                 case AES_CBC_P5:
-                    ret = new String(AESDecode(Encode.decodeHex(message), sKey, "AES/CBC/PKCS5Padding", AES_IV.getBytes(ENCODING), false),
+                    ret = new String(AESDecode(Encode.decodeHex(message), sKey, "AES/CBC/PKCS5Padding",
+                            AES_IV.getBytes(ENCODING), false),
                             ENCODING);
                     break;
                 case TDES:
                     ret = new String(
-                            TDESDecode(Encode.decodeHex(message), sKey, "DESede/CBC/PKCS5Padding", TDES_IV.getBytes(ENCODING), false),
+                            TDESDecode(Encode.decodeHex(message), sKey, "DESede/CBC/PKCS5Padding",
+                                    TDES_IV.getBytes(ENCODING), false),
                             ENCODING);
                     break;
                 case SM4_CBC_P7:
-                    ret = new String(SM4Decode(Encode.decodeHex(message), sKey, AES_IV.getBytes(ENCODING), 2, false), ENCODING);
+                    ret = new String(SM4Decode(Encode.decodeHex(message), sKey, AES_IV.getBytes(ENCODING), 2, false),
+                            ENCODING);
                     break;
                 default:
                     break;
@@ -125,14 +137,14 @@ public class SecureUtil {
 
         } catch (Exception err) {
             err.printStackTrace();
-            throw new Exception("解密失败-->" + err.toString());
+            throw new Exception("解密失败-->" + err);
         }
 
         return ret;
     }
 
     public static String encryptBase64(ChpMode cm, String message, String sKey) throws Exception {
-        return encryptBase64(cm, message, sKey, null);
+        return encryptBase64(cm, message, sKey, null, false);
     }
 
     /**
@@ -143,7 +155,7 @@ public class SecureUtil {
      * @return
      * @throws Exception
      */
-    public static String encryptBase64(ChpMode cm, String message, String sKey, String iv) throws Exception {
+    public static String encryptBase64(ChpMode cm, String message, String sKey, String iv, boolean urlsafe) throws Exception {
         String ret = "";
 
 
@@ -166,12 +178,15 @@ public class SecureUtil {
                 case SM4_CBC_P7:
                     ret = Encode.byte2b64(SM4Encode(message, sKey, iv.getBytes(ENCODING), 2, false));
                     break;
+                case RSA:
+                    ret = Encode.byte2b64(RSAEncode(message, sKey));
+                    break;
                 default:
                     break;
             }
         } catch (Exception err) {
             err.printStackTrace();
-            throw new Exception("加密失败" + err.toString());
+            throw new Exception("加密失败" + err);
         }
 
         return ret;
@@ -215,7 +230,11 @@ public class SecureUtil {
                     if (iv == null || "".equals(null)) {
                         iv = AES_IV;
                     }
-                    ret = new String(SM4Decode(Encode.b642byte(message), sKey, iv.getBytes(ENCODING), 2, false), ENCODING);
+                    ret = new String(SM4Decode(Encode.b642byte(message), sKey, iv.getBytes(ENCODING), 2, false),
+                            ENCODING);
+                    break;
+                case RSA:
+                    ret = new String(RSADecode(Encode.b642byte(message), sKey), ENCODING);
                     break;
                 default:
                     break;
@@ -223,7 +242,7 @@ public class SecureUtil {
 
         } catch (Exception err) {
             err.printStackTrace();
-            throw new Exception("解密失败-->" + err.toString());
+            throw new Exception("解密失败-->" + err);
         }
 
         return ret;
@@ -413,9 +432,8 @@ public class SecureUtil {
      *
      * @param keyStr
      * @return
-     * @throws UnsupportedEncodingException
      */
-    private static byte[] buildTDESKey(String keyStr) throws UnsupportedEncodingException {
+    private static byte[] buildTDESKey(String keyStr) {
         byte[] key = new byte[24]; // 声明一个24位的字节数组，默认里面都是0
         byte[] temp = keyStr.getBytes(ENCODING); // 将字符串转成字节数组
 
@@ -464,5 +482,49 @@ public class SecureUtil {
         digest.doFinal(hash, 0);
         return Encode.encodeHexString(hash, false);
     }
+
+    public static String HMACSHA256(final String strText, final byte[] key) throws Exception {
+        return Encode.encodeHexString(HMAC(strText, "SHA256", key));
+    }
+
+    public static byte[] HMAC(final String strText, final String strType, final byte[] key)
+            throws Exception {
+        // 返回值
+        byte[] strResult = new byte[0];
+
+        // 是否是有效字符串
+        if (strText != null && strText.length() > 0) {
+            String t = "Hmac" + strType;
+            Mac sha256_HMAC = Mac.getInstance(t);
+            SecretKeySpec secret_key = new SecretKeySpec(key, t);
+            sha256_HMAC.init(secret_key);
+            strResult = sha256_HMAC.doFinal(strText.getBytes(ENCODING));
+        }
+
+        return strResult;
+    }
+
+    public static byte[] RSAEncode(final String message, final String publicKey) throws Exception {
+        //base64编码的公钥
+        byte[] decoded = Encode.b642byte(publicKey);
+        RSAPublicKey pubKey =
+                (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(decoded));
+        //RSA加密
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.ENCRYPT_MODE, pubKey);
+        return cipher.doFinal(message.getBytes(ENCODING));
+    }
+
+    public static byte[] RSADecode(byte[] message, String privateKey) throws Exception {
+        //base64编码的私钥
+        byte[] decoded = Encode.b642byte(privateKey);
+        RSAPrivateKey priKey =
+                (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(decoded));
+        //RSA解密
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.DECRYPT_MODE, priKey);
+        return cipher.doFinal(message);
+    }
+
 
 }

@@ -1,7 +1,8 @@
-package top.cheesetree.btx.common.util.crypto.sm;
+package top.cheesetree.btx.common.util.crypto;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -104,71 +105,6 @@ public class Encode {
         }
         return new BigInteger(b);
     }
-
-    // /**
-    // * 根据字节数组获得值(十六进制数字)
-    // *
-    // * @param bytes
-    // * @return
-    // */
-    // public static String getHexString(byte[] bytes) {
-    // return getHexString(bytes, true);
-    // }
-    //
-    // /**
-    // * 根据字节数组获得值(十六进制数字)
-    // *
-    // * @param bytes
-    // * @param upperCase
-    // * @return
-    // */
-    // public static String getHexString(byte[] bytes, boolean upperCase) {
-    // String ret = "";
-    // for (int i = 0; i < bytes.length; i++) {
-    // ret += Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1);
-    // }
-    // return upperCase ? ret.toUpperCase() : ret;
-    // }
-    //
-    // /**
-    // * 打印十六进制字符串
-    // *
-    // * @param bytes
-    // */
-    // public static void printHexString(byte[] bytes) {
-    // for (int i = 0; i < bytes.length; i++) {
-    // String hex = Integer.toHexString(bytes[i] & 0xFF);
-    // if (hex.length() == 1) {
-    // hex = '0' + hex;
-    // }
-    // System.out.print("0x" + hex.toUpperCase() + ",");
-    // }
-    // System.out.println("");
-    // }
-
-    // /**
-    // * Convert hex string to byte[]
-    // *
-    // * @param hexString
-    // * the hex string
-    // * @return byte[]
-    // */
-    // public static byte[] hexStringToBytes(String hexString) {
-    // if (hexString == null || hexString.equals("")) {
-    // return null;
-    // }
-    //
-    // hexString = hexString.toUpperCase();
-    // int length = hexString.length() / 2;
-    // char[] hexChars = hexString.toCharArray();
-    // byte[] d = new byte[length];
-    // for (int i = 0; i < length; i++) {
-    // int pos = i * 2;
-    // d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos +
-    // 1]));
-    // }
-    // return d;
-    // }
 
     /**
      * Convert char to byte
@@ -575,50 +511,6 @@ public class Encode {
         return i;
     }
 
-    // /**
-    // * 十六进制串转化为byte数组
-    // *
-    // * @return the array of byte
-    // */
-    // public static byte[] hexToByte(String hex) throws
-    // IllegalArgumentException {
-    // if (hex.length() % 2 != 0) {
-    // throw new IllegalArgumentException();
-    // }
-    // char[] arr = hex.toCharArray();
-    // byte[] b = new byte[hex.length() / 2];
-    // for (int i = 0, j = 0, l = hex.length(); i < l; i++, j++) {
-    // String swap = "" + arr[i++] + arr[i];
-    // int byteint = Integer.parseInt(swap, 16) & 0xFF;
-    // b[j] = new Integer(byteint).byteValue();
-    // }
-    // return b;
-    // }
-    //
-    // /**
-    // * 字节数组转换为十六进制字符串
-    // *
-    // * @param b
-    // * byte[] 需要转换的字节数组
-    // * @return String 十六进制字符串
-    // */
-    // public static String byteToHex(byte b[]) {
-    // if (b == null) {
-    // throw new IllegalArgumentException("Argument b ( byte array ) is null!
-    // ");
-    // }
-    // String hs = "";
-    // String stmp = "";
-    // for (int n = 0; n < b.length; n++) {
-    // stmp = Integer.toHexString(b[n] & 0xff);
-    // if (stmp.length() == 1) {
-    // hs = hs + "0" + stmp;
-    // } else {
-    // hs = hs + stmp;
-    // }
-    // }
-    // return hs.toUpperCase();
-    // }
 
     public static byte[] subByte(byte[] input, int startIndex, int length) {
         byte[] bt = new byte[length];
@@ -629,20 +521,30 @@ public class Encode {
     }
 
     public static String byte2b64(byte[] src) {
+        return byte2b64(src, false);
+    }
+
+    public static String byte2b64(byte[] src, boolean urlsafe) {
         String ret = "";
 
         if (src != null && src.length > 0) {
-            ret = Base64.getUrlEncoder().withoutPadding().encodeToString(src);
+            Base64.Encoder d = urlsafe ? Base64.getUrlEncoder() : Base64.getEncoder();
+            ret = d.withoutPadding().encodeToString(src);
         }
 
         return ret;
     }
 
     public static byte[] b642byte(String str) {
+        return b642byte(str, false);
+    }
+
+    public static byte[] b642byte(String str, boolean urlsafe) {
         byte[] ret = null;
 
         if (str != null && str != "") {
-            ret = Base64.getUrlDecoder().decode(str);
+            Base64.Decoder d = urlsafe ? Base64.getUrlDecoder() : Base64.getDecoder();
+            ret = d.decode(str.getBytes(StandardCharsets.UTF_8));
         }
 
         return ret;

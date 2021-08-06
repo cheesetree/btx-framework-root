@@ -1,5 +1,7 @@
 package top.cheesetree.btx.common.util.crypto.sm;
 
+import top.cheesetree.btx.common.util.crypto.Encode;
+
 /**
  * @Description TODO
  * @author van
