@@ -16,8 +16,10 @@
         <module>btx-framework-boot</module>
         <module>btx-framework-boot-database-hikari</module>
         <module>btx-framework-core</module>
-        <module>btx-framework-boot-security</module>
         <module>btx-framework-boot-session</module>
+        <module>btx-framework-boot-security</module>
+        <module>btx-framework-boot-security-shrio</module>
+        <module>btx-framework-boot-security-cas</module>
     </modules>
     <groupId>top.cheesetree.btx.framework</groupId>
     <version>1.0-SNAPSHOT</version>

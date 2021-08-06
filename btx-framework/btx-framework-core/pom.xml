@@ -17,4 +17,8 @@
     <url>https://github.com/cheesetree/btx-framework-root</url>
     <packaging>jar</packaging>
 
+
+    <dependencies>
+
+    </dependencies>
 </project>

@@ -16,6 +16,5 @@ public interface BtxConsts {
     String BLANK = " ";
     Charset DEF_ENCODE = StandardCharsets.UTF_8;
 
-
     String[] EMPTY_ARRAY = new String[0];
 }
