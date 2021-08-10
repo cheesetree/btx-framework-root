@@ -32,5 +32,7 @@ hs_err_pid*
 **/.svn/
 **/node_modules/
 **/.umi/
+
+**/btx-framework-boot
 #**/resources/static/
 !.gitkeep
