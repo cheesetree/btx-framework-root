@@ -34,7 +34,8 @@ public class SecureUtil {
         SHA256, SM3,
         SM4_CBC_P7,// CBC/PKCS7Padding
         HMAC_SHA256,
-        RSA
+        RSA,
+        SM2
     }
 
     ;
@@ -44,6 +45,10 @@ public class SecureUtil {
     private final static String AES_KEY_ALGORITHM = "AES";
     private final static String TDES_KEY_ALGORITHM = "DESede";
 
+
+    public static void main(String[] args) throws Exception {
+        System.out.println(SM3("aaa"));
+    }
 
     /**
      * 加密

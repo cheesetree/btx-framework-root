@@ -1,8 +1,7 @@
-package top.cheesetree.btx.framework.core.json;
+package top.cheesetree.btx.framework.gourd.core.json;
 
 import lombok.Getter;
 import lombok.Setter;
-import top.cheesetree.btx.framework.core.constants.BtxConsts;
 
 import java.io.Serializable;
 
@@ -11,7 +10,6 @@ import java.io.Serializable;
  * JsonResult
  *
  * @param <T>
- * @author He@77.nG
  */
 @Getter
 @Setter
@@ -37,13 +35,13 @@ public class JsonResult<T> implements Serializable {
 
     public JsonResult() {
         this.statusCode = OK;
-        this.message = BtxConsts.EMPTY;
+        this.message = "";
     }
 
     public JsonResult(T result) {
         this.result = result;
         this.statusCode = OK;
-        this.message = BtxConsts.EMPTY;
+        this.message = "";
     }
 
     public JsonResult(String errMsg) {

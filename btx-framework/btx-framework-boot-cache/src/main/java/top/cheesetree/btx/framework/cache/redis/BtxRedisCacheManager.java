@@ -1,13 +1,15 @@
 package top.cheesetree.btx.framework.cache.redis;
 
-import top.cheesetree.btx.framework.cache.BtxCacheManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
+import top.cheesetree.btx.framework.cache.BtxCacheManager;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Author: van
@@ -21,16 +23,55 @@ import java.util.Map;
 public class BtxRedisCacheManager extends RedisCacheManager implements BtxCacheManager {
     private final RedisCacheWriter cacheWriter;
 
+    @Autowired
+    BtxRedisCacheProperties btxRedisCacheProperties;
+
+    public static final Map<String, BtxRedisConfigProperties> configMap = new ConcurrentHashMap<>();
+
     public BtxRedisCacheManager(RedisCacheWriter cacheWriter, RedisCacheConfiguration defaultCacheConfiguration,
-                                Map<String, RedisCacheConfiguration> initialCacheConfigurations,
-                                boolean allowInFlightCacheCreation) {
-        super(cacheWriter, defaultCacheConfiguration, initialCacheConfigurations, allowInFlightCacheCreation);
+                                Map<String, RedisCacheConfiguration> initialCacheConfigurations) {
+        super(cacheWriter, defaultCacheConfiguration, initialCacheConfigurations);
         this.cacheWriter = cacheWriter;
+    }
+
+
+    public static RedisCacheConfiguration createRedisCacheConfiguration(BtxRedisConfigProperties defaultCacheConfig) {
+        // 默认没有特殊指定的
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
+
+        if (defaultCacheConfig.getTimeToLive() != null) {
+            redisCacheConfiguration = redisCacheConfiguration.entryTtl(defaultCacheConfig.getTimeToLive());
+        }
+
+        if (Boolean.TRUE.equals(defaultCacheConfig.getUseKeyPrefix()) && defaultCacheConfig.getKeyPrefix() != null && !defaultCacheConfig.getKeyPrefix().isEmpty()) {
+            redisCacheConfiguration =
+                    redisCacheConfiguration.computePrefixWith(cacheName -> defaultCacheConfig.getKeyPrefix() + cacheName + "::");
+        }
+
+        if (Boolean.FALSE.equals(defaultCacheConfig.getCacheNullValues())) {
+            redisCacheConfiguration = redisCacheConfiguration.disableCachingNullValues();
+        }
+
+        return redisCacheConfiguration;
     }
 
     @Override
     protected RedisCache createRedisCache(String name, RedisCacheConfiguration cacheConfig) {
-        return super.createRedisCache(name, cacheConfig);
-    }
+        BtxRedisCacheProperties defaultWssipCacheConfig = btxRedisCacheProperties;
+        BtxRedisConfigProperties btxCacheConfig = btxRedisCacheProperties.getCaches().get(name);
 
+        if (btxCacheConfig == null) {
+            btxCacheConfig = defaultWssipCacheConfig;
+            if (configMap.containsKey(name)) {
+                btxCacheConfig.setDefaultValues(configMap.get(name));
+            }
+        } else {
+            btxCacheConfig.setDefaultValues(defaultWssipCacheConfig);
+        }
+
+        cacheConfig = createRedisCacheConfiguration(btxCacheConfig);
+        BtxRedisCache redisCache = new BtxRedisCache(name, cacheWriter, cacheConfig);
+
+        return redisCache;
+    }
 }

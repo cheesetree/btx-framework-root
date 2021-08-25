@@ -33,6 +33,6 @@ hs_err_pid*
 **/node_modules/
 **/.umi/
 
-**/btx-framework-boot
+**/btx-framework-gourd
 #**/resources/static/
 !.gitkeep

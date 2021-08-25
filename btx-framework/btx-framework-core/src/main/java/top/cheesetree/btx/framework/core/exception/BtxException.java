@@ -1,0 +1,43 @@
+package top.cheesetree.btx.framework.core.exception;
+
+/**
+ * @Author: van
+ * @License:
+ * @Contact:
+ * @Date: 2021/8/10 15:13
+ * @Version: 1.0
+ * @Description:
+ */
+public class BtxException extends RuntimeException {
+    String errcode;
+
+    public BtxException() {
+        super();
+    }
+
+    public BtxException(Throwable cause) {
+        super(cause);
+    }
+
+    public BtxException(String message, String errcode) {
+        super(message);
+        this.errcode = errcode;
+    }
+
+    public BtxException(String message, Throwable cause, String errcode) {
+        super(message, cause);
+        this.errcode = errcode;
+    }
+
+    public BtxException(Throwable cause, String errcode) {
+        super(cause);
+        this.errcode = errcode;
+    }
+
+    public BtxException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace,
+                        String errcode) {
+        super(message, cause, enableSuppression, writableStackTrace);
+        this.errcode = errcode;
+    }
+
+}

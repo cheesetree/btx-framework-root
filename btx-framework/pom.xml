@@ -20,7 +20,9 @@
         <module>btx-framework-boot-security</module>
         <module>btx-framework-boot-security-shrio</module>
         <module>btx-framework-boot-security-cas</module>
-        <module>btx-framework-zz</module>
+        <module>btx-framework-gourd</module>
+        <module>btx-framework-boot-database</module>
+        <module>btx-framework-boot-web</module>
     </modules>
     <groupId>top.cheesetree.btx.framework</groupId>
     <version>1.0-SNAPSHOT</version>

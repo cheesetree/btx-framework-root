@@ -20,9 +20,15 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <org.bouncycastle.bcprov.version>1.69</org.bouncycastle.bcprov.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>${org.bouncycastle.bcprov.version}</version>
+        </dependency>
     </dependencies>
 
 

@@ -20,9 +20,10 @@
         <!--spring framewwork-->
 
         <lombok.version>1.18.20</lombok.version>
-        <com.alibaba.fastjson.version>1.2.76</com.alibaba.fastjson.version>
-        <mybatis-plus-boot.version>3.3.2</mybatis-plus-boot.version>
-        <mybatis-plus.version>3.3.2</mybatis-plus.version>
+        <com.alibaba.fastjson.version>1.2.78</com.alibaba.fastjson.version>
+        <mybatis-plus-boot.version>3.4.2</mybatis-plus-boot.version>
+        <mybatis-plus.version>3.4.2</mybatis-plus.version>
+        <cn.hutool.version>5.7.9</cn.hutool.version>
     </properties>
 
     <dependencyManagement>
@@ -60,6 +61,16 @@
                 <artifactId>mybatis-plus</artifactId>
                 <version>${mybatis-plus.version}</version>
                 <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-core</artifactId>
+                <version>${cn.hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-crypto</artifactId>
+                <version>${cn.hutool.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
