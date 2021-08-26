@@ -1,6 +1,6 @@
 package top.cheesetree.btx.framework.cache.redis;
 
-import org.springframework.beans.BeansException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
@@ -9,8 +9,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +17,12 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import top.cheesetree.btx.framework.boot.spring.ApplicationBeanFactory;
 import top.cheesetree.btx.framework.cache.annotation.BtxCacheable;
 
+import java.time.Duration;
+import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +40,8 @@ import java.util.Map;
 @Configuration
 @EnableConfigurationProperties({BtxRedisCacheProperties.class, CacheProperties.class})
 @Import(DefaultListableBeanFactory.class)
-public class BtxRedisCacheConfigure extends CachingConfigurerSupport implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
+@Slf4j
+public class BtxRedisCacheConfigure extends CachingConfigurerSupport implements ApplicationListener<ContextRefreshedEvent> {
     @Autowired
     RedisConnectionFactory redisConnectionFactory;
     @Autowired
@@ -47,30 +50,24 @@ public class BtxRedisCacheConfigure extends CachingConfigurerSupport implements 
     private BtxRedisConfigProperties btxRedisConfigProperties;
     @Autowired
     private BtxRedisCacheProperties btxRedisCacheProperties;
-    private ApplicationContext applicationContext;
 
     @Override
     @Bean
     public CacheManager cacheManager() {
-        BtxRedisConfigProperties defaultWssipCacheConfig = btxRedisConfigProperties;
+        BtxRedisConfigProperties defaultBtxCacheConfig = btxRedisConfigProperties;
 
-        defaultWssipCacheConfig.setDefaultValues(cacheProperties.getRedis());
+        defaultBtxCacheConfig.setDefaultValues(cacheProperties.getRedis());
 
         RedisCacheConfiguration defaultCacheConfig =
-                BtxRedisCacheManager.createRedisCacheConfiguration(defaultWssipCacheConfig);
+                BtxRedisCacheManager.createRedisCacheConfiguration(defaultBtxCacheConfig);
 
-        // 针对不同cacheName，设置不同的过期时间
         Map<String, RedisCacheConfiguration> initialCacheConfiguration =
                 new HashMap<>(btxRedisCacheProperties.getCaches().size());
         for (String cacheName : btxRedisCacheProperties.getCaches().keySet()) {
-
-            BtxRedisConfigProperties wssipCacheConfig = btxRedisCacheProperties.getCaches().get(cacheName);
-
-            wssipCacheConfig.setDefaultValues(defaultWssipCacheConfig);
-
+            BtxRedisConfigProperties btxCacheConfig = btxRedisCacheProperties.getCaches().get(cacheName);
+            btxCacheConfig.setDefaultValues(defaultBtxCacheConfig);
             RedisCacheConfiguration cacheConfig =
-                    BtxRedisCacheManager.createRedisCacheConfiguration(wssipCacheConfig);
-
+                    BtxRedisCacheManager.createRedisCacheConfiguration(btxCacheConfig);
             initialCacheConfiguration.put(cacheName, cacheConfig);
         }
 
@@ -84,20 +81,23 @@ public class BtxRedisCacheConfigure extends CachingConfigurerSupport implements 
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
-
-    @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        Map<String, Object> beanWhithAnnotation = applicationContext.getBeansWithAnnotation(BtxCacheable.class);
+        Map<String, Object> beanWhithAnnotation =
+                ApplicationBeanFactory.getApplicationContext().getBeansWithAnnotation(BtxCacheable.class);
         beanWhithAnnotation.forEach((k, v) -> {
             BtxCacheable an = v.getClass().getAnnotation(BtxCacheable.class);
-
-            BtxRedisConfigProperties c = new BtxRedisConfigProperties();
-            c.setKeyPrefix(an.key());
-
-            BtxRedisCacheManager.configMap.put(an.key(), c);
+            Arrays.stream(an.cacheNames()).forEach((name) -> {
+                if (btxRedisCacheProperties.getCaches().get(name) == null) {
+                    BtxRedisConfigProperties c = new BtxRedisConfigProperties();
+                    c.setKeyPrefix(name);
+                    try {
+                        c.setTimeToLive(Duration.parse(an.duration()));
+                        BtxRedisCacheManager.configMap.put(name, c);
+                    } catch (DateTimeParseException err) {
+                        log.error("缓存[{}]ttl不能正常解析,ttl设置失败", an.duration());
+                    }
+                }
+            });
         });
     }
 }

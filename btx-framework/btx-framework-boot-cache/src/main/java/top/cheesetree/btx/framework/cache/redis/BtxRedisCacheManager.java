@@ -36,7 +36,6 @@ public class BtxRedisCacheManager extends RedisCacheManager implements BtxCacheM
 
 
     public static RedisCacheConfiguration createRedisCacheConfiguration(BtxRedisConfigProperties defaultCacheConfig) {
-        // 默认没有特殊指定的
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
 
         if (defaultCacheConfig.getTimeToLive() != null) {
@@ -57,16 +56,16 @@ public class BtxRedisCacheManager extends RedisCacheManager implements BtxCacheM
 
     @Override
     protected RedisCache createRedisCache(String name, RedisCacheConfiguration cacheConfig) {
-        BtxRedisCacheProperties defaultWssipCacheConfig = btxRedisCacheProperties;
+        BtxRedisCacheProperties defaultBtxCacheConfig = btxRedisCacheProperties;
         BtxRedisConfigProperties btxCacheConfig = btxRedisCacheProperties.getCaches().get(name);
 
         if (btxCacheConfig == null) {
-            btxCacheConfig = defaultWssipCacheConfig;
+            btxCacheConfig = defaultBtxCacheConfig;
             if (configMap.containsKey(name)) {
                 btxCacheConfig.setDefaultValues(configMap.get(name));
             }
         } else {
-            btxCacheConfig.setDefaultValues(defaultWssipCacheConfig);
+            btxCacheConfig.setDefaultValues(defaultBtxCacheConfig);
         }
 
         cacheConfig = createRedisCacheConfiguration(btxCacheConfig);
