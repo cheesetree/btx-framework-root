@@ -16,30 +16,27 @@ public class CommJSON<T extends Serializable> implements ValueObject {
     private T result;
 
     public CommJSON() {
-        this.ret = BtxMessage.SYSTEM_ERROR.getCode();
-        this.msg = BtxMessage.SYSTEM_ERROR.getMessage();
+        this(BtxMessage.SYSTEM_ERROR);
+    }
+
+    public CommJSON(BtxMessage mesg) {
+        this(mesg.getCode(), "", mesg.getMessage(), null);
     }
 
     public CommJSON(T result) {
-        this.result = result;
-        this.ret = BtxMessage.SUCCESS.getCode();
+        this(BtxMessage.SUCCESS.getCode(), "", "", result);
     }
 
     public CommJSON(Integer ret, String msg) {
-        this.ret = ret;
-        this.msg = msg;
+        this(ret, "", msg, null);
     }
 
-    public CommJSON(String subcode, String msg) {
-        this.ret = BtxMessage.SYSTEM_ERROR.getCode();
-        this.subcode = subcode;
-        this.msg = msg;
-        this.result = result;
+    public CommJSON(Integer ret, String subcode, String msg) {
+        this(ret, subcode, msg, null);
     }
 
     public CommJSON(String subcode, T result) {
-        this.subcode = subcode;
-        this.result = result;
+        this(BtxMessage.SUCCESS.getCode(), subcode, "", result);
     }
 
     public CommJSON(Integer ret, String subcode, String msg, T result) {

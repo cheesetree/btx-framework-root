@@ -6,35 +6,33 @@
         <artifactId>btx-framework</artifactId>
         <groupId>top.cheesetree.btx.framework</groupId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>top.cheesetree.btx.framework</groupId>
-    <artifactId>btx-framework-boot</artifactId>
+    <artifactId>btx-framework-boot-security-basic</artifactId>
+    <groupId>top.cheesetree.btx.framework.security</groupId>
     <version>1.0-SNAPSHOT</version>
+
     <name>${project.artifactId}</name>
     <url>https://github.com/cheesetree/btx-framework-root</url>
+    <packaging>jar</packaging>
+
+    <properties>
+    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions><!-- 去掉logback配置 -->
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>top.cheesetree.btx.framework</groupId>
+            <artifactId>btx-framework-boot-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
         </dependency>
     </dependencies>
+
 </project>

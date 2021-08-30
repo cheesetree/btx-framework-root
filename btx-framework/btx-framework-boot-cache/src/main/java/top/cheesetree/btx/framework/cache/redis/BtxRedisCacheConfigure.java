@@ -2,7 +2,6 @@ package top.cheesetree.btx.framework.cache.redis;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,7 +11,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
@@ -35,11 +33,10 @@ import java.util.Map;
  * @Description:
  */
 
-@ConditionalOnProperty(name = "spring.redis.host")
+@ConditionalOnProperty(name = "spring.cache.type", havingValue = "redis")
 @EnableCaching(proxyTargetClass = true)
 @Configuration
 @EnableConfigurationProperties({BtxRedisCacheProperties.class, CacheProperties.class})
-@Import(DefaultListableBeanFactory.class)
 @Slf4j
 public class BtxRedisCacheConfigure extends CachingConfigurerSupport implements ApplicationListener<ContextRefreshedEvent> {
     @Autowired

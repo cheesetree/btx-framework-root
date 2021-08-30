@@ -1,5 +1,8 @@
 package top.cheesetree.btx.framework.core.exception;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @Author: van
  * @License:
@@ -8,8 +11,10 @@ package top.cheesetree.btx.framework.core.exception;
  * @Version: 1.0
  * @Description:
  */
+@Getter
+@Setter
 public class BtxException extends RuntimeException {
-    String errcode;
+    private String errcode;
 
     public BtxException() {
         super();

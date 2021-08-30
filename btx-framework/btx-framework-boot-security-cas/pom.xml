@@ -18,11 +18,38 @@
     <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <org.jasig.cas.client.version>3.5.1</org.jasig.cas.client.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>top.cheesetree.btx.framework</groupId>
+            <artifactId>btx-framework-boot</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <artifactId>btx-framework-boot-security</artifactId>
+            <groupId>top.cheesetree.btx.framework</groupId>
+        </dependency>
+        <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-core</artifactId>
+            <version>${org.jasig.cas.client.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-support-saml</artifactId>
+            <version>${org.jasig.cas.client.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

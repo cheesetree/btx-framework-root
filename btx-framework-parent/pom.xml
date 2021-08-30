@@ -16,7 +16,6 @@
 
         <!--spring framewwork-->
         <spring-boot.version>2.2.9.RELEASE</spring-boot.version>
-
         <!--spring framewwork-->
 
         <lombok.version>1.18.20</lombok.version>
