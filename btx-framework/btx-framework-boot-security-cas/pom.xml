@@ -39,6 +39,11 @@
             <groupId>top.cheesetree.btx.framework</groupId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>${org.jasig.cas.client.version}</version>

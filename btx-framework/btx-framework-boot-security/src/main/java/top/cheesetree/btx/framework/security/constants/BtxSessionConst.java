@@ -10,7 +10,7 @@ import top.cheesetree.btx.framework.core.constants.BtxConsts;
  * @Version: 1.0
  * @Description:
  */
-public interface SessionConst extends BtxConsts {
+public interface BtxSessionConst extends BtxConsts {
     String SESSION_ID = "S_ID";
     String SESSION_USER = "S_USER";
     String SESSION_USER_NAME = "S_USER_NAME";

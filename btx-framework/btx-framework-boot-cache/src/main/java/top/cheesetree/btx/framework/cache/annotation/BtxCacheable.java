@@ -3,6 +3,8 @@ package top.cheesetree.btx.framework.cache.annotation;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.annotation.AliasFor;
 
+import java.lang.annotation.*;
+
 /**
  * @Author: van
  * @License:
@@ -12,6 +14,9 @@ import org.springframework.core.annotation.AliasFor;
  * @Description:
  */
 @Cacheable
+@Documented
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
 public @interface BtxCacheable {
     @AliasFor(annotation = Cacheable.class)
     String[] value() default {};

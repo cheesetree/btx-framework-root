@@ -34,6 +34,6 @@ public class WebHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public ServletInputStream getInputStream() {
-        return new com.wondersgroup.sbpc.framework.web.security.interceptor.BufferedServletInputStream(this.body);
+        return new BufferedServletInputStream(this.body);
     }
 }

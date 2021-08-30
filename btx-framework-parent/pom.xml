@@ -79,12 +79,12 @@
         <repository>
             <id>releases</id>
             <name>Team Nexus Release Repository</name>
-            <url>https://wx.cheesetree.top/repository/nbwd-release/</url>
+            <url>http://10.116.0.12:8081/repository/nbwd-release/</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
             <name>Team Nexus Snapshot Repository</name>
-            <url>https://wx.cheesetree.top/repository/nbwd-snapshots/</url>
+            <url>http://10.116.0.12:8081/repository/nbwd-snapshots/</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
@@ -93,7 +93,7 @@
         <pluginRepository>
             <id>nexus</id>
             <name>Team Nexus Repository</name>
-            <url>https://wx.cheesetree.top/repository/maven-public/</url>
+            <url>http://10.116.0.12:8081/repository/maven-public/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>

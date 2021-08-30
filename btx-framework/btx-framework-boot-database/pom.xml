@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>top.cheesetree.btx.framework.database</groupId>
+    <groupId>top.cheesetree.btx.framework</groupId>
     <artifactId>btx-framework-boot-database</artifactId>
     <version>1.0-SNAPSHOT</version>
 

@@ -27,6 +27,7 @@ import java.util.Map;
 
 @Configuration
 @EnableConfigurationProperties(CasClientConfigurationProperties.class)
+@ConditionalOnProperty(name = "cas")
 public class CasClientConfiguration {
     @Autowired
     CasClientConfigurationProperties configProps;
