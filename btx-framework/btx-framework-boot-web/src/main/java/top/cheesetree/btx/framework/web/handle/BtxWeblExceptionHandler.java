@@ -5,6 +5,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import top.cheesetree.btx.framework.core.constants.BtxMessage;
 import top.cheesetree.btx.framework.core.exception.BtxException;
 import top.cheesetree.btx.framework.core.exception.BusinessException;
@@ -24,6 +25,7 @@ import top.cheesetree.btx.framework.core.json.CommJSON;
 public class BtxWeblExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
+    @ResponseBody
     public CommJSON errorHandler(Exception ex) {
         CommJSON ret;
 
@@ -33,13 +35,14 @@ public class BtxWeblExceptionHandler {
             if (err instanceof BusinessException) {
                 ret = new CommJSON(BtxMessage.BUSI_ERROR.getCode(), err.getErrcode(), err.getMessage(), null);
             } else {
-                ret = new CommJSON(err.getErrcode(), BtxMessage.SYSTEM_ERROR.getMessage());
+                ret = new CommJSON(BtxMessage.SYSTEM_ERROR.getCode(), err.getErrcode(),
+                        err.getMessage());
             }
 
-            log.error("web未处理系统异常:[{},{}]{}", err.getErrcode(), err.getMessage(), ex);
+            log.error("系统异常:[{},{}]{}", err.getErrcode(), err.getMessage(), ex);
         } else {
             ret = new CommJSON(BtxMessage.UNKOWN_ERROR);
-            ret.setMsg(String.format("%s:%s", ret.getMsg(), ex.getMessage()));
+            ret.setMsg(String.format("未知异常%s:%s", ret.getMsg(), ex.getMessage()));
         }
 
         return ret;
