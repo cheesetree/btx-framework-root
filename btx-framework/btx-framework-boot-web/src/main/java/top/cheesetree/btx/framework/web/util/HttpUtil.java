@@ -124,7 +124,7 @@ public class HttpUtil {
         return ret;
     }
 
-    private static RestTemplate geRestTemplate(boolean isHttps, int timeout) {
+    public static RestTemplate geRestTemplate(boolean isHttps, int timeout) {
         RestTemplate restTemplate;
         if (isHttps) {
             HttpsClientRequestFactory hcr = new HttpsClientRequestFactory();

@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    username: wxmeeting
+    password: Wisdom2018weixiao@wxmeeting
+    url: jdbc:mysql://10.30.186.129:3306/wxmeeting?characterEncoding=utf8&useSSL=false
+  redis:
+    host: 10.30.186.130
+btx:
+  file:
+    gateway-url:
+    share-url:

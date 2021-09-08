@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.cheesetree.btx.project.simplefile.mapper.BtxFileSahreMapper">
+
+    <resultMap id="BaseResultMap" type="top.cheesetree.btx.project.simplefile.model.bo.BtxFileSahreBO">
+            <id property="lsh" column="LSH" jdbcType="BIGINT"/>
+            <result property="srcSysId" column="SRC_SYS_ID" jdbcType="BIGINT"/>
+            <result property="dstSysId" column="DST_SYS_ID" jdbcType="BIGINT"/>
+            <result property="fileId" column="FILE_ID" jdbcType="BIGINT"/>
+            <result property="isTmp" column="IS_TMP" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        LSH,SRC_SYS_ID,DST_SYS_ID,
+        FILE_ID,IS_TMP
+    </sql>
+</mapper>

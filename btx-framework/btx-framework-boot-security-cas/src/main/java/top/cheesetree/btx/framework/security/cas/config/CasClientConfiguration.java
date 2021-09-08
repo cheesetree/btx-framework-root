@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import top.cheesetree.btx.framework.security.cas.annotation.EnableCasClient;
+import top.cheesetree.btx.framework.security.cas.authentication.BTxUrlPatternMatcherStrategy;
 import top.cheesetree.btx.framework.security.config.BtxSecurityProperties;
 
 import javax.servlet.Filter;
@@ -188,5 +189,12 @@ public class CasClientConfiguration {
         if (urlPatterns.size() > 0) {
             filterRegistrationBean.setUrlPatterns(urlPatterns);
         }
+    }
+
+    @Bean
+    public AuthenticationFilter authenticationFilter() {
+        AuthenticationFilter a = new AuthenticationFilter();
+        a.setIgnoreUrlPatternMatcherStrategyClass(new BTxUrlPatternMatcherStrategy());
+        return a;
     }
 }

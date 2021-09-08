@@ -4,6 +4,7 @@ package top.cheesetree.btx.common.util.crypto;
 import top.cheesetree.btx.common.util.crypto.sm.SM3Digest;
 import top.cheesetree.btx.common.util.crypto.sm.SM4;
 import top.cheesetree.btx.common.util.crypto.sm.SM4Context;
+import top.cheesetree.btx.framework.core.exception.SystemException;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -57,10 +58,9 @@ public class SecureUtil {
      * @param message
      * @param sKey
      * @return
-     * @throws Exception
      */
     @Deprecated
-    public static String encrypt(ChpMode cm, String message, String sKey) throws Exception {
+    public static String encrypt(ChpMode cm, String message, String sKey) {
         String ret = "";
 
         try {
@@ -95,7 +95,9 @@ public class SecureUtil {
             }
         } catch (Exception err) {
             err.printStackTrace();
-            throw new Exception("加密失败" + err);
+            throw new SystemException(
+                    BtxCryptoMessage.CRYPTO_ERROR.getMessage(), err,
+                    BtxCryptoMessage.CRYPTO_ERROR.getCode().toString());
         }
 
         return ret;
@@ -108,10 +110,9 @@ public class SecureUtil {
      * @param message
      * @param sKey
      * @return
-     * @throws Exception
      */
     @Deprecated
-    public static String decrypt(ChpMode cm, String message, String sKey) throws Exception {
+    public static String decrypt(ChpMode cm, String message, String sKey) {
         String ret = "";
 
         try {
@@ -142,14 +143,20 @@ public class SecureUtil {
 
         } catch (Exception err) {
             err.printStackTrace();
-            throw new Exception("解密失败-->" + err);
+            throw new SystemException(
+                    BtxCryptoMessage.DECRYPT_ERROR.getMessage(), err,
+                    BtxCryptoMessage.DECRYPT_ERROR.getCode().toString());
         }
 
         return ret;
     }
 
-    public static String encryptBase64(ChpMode cm, String message, String sKey) throws Exception {
-        return encryptBase64(cm, message, sKey, null, false);
+    public static String encryptBase64(ChpMode cm, String message, String sKey) {
+        return encryptBase64(cm, message, sKey, null);
+    }
+
+    public static String encryptBase64(ChpMode cm, String message, String sKey, String iv) {
+        return encryptBase64(cm, message, sKey, iv, false);
     }
 
     /**
@@ -158,9 +165,8 @@ public class SecureUtil {
      * @param sKey
      * @param iv
      * @return
-     * @throws Exception
      */
-    public static String encryptBase64(ChpMode cm, String message, String sKey, String iv, boolean urlsafe) throws Exception {
+    public static String encryptBase64(ChpMode cm, String message, String sKey, String iv, boolean urlsafe) {
         String ret = "";
 
 
@@ -171,34 +177,40 @@ public class SecureUtil {
                         iv = AES_IV;
                     }
                     ret = Encode.byte2b64(AESEncode(message, sKey, "AES/CBC/PKCS5Padding", iv.getBytes(ENCODING),
-                            false));
+                            false), urlsafe);
                     break;
                 case TDES:
                     if (iv == null || "".equals(null)) {
                         iv = TDES_IV;
                     }
                     ret = Encode.byte2b64(TDESEncode(message, sKey, "DESede/CBC/PKCS5Padding", iv.getBytes(ENCODING),
-                            false));
+                            false), urlsafe);
                     break;
                 case SM4_CBC_P7:
-                    ret = Encode.byte2b64(SM4Encode(message, sKey, iv.getBytes(ENCODING), 2, false));
+                    ret = Encode.byte2b64(SM4Encode(message, sKey, iv.getBytes(ENCODING), 2, false), urlsafe);
                     break;
                 case RSA:
-                    ret = Encode.byte2b64(RSAEncode(message, sKey));
+                    ret = Encode.byte2b64(RSAEncode(message, sKey), urlsafe);
                     break;
                 default:
                     break;
             }
         } catch (Exception err) {
             err.printStackTrace();
-            throw new Exception("加密失败" + err);
+            throw new SystemException(
+                    BtxCryptoMessage.CRYPTO_ERROR.getMessage(), err,
+                    BtxCryptoMessage.CRYPTO_ERROR.getCode().toString());
         }
 
         return ret;
     }
 
-    public static String decryptBase64(ChpMode cm, String message, String sKey) throws Exception {
+    public static String decryptBase64(ChpMode cm, String message, String sKey) {
         return decryptBase64(cm, message, sKey, null);
+    }
+
+    public static String decryptBase64(ChpMode cm, String message, String sKey, String iv) {
+        return decryptBase64(cm, message, sKey, iv, false);
     }
 
     /**
@@ -207,9 +219,8 @@ public class SecureUtil {
      * @param sKey
      * @param iv
      * @return
-     * @throws Exception
      */
-    public static String decryptBase64(ChpMode cm, String message, String sKey, String iv) throws Exception {
+    public static String decryptBase64(ChpMode cm, String message, String sKey, String iv, boolean urlsafe) {
         String ret = "";
 
         try {
@@ -218,8 +229,9 @@ public class SecureUtil {
                     if (iv == null || "".equals(null)) {
                         iv = AES_IV;
                     }
-                    ret = new String(AESDecode(Encode.b642byte(message), sKey, "AES/CBC/PKCS5Padding", iv.getBytes(
-                            ENCODING), false),
+                    ret = new String(AESDecode(Encode.b642byte(message, urlsafe), sKey, "AES/CBC/PKCS5Padding",
+                            iv.getBytes(
+                                    ENCODING), false),
                             ENCODING);
                     break;
                 case TDES:
@@ -227,7 +239,7 @@ public class SecureUtil {
                         iv = TDES_IV;
                     }
                     ret = new String(
-                            TDESDecode(Encode.b642byte(message), sKey, "DESede/CBC/PKCS5Padding",
+                            TDESDecode(Encode.b642byte(message, urlsafe), sKey, "DESede/CBC/PKCS5Padding",
                                     iv.getBytes(ENCODING), false),
                             ENCODING);
                     break;
@@ -235,11 +247,12 @@ public class SecureUtil {
                     if (iv == null || "".equals(null)) {
                         iv = AES_IV;
                     }
-                    ret = new String(SM4Decode(Encode.b642byte(message), sKey, iv.getBytes(ENCODING), 2, false),
+                    ret = new String(SM4Decode(Encode.b642byte(message, urlsafe), sKey, iv.getBytes(ENCODING), 2,
+                            false),
                             ENCODING);
                     break;
                 case RSA:
-                    ret = new String(RSADecode(Encode.b642byte(message), sKey), ENCODING);
+                    ret = new String(RSADecode(Encode.b642byte(message, urlsafe), sKey), ENCODING);
                     break;
                 default:
                     break;
@@ -247,7 +260,9 @@ public class SecureUtil {
 
         } catch (Exception err) {
             err.printStackTrace();
-            throw new Exception("解密失败-->" + err);
+            throw new SystemException(
+                    BtxCryptoMessage.DECRYPT_ERROR.getMessage(), err,
+                    BtxCryptoMessage.DECRYPT_ERROR.getCode().toString());
         }
 
         return ret;
@@ -261,16 +276,16 @@ public class SecureUtil {
      * @throws UnsupportedEncodingException
      */
     public static String MD5Encode(String input) throws Exception {
+        return Encode.encodeHexString(MD5Encode(input.getBytes(ENCODING)));
+    }
+
+    public static byte[] MD5Encode(byte[] inputByteArray) throws Exception {
         // 拿到一个MD5转换器（如果想要SHA1参数换成”SHA1”）
         MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-        // 输入的字符串转换成字节数组
-        byte[] inputByteArray = input.getBytes(ENCODING);
         // inputByteArray是输入字符串转换得到的字节数组
         messageDigest.update(inputByteArray);
         // 转换并返回结果，也是字节数组，包含16个元素
-        byte[] resultByteArray = messageDigest.digest();
-        // 字符数组转换成字符串返回
-        return Encode.encodeHexString(resultByteArray);
+        return messageDigest.digest();
     }
 
     /**

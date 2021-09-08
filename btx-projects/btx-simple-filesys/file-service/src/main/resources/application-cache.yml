@@ -1,0 +1,52 @@
+spring:
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+      time-to-live: 3600000ms
+  # REDIS (RedisProperties)
+  redis:
+    #redis部署方式以下3种，只能选一种
+    #部署方式1、单节点设置
+
+    # Redis服务器连接端口
+    host: 10.116.0.13
+    port: 6380
+    database: 0
+    #单节点、sentinel和cluster密码都在这里设置
+    #password: redis6379
+
+    #部署方式2、sentinel集群设置
+    #sentinel:
+    #  master: cyymaster
+    #  nodes: 172.16.150.12:26379
+
+    #部署方式3、cluster集群设置
+    #    cluster:
+    #      nodes: 172.16.150.12:6370, 172.16.150.12:6371, 172.16.150.12:6372, 172.16.150.12:6373, 172.16.150.12:6374, 172.16.150.12:6375
+
+    # Redis数据库索引（默认为0）
+
+    lettuce:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: 100
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池中的最小空闲连接
+        min-idle: 0
+    # 连接超时时间
+    timeout: 20s
+
+btx:
+  cache:
+    redis:
+      key-prefix: "@project.artifactId@:"
+      time-to-live: 1h
+      use-key-prefix: true
+      cache-null-values: false
+      evict-allow-pattern: true
+      missed-history-expire: 5m
+#      caches:

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.cheesetree.btx.project.simplefile.mapper.BtxFileLogMapper">
+
+    <resultMap id="BaseResultMap" type="top.cheesetree.btx.project.simplefile.model.bo.BtxFileLogBO">
+            <id property="lsh" column="LSH" jdbcType="BIGINT"/>
+            <result property="eventType" column="EVENT_TYPE" jdbcType="VARCHAR"/>
+            <result property="eventSysid" column="EVENT_SYSID" jdbcType="VARCHAR"/>
+            <result property="eventReq" column="EVENT_REQ" jdbcType="VARCHAR"/>
+            <result property="eventResult" column="EVENT_RESULT" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        LSH,EVENT_TYPE,EVENT_SYSID,
+        EVENT_REQ,EVENT_RESULT
+    </sql>
+</mapper>

@@ -29,6 +29,10 @@
             <artifactId>bcprov-jdk15on</artifactId>
             <version>${org.bouncycastle.bcprov.version}</version>
         </dependency>
+        <dependency>
+            <groupId>top.cheesetree.btx.framework</groupId>
+            <artifactId>btx-framework-core</artifactId>
+        </dependency>
     </dependencies>
 
 
