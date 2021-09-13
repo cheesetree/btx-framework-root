@@ -27,4 +27,5 @@ public interface IFileClient<T extends Serializable> {
 
     String generateUrl(T fileinfo);
 
+    String getFileSign(T fileinfo);
 }

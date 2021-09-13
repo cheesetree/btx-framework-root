@@ -28,6 +28,7 @@ public interface FileApi {
     CommJSON<FileInfoDTO> uploadFile(@RequestParam(value = "file") MultipartFile file, @PathVariable String appid
             , @PathVariable String area, @RequestParam(required = false) String pubtype,
                                      @RequestParam(required = false) Integer livetime,
+                                     @RequestParam(required = false) String[] tags,
                                      @RequestParam(required = false) String crypto);
 
     /**
@@ -36,7 +37,8 @@ public interface FileApi {
      * @return
      */
     @PostMapping("/get/{area:^[01]{1}$}/{fileid}")
-    CommJSON<FileInfoDTO> downloadFile(@PathVariable String appid, @PathVariable long fileid, @PathVariable String area);
+    CommJSON<FileInfoDTO> downloadFile(@PathVariable String appid, @PathVariable long fileid,
+                                       @PathVariable String area);
 
     /**
      * 删除文件
@@ -55,6 +57,13 @@ public interface FileApi {
      */
     @PostMapping("/archive/{fileid}")
     CommJSON archiveFile(@PathVariable String appid, @PathVariable long fileid);
+
+    @PostMapping("/tags/{fileid}")
+    CommJSON updateFileTags(@PathVariable String appid, @PathVariable long fileid,
+                            @RequestParam(required = false) String[] tags);
+
+    @PostMapping("/token")
+    CommJSON getFileToken(@PathVariable String appid);
 
 //    /**
 //     * 更改文件发布类型

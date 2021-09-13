@@ -1,18 +1,30 @@
 server:
-  port: 9200
+  port: 9201
   servlet:
     #以微服务部署最好别配置context-path以提高zuul的配置灵活性
     context-path: /${spring.application.name}
-  #    context-path: /
   tomcat:
     resource:
       allow-caching: false # Whether static resource caching is permitted for this web application.
       #cache-ttl= # Time-to-live of the static resource cache.
     uri-encoding: UTF-8 # Character encoding to use to decode the URI.
 
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2GB #单个文件最大为20M
+      max-request-size: 2GB #单次请求文件总数大小为20M
+
 btx:
   security:
     contextInterceptorExcludePathPatterns:
     errorPath: "/pages/error.html"
     indexPath: "/pages/index.html"
+  file:
+    token:
+      enabled: true
+    storage-limit: false
+    fastdfs:
+      enabled: true
+      trackerServers: 10.116.0.21:22122
 

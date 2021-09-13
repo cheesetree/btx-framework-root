@@ -4,12 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <artifactId>dev-parent</artifactId>
-        <groupId>cn.xxx</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-
     <groupId>top.cheesetree.btx.project</groupId>
     <artifactId>btx-projects</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -22,16 +16,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <artifactId>file-interface</artifactId>
-                <groupId>top.cheesetree.btx.project.simplefile</groupId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>file-client</artifactId>
-                <groupId>top.cheesetree.btx.project.simplefile</groupId>
-                <version>${project.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

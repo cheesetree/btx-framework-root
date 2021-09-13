@@ -19,6 +19,9 @@ public class FileErrorMessage extends BtxMessage {
     public static final FileErrorMessage FILE_DOWNLOAD_ERROR = new FileErrorMessage(100005, "文件下载失败");
     public static final FileErrorMessage SYS_UNAUTH = new FileErrorMessage(100006, "系统未授权");
     public static final FileErrorMessage TOKEN_UNEXIST = new FileErrorMessage(100007, "token失效");
+    public static final FileErrorMessage UPDATE_FILE_TAG_ERROR = new FileErrorMessage(100008, "更新文件标签失败");
+    public static final FileErrorMessage FILE_TAG_INVALID_ERROR = new FileErrorMessage(100009,
+            "文件标签不符合[数字、大小写字母、下划线且最多20位]");
 
     public FileErrorMessage(Integer code, String message) {
         super(code, message);

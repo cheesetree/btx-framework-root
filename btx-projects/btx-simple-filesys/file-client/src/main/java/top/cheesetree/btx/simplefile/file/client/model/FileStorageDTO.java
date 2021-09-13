@@ -1,5 +1,6 @@
 package top.cheesetree.btx.simplefile.file.client.model;
 
+
 import lombok.Data;
 import top.cheesetree.btx.framework.core.model.ValueObject;
 

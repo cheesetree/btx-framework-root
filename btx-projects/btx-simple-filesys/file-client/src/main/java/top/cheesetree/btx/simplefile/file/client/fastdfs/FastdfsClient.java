@@ -3,6 +3,7 @@ package top.cheesetree.btx.simplefile.file.client.fastdfs;
 import lombok.extern.slf4j.Slf4j;
 import org.csource.common.MyException;
 import org.csource.fastdfs.ClientGlobal;
+import org.csource.fastdfs.FileInfo;
 import org.csource.fastdfs.StorageClient;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,7 +24,7 @@ import java.util.Properties;
  * @Description:
  */
 @Slf4j
-@ConditionalOnProperty(value = "btx.file.fastdfs.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "btx.file.fastdfs.enabled", havingValue = "true")
 @Component("fileClient")
 public class FastdfsClient implements IFileClient<FastDfsInfo>, InitializingBean {
     @Resource
@@ -49,7 +50,7 @@ public class FastdfsClient implements IFileClient<FastDfsInfo>, InitializingBean
                 dto.setMetaStorgeData(meta);
                 return dto;
             } else {
-                log.error("file upload error ");
+                log.error("file upload error");
             }
         } catch (IOException | MyException e) {
             log.error("file upload error ", e);
@@ -116,6 +117,23 @@ public class FastdfsClient implements IFileClient<FastDfsInfo>, InitializingBean
 
     @Override
     public String generateUrl(FastDfsInfo fileinfo) {
+        return null;
+    }
+
+    @Override
+    public String getFileSign(FastDfsInfo fileinfo) {
+        StorageClient client = new StorageClient();
+        try {
+            FileInfo f = client.get_file_info(fileinfo.getGroup(), fileinfo.getPath());
+            if (f != null) {
+                return String.valueOf(f.getCrc32());
+            }
+        } catch (IOException e) {
+            log.error("get file[{}] sign error:{}", fileinfo, e);
+        } catch (MyException e) {
+            log.error("get file[{}] sign error:{}", fileinfo, e);
+        }
+
         return null;
     }
 

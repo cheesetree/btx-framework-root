@@ -8,13 +8,13 @@ import lombok.Data;
 import top.cheesetree.btx.framework.core.model.ValueObject;
 
 /**
- * 文件分享记录表
+ * 文件标签关联
  *
- * @TableName tb_btx_file_sahre
+ * @TableName tb_btx_file_tag
  */
-@TableName(value = "tb_btx_file_sahre")
+@TableName(value = "tb_btx_file_tag")
 @Data
-public class BtxFileSahreBO implements ValueObject {
+public class BtxFileTagBO implements ValueObject {
     /**
      * 流水号
      */
@@ -22,24 +22,14 @@ public class BtxFileSahreBO implements ValueObject {
     private Long lsh;
 
     /**
-     * 来源系统 ID
-     */
-    private Long srcSysId;
-
-    /**
-     * 目标系统 ID
-     */
-    private Long dstSysId;
-
-    /**
      * 文件 ID
      */
     private Long fileId;
 
     /**
-     * 是否临时
+     * 文件 TAG
      */
-    private String isTmp;
+    private String tag;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

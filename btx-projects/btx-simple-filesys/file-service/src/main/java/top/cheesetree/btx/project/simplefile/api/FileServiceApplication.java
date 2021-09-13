@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import top.cheesetree.btx.project.simplefile.config.ResServiceProperties;
 
@@ -22,6 +23,7 @@ import top.cheesetree.btx.project.simplefile.config.ResServiceProperties;
 })
 @EnableTransactionManagement
 @EnableConfigurationProperties({ResServiceProperties.class})
+@EnableScheduling
 public class FileServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(FileServiceApplication.class, args);

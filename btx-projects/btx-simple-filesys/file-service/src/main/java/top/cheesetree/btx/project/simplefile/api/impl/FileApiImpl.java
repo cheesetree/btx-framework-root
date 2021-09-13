@@ -2,13 +2,13 @@ package top.cheesetree.btx.project.simplefile.api.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import top.cheesetre.btx.project.simplefile.api.FileApi;
 import top.cheesetre.btx.project.simplefile.model.dto.FileInfoDTO;
@@ -18,9 +18,11 @@ import top.cheesetree.btx.project.simplefile.comm.FileConsts;
 import top.cheesetree.btx.project.simplefile.comm.FileErrorMessage;
 import top.cheesetree.btx.project.simplefile.config.ResServiceProperties;
 import top.cheesetree.btx.project.simplefile.model.bo.BtxFileArchiveResourceBO;
+import top.cheesetree.btx.project.simplefile.model.bo.BtxFileTagBO;
 import top.cheesetree.btx.project.simplefile.model.bo.BtxFileTmpResourceBO;
 import top.cheesetree.btx.project.simplefile.model.dto.FileAccessDTO;
 import top.cheesetree.btx.project.simplefile.service.BtxFileArchiveResourceService;
+import top.cheesetree.btx.project.simplefile.service.BtxFileTagService;
 import top.cheesetree.btx.project.simplefile.service.BtxFileTmpResourceService;
 import top.cheesetree.btx.project.simplefile.util.ResUtil;
 import top.cheesetree.btx.simplefile.file.client.IFileClient;
@@ -29,10 +31,9 @@ import top.cheesetree.btx.simplefile.file.client.model.FileStorageDTO;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * @Author: van
@@ -42,8 +43,7 @@ import java.util.concurrent.TimeUnit;
  * @Version: 1.0
  * @Description:
  */
-@Service
-@ResponseBody
+@RestController
 @Slf4j
 public class FileApiImpl implements FileApi {
     @Resource
@@ -56,6 +56,12 @@ public class FileApiImpl implements FileApi {
     BtxFileArchiveResourceService btxFileArchiveResourceService;
     @Resource
     BtxFileTmpResourceService btxFileTmpResourceService;
+    @Resource
+    BtxFileTagService btxFileTagService;
+    @Resource
+    ResServiceProperties resServiceProperties;
+
+    static Pattern tagPattern = Pattern.compile("^\\w{1,20}$");
 
     private static DefaultRedisScript<Boolean> checkLua;
     private static List filekeys = new ArrayList<String>() {{
@@ -71,11 +77,13 @@ public class FileApiImpl implements FileApi {
 
     @Override
     public CommJSON<FileInfoDTO> uploadFile(MultipartFile file, String appid, String area, String pubtype,
-                                            Integer livetime, String crypto) {
+                                            Integer livetime, String[] tags, String crypto) {
         CommJSON<FileInfoDTO> ret = new CommJSON<>();
         long fs = file.getSize();
-        boolean islimit = redisTemplateFactory.generateRedisTemplate(String.class).execute(checkLua, filekeys, appid,
-                fs);
+        boolean islimit =
+                !resServiceProperties.isStorageLimit() || redisTemplateFactory.generateRedisTemplate(boolean.class).execute(checkLua
+                        , filekeys, appid,
+                        fs);
         if (islimit) {
             Long requestid = IdWorker.getId();
             if (pubtype == null) {
@@ -100,6 +108,9 @@ public class FileApiImpl implements FileApi {
                 FileStorageDTO st = fileClient.uploadFile(file.getBytes(), type);
                 if (st != null) {
                     Long fileid;
+                    boolean isTagOk = false;
+                    boolean isTagValid = true;
+
                     if (FileConsts.FILE_TMP_FLAG.equals(area)) {
                         BtxFileArchiveResourceBO abo = new BtxFileArchiveResourceBO();
                         abo.setFileOriName(file.getOriginalFilename());
@@ -112,6 +123,7 @@ public class FileApiImpl implements FileApi {
                         abo.setIsPub(pubtype);
                         btxFileArchiveResourceService.save(abo);
                         fileid = abo.getLsh();
+                        isTagOk = true;
                     } else {
                         BtxFileTmpResourceBO tbo = new BtxFileTmpResourceBO();
                         tbo.setFileOriName(file.getOriginalFilename());
@@ -125,12 +137,40 @@ public class FileApiImpl implements FileApi {
                         tbo.setEndTime(new Date(System.currentTimeMillis() + livetime * 1000));
                         btxFileTmpResourceService.save(tbo);
                         fileid = tbo.getLsh();
+
+                        if (tags != null && tags.length > 0) {
+                            List<BtxFileTagBO> ts = new ArrayList<>();
+
+                            for (String c : tags) {
+                                if (tagPattern.matcher(c).find()) {
+                                    BtxFileTagBO t = new BtxFileTagBO();
+                                    t.setFileId(fileid);
+                                    t.setTag(c);
+                                    ts.add(t);
+                                } else {
+                                    isTagValid = false;
+                                    ret = new CommJSON<>(FileErrorMessage.FILE_TAG_INVALID_ERROR);
+                                    break;
+                                }
+                            }
+
+                            if (isTagValid) {
+                                isTagOk = btxFileTagService.saveBatch(ts);
+                                if (!isTagOk) {
+                                    ret = new CommJSON<>(FileErrorMessage.UPDATE_FILE_TAG_ERROR);
+                                }
+                            }
+                        }
                     }
 
-                    if (fileid == null) {
+                    if (fileid != null) {
                         FileInfoDTO dto = new FileInfoDTO();
                         dto.setFileId(fileid);
-                        ret = new CommJSON(dto);
+                        if (isTagOk) {
+                            ret = new CommJSON(dto);
+                        } else {
+                            ret.setResult(dto);
+                        }
                     } else {
                         ret = new CommJSON(FileErrorMessage.FILE_UPLOAD_ERROR);
                         log.error("saveFileInfo error:{}", requestid);
@@ -143,7 +183,10 @@ public class FileApiImpl implements FileApi {
             }
 
             if (!ret.checkSuc()) {
-                redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().increment(FileConsts.REDIS_SYS_CURRENT_KEY, appid, fs * -1);
+                if (!resServiceProperties.isStorageLimit()) {
+                    redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().increment(FileConsts.REDIS_SYS_CURRENT_KEY, appid, fs * -1);
+
+                }
                 ret.setSubcode(requestid.toString());
             }
         } else {
@@ -162,12 +205,14 @@ public class FileApiImpl implements FileApi {
             BtxFileTmpResourceBO tbo = btxFileTmpResourceService.getById(fileid);
             if (tbo != null && tbo.getSysId().equals(appid)) {
                 fa.setFilepath(tbo.getFilePath());
+                fa.setFiletype(tbo.getFileType());
                 pubflag = tbo.getIsPub();
             }
         } else {
             BtxFileArchiveResourceBO abo = btxFileArchiveResourceService.getById(fileid);
             if (abo != null && abo.getSysId().equals(appid)) {
                 fa.setFilepath(abo.getFilePath());
+                fa.setFiletype(abo.getFileType());
                 pubflag = abo.getIsPub();
             }
         }
@@ -191,6 +236,7 @@ public class FileApiImpl implements FileApi {
 
             if (StringUtils.isNoneBlank(tk)) {
                 FileInfoDTO dto = new FileInfoDTO();
+                dto.setFileType(fa.getFiletype());
                 dto.setFilePath(String.format("%s/file/%s/%s", resServiceConfig.getGatewayUrl(), appid, tk));
                 ret = new CommJSON<>(dto);
             } else {
@@ -228,7 +274,9 @@ public class FileApiImpl implements FileApi {
         }
 
         if (StringUtils.isNotBlank(fileStorageInfo)) {
-            redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().increment(FileConsts.REDIS_SYS_CURRENT_KEY, appid, filestorage * -1);
+            if (!resServiceProperties.isStorageLimit()) {
+                redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().increment(FileConsts.REDIS_SYS_CURRENT_KEY, appid, filestorage * -1);
+            }
             ret = new CommJSON("");
         } else {
             log.error("fileclient del error:{}", fileid);
@@ -245,15 +293,73 @@ public class FileApiImpl implements FileApi {
         if (tbo != null && tbo.getSysId().equals(appid)) {
             Long id = IdWorker.getId();
             btxFileTmpResourceService.moveToArchive(id, fileid, appid);
+
+            List<BtxFileTagBO> nt = new ArrayList<>();
+            btxFileTagService.lambdaQuery().eq(BtxFileTagBO::getFileId, fileid).list().forEach((BtxFileTagBO c) -> {
+                c.setFileId(id);
+                nt.add(c);
+            });
+
+            if (nt.size() > 0) {
+                btxFileTagService.saveBatch(nt);
+            }
+
             FileInfoDTO d = new FileInfoDTO();
             d.setFileId(id);
             ret = new CommJSON<>(d);
         } else {
             ret = new CommJSON(FileErrorMessage.FILE_UNEXIST);
-
         }
 
         return ret;
+    }
+
+    @Override
+    public CommJSON updateFileTags(String appid, long fileid, String[] tags) {
+        CommJSON ret = new CommJSON();
+        boolean isTagValid = true;
+
+        Map<SFunction<BtxFileTmpResourceBO, ?>, Object> params = new HashMap<>();
+        params.put(BtxFileTmpResourceBO::getSysId, appid);
+        params.put(BtxFileTmpResourceBO::getLsh, fileid);
+        Map<SFunction<BtxFileArchiveResourceBO, ?>, Object> params1 = new HashMap<>();
+        params1.put(BtxFileArchiveResourceBO::getSysId, appid);
+        params1.put(BtxFileArchiveResourceBO::getLsh, fileid);
+        if (btxFileTmpResourceService.lambdaQuery().allEq(params).count() > 0 || btxFileArchiveResourceService.lambdaQuery().allEq(params1).count() > 0) {
+            List<BtxFileTagBO> ts = new ArrayList<>();
+            for (String c : tags) {
+                if (tagPattern.matcher(c).find()) {
+                    BtxFileTagBO t = new BtxFileTagBO();
+                    t.setFileId(fileid);
+                    t.setTag(c);
+                    ts.add(t);
+                } else {
+                    isTagValid = false;
+                    ret = new CommJSON<>(FileErrorMessage.FILE_TAG_INVALID_ERROR);
+                    break;
+                }
+            }
+
+            if (isTagValid) {
+                if (btxFileTagService.updateTags(fileid, ts)) {
+                    ret = new CommJSON("");
+                } else {
+                    ret = new CommJSON<>(FileErrorMessage.UPDATE_FILE_TAG_ERROR);
+                }
+            }
+        } else {
+            ret = new CommJSON<>(FileErrorMessage.FILE_UNEXIST);
+        }
+
+        return ret;
+    }
+
+    @Override
+    public CommJSON getFileToken(String appid) {
+        String tk = UUID.randomUUID().toString();
+        redisTemplateFactory.generateRedisTemplate(String.class).opsForValue().set(FileConsts.REDIS_FILE_TMP_KEY + tk
+                , appid, 10, TimeUnit.MINUTES);
+        return new CommJSON(tk);
     }
 
 //    @Override

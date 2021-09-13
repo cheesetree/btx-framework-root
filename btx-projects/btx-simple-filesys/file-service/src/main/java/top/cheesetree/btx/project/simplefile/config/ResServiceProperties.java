@@ -11,10 +11,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @Version: 1.0
  * @Description:
  */
-@ConfigurationProperties(value="btx.file")
+@ConfigurationProperties(value = "btx.file")
 @Data
 public class ResServiceProperties {
-    private  String gatewayUrl;
-    private  String shareUrl;
+    private String gatewayUrl;
+    private String shareUrl;
+    private boolean storageLimit;
 
 }
