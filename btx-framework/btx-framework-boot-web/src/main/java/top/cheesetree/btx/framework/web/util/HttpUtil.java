@@ -118,7 +118,7 @@ public class HttpUtil {
         if (HttpStatus.OK.equals(res.getStatusCode())) {
             ret = res.getBody();
         } else {
-            log.error("REQ ERROR:URL[{}] RES[{}]", url, res);
+            log.error("REQ ERROR:URL[{}] RES[{}][{}]", url, res, res.getBody());
         }
 
         return ret;

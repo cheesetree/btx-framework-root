@@ -43,6 +43,7 @@ public class BtxWeblExceptionHandler {
         } else {
             ret = new CommJSON(BtxMessage.UNKOWN_ERROR);
             ret.setMsg(String.format("未知异常%s:%s", ret.getMsg(), ex.getMessage()));
+            log.error("系统异常:{}", ex);
         }
 
         return ret;

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import top.cheesetre.btx.project.simplefile.api.FileApi;
 import top.cheesetre.btx.project.simplefile.model.dto.FileInfoDTO;
+import top.cheesetre.btx.project.simplefile.model.dto.FileRequestDTO;
+import top.cheesetre.btx.project.simplefile.model.dto.FileResponseDTO;
 import top.cheesetree.btx.framework.cache.redis.RedisTemplateFactoryImpl;
 import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.project.simplefile.comm.FileConsts;
@@ -197,116 +199,162 @@ public class FileApiImpl implements FileApi {
     }
 
     @Override
-    public CommJSON<FileInfoDTO> downloadFile(String appid, long fileid, String area) {
-        CommJSON<FileInfoDTO> ret;
-        FileAccessDTO fa = new FileAccessDTO();
-        String pubflag = null;
-        if (FileConsts.FILE_TMP_FLAG.equals(area)) {
-            BtxFileTmpResourceBO tbo = btxFileTmpResourceService.getById(fileid);
-            if (tbo != null && tbo.getSysId().equals(appid)) {
-                fa.setFilepath(tbo.getFilePath());
-                fa.setFiletype(tbo.getFileType());
-                pubflag = tbo.getIsPub();
+    public CommJSON<ArrayList<FileResponseDTO>> downloadFile(String appid, FileRequestDTO filereq, String area) {
+        CommJSON<ArrayList<FileResponseDTO>> ret;
+
+
+        if (filereq.getFileids() != null) {
+            String pubflag;
+            FileAccessDTO fa;
+            FileResponseDTO fr;
+            ArrayList<FileResponseDTO> fs = new ArrayList<>();
+            for (long f : filereq.getFileids()) {
+                fr = new FileResponseDTO();
+                fr.setFileid(f);
+                pubflag = null;
+                fa = new FileAccessDTO();
+
+                if (FileConsts.FILE_TMP_FLAG.equals(area)) {
+                    BtxFileTmpResourceBO tbo = btxFileTmpResourceService.getById(f);
+                    if (tbo != null && tbo.getSysId().equals(appid)) {
+                        fa.setFilepath(tbo.getFilePath());
+                        fa.setFiletype(tbo.getFileType());
+                        pubflag = tbo.getIsPub();
+                    }
+                } else {
+                    BtxFileArchiveResourceBO abo = btxFileArchiveResourceService.getById(f);
+                    if (abo != null && abo.getSysId().equals(appid)) {
+                        fa.setFilepath(abo.getFilePath());
+                        fa.setFiletype(abo.getFileType());
+                        pubflag = abo.getIsPub();
+                    }
+                }
+
+                if (StringUtils.isNotBlank(fa.getFilepath())) {
+                    String tk = null;
+                    if (FileConsts.FILE_PRIVATE_FLAG.equals(pubflag)) {
+                        String key =
+                                redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().get(FileConsts.REDIS_SYS_KEY, appid).toString();
+                        try {
+                            tk = ResUtil.encryptPubFile(appid, key, JSON.toJSONString(fa));
+                        } catch (Exception e) {
+                            fr.setErrmsg(FileErrorMessage.FILE_DOWNLOAD_ERROR.getMessage());
+                            log.error("downloadfile [{}] error:{}", f, e);
+                        }
+                    } else {
+                        tk = UUID.randomUUID().toString().replaceAll("-", "");
+                        redisTemplateFactory.generateRedisTemplate(String.class).opsForValue().set(tk + "downloadFile",
+                                fa.getFilepath(), 10 * 60, TimeUnit.SECONDS);
+                    }
+
+                    if (StringUtils.isNoneBlank(tk)) {
+                        FileInfoDTO dto = new FileInfoDTO();
+                        dto.setFileType(fa.getFiletype());
+                        dto.setFilePath(String.format("%s/file/%s/%s", resServiceConfig.getGatewayUrl(), appid, tk));
+                        fr.setFileResul(dto);
+                    } else {
+                        fr.setErrmsg(FileErrorMessage.FILE_DOWNLOAD_ERROR.getMessage());
+                    }
+                } else {
+                    fr.setErrmsg(FileErrorMessage.FILE_UNEXIST.getMessage());
+                }
+
+                fs.add(fr);
             }
+            ret = new CommJSON<>(fs);
         } else {
-            BtxFileArchiveResourceBO abo = btxFileArchiveResourceService.getById(fileid);
-            if (abo != null && abo.getSysId().equals(appid)) {
-                fa.setFilepath(abo.getFilePath());
-                fa.setFiletype(abo.getFileType());
-                pubflag = abo.getIsPub();
-            }
+            ret = new CommJSON<>();
         }
 
-        if (StringUtils.isNotBlank(fa.getFilepath())) {
-            String tk = null;
-            if (FileConsts.FILE_PRIVATE_FLAG.equals(pubflag)) {
-                String key =
-                        redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().get(FileConsts.REDIS_SYS_KEY, appid).toString();
-                try {
-                    tk = ResUtil.encryptPubFile(appid, key, JSON.toJSONString(fa));
-                } catch (Exception e) {
-                    log.error("downloadfile [{}] error:{}" + fileid, e);
-                }
-            } else {
-                tk = UUID.randomUUID().toString().replaceAll("-", "");
-                redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().put(tk, "filepath",
-                        fa.getFilepath());
-                redisTemplateFactory.generateRedisTemplate(String.class).expire(tk, 10 * 60, TimeUnit.SECONDS);
-            }
 
-            if (StringUtils.isNoneBlank(tk)) {
-                FileInfoDTO dto = new FileInfoDTO();
-                dto.setFileType(fa.getFiletype());
-                dto.setFilePath(String.format("%s/file/%s/%s", resServiceConfig.getGatewayUrl(), appid, tk));
-                ret = new CommJSON<>(dto);
-            } else {
-                ret = new CommJSON(FileErrorMessage.FILE_DOWNLOAD_ERROR);
+        return ret;
+    }
+
+    @Override
+    public CommJSON<ArrayList<FileResponseDTO>> deleteFile(String appid, FileRequestDTO filereq, String area) {
+        CommJSON<ArrayList<FileResponseDTO>> ret;
+        if (filereq.getFileids() != null) {
+            ArrayList<FileResponseDTO> fs = new ArrayList<>();
+            String fileStorageInfo;
+            long filestorage;
+            FileResponseDTO fr;
+            for (long f : filereq.getFileids()) {
+                fr = new FileResponseDTO();
+                fr.setFileid(f);
+                fileStorageInfo = null;
+                filestorage = 0;
+                if (FileConsts.FILE_TMP_FLAG.equals(area)) {
+                    BtxFileTmpResourceBO tbo = btxFileTmpResourceService.getById(f);
+                    if (tbo != null && tbo.getSysId().equals(appid)) {
+                        if (btxFileTmpResourceService.removeById(f)) {
+                            fileStorageInfo = tbo.getFileStorageInfo();
+                            filestorage = tbo.getFileStorage();
+                        }
+                    }
+                } else {
+                    BtxFileArchiveResourceBO abo = btxFileArchiveResourceService.getById(f);
+                    if (abo != null && abo.getSysId().equals(appid)) {
+                        if (btxFileArchiveResourceService.removeById(f)) {
+                            fileStorageInfo = abo.getFileStorageInfo();
+                            filestorage = abo.getFileStorage();
+                        }
+                    }
+                }
+
+                if (StringUtils.isNotBlank(fileStorageInfo)) {
+                    if (!resServiceProperties.isStorageLimit()) {
+                        redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().increment(FileConsts.REDIS_SYS_CURRENT_KEY, appid, filestorage * -1);
+                    }
+                    FileInfoDTO dto = new FileInfoDTO();
+                    fr.setFileResul(dto);
+                } else {
+                    fr.setErrmsg(FileErrorMessage.FILE_DEL_ERROR.getMessage());
+                }
+
+                fs.add(fr);
             }
+            ret = new CommJSON<>(fs);
         } else {
-            ret = new CommJSON(FileErrorMessage.FILE_UNEXIST);
+            ret = new CommJSON<>();
         }
 
         return ret;
     }
 
     @Override
-    public CommJSON<FileInfoDTO> deleteFile(String appid, long fileid, String area) {
-        CommJSON<FileInfoDTO> ret = new CommJSON<>();
-        String fileStorageInfo = null;
-        long filestorage = 0;
+    public CommJSON<ArrayList<FileResponseDTO>> archiveFile(String appid, FileRequestDTO filereq) {
+        CommJSON<ArrayList<FileResponseDTO>> ret;
 
-        if (FileConsts.FILE_TMP_FLAG.equals(area)) {
-            BtxFileTmpResourceBO tbo = btxFileTmpResourceService.getById(fileid);
-            if (tbo != null && tbo.getSysId().equals(appid)) {
-                if (btxFileTmpResourceService.removeById(fileid)) {
-                    fileStorageInfo = tbo.getFileStorageInfo();
-                    filestorage = tbo.getFileStorage();
+        if (filereq.getFileids() != null) {
+            ArrayList<FileResponseDTO> fs = new ArrayList<>();
+            for (long f : filereq.getFileids()) {
+                FileResponseDTO fr = new FileResponseDTO();
+                fr.setFileid(f);
+                BtxFileTmpResourceBO tbo = btxFileTmpResourceService.getById(f);
+                if (tbo != null && tbo.getSysId().equals(appid)) {
+                    Long id = IdWorker.getId();
+
+                    btxFileTmpResourceService.moveToArchive(id, f, appid);
+                    List<BtxFileTagBO> nt = new ArrayList<>();
+                    btxFileTagService.lambdaQuery().eq(BtxFileTagBO::getFileId, f).list().forEach((BtxFileTagBO c) -> {
+                        c.setFileId(id);
+                        nt.add(c);
+                    });
+
+                    if (nt.size() > 0) {
+                        btxFileTagService.saveBatch(nt);
+                    }
+
+                    FileInfoDTO d = new FileInfoDTO();
+                    d.setFileId(id);
+                    fr.setFileResul(d);
+                } else {
+                    fr.setErrmsg(FileErrorMessage.FILE_UNEXIST.getMessage());
                 }
-            }
-        } else {
-            BtxFileArchiveResourceBO abo = btxFileArchiveResourceService.getById(fileid);
-            if (abo != null && abo.getSysId().equals(appid)) {
-                if (btxFileArchiveResourceService.removeById(fileid)) {
-                    fileStorageInfo = abo.getFileStorageInfo();
-                    filestorage = abo.getFileStorage();
-                }
-            }
-        }
-
-        if (StringUtils.isNotBlank(fileStorageInfo)) {
-            if (!resServiceProperties.isStorageLimit()) {
-                redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().increment(FileConsts.REDIS_SYS_CURRENT_KEY, appid, filestorage * -1);
-            }
-            ret = new CommJSON("");
-        } else {
-            log.error("fileclient del error:{}", fileid);
-        }
-
-        return ret;
-    }
-
-    @Override
-    public CommJSON<FileInfoDTO> archiveFile(String appid, long fileid) {
-        CommJSON<FileInfoDTO> ret;
-
-        BtxFileTmpResourceBO tbo = btxFileTmpResourceService.getById(fileid);
-        if (tbo != null && tbo.getSysId().equals(appid)) {
-            Long id = IdWorker.getId();
-            btxFileTmpResourceService.moveToArchive(id, fileid, appid);
-
-            List<BtxFileTagBO> nt = new ArrayList<>();
-            btxFileTagService.lambdaQuery().eq(BtxFileTagBO::getFileId, fileid).list().forEach((BtxFileTagBO c) -> {
-                c.setFileId(id);
-                nt.add(c);
-            });
-
-            if (nt.size() > 0) {
-                btxFileTagService.saveBatch(nt);
+                fs.add(fr);
             }
 
-            FileInfoDTO d = new FileInfoDTO();
-            d.setFileId(id);
-            ret = new CommJSON<>(d);
+            ret = new CommJSON(fs);
         } else {
             ret = new CommJSON(FileErrorMessage.FILE_UNEXIST);
         }

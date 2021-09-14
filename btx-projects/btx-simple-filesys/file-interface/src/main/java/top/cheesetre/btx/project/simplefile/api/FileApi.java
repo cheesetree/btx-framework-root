@@ -1,12 +1,13 @@
 package top.cheesetre.btx.project.simplefile.api;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.cheesetre.btx.project.simplefile.model.dto.FileInfoDTO;
+import top.cheesetre.btx.project.simplefile.model.dto.FileRequestDTO;
+import top.cheesetre.btx.project.simplefile.model.dto.FileResponseDTO;
 import top.cheesetree.btx.framework.core.json.CommJSON;
+
+import java.util.ArrayList;
 
 /**
  * @Author: van
@@ -36,27 +37,28 @@ public interface FileApi {
      *
      * @return
      */
-    @PostMapping("/get/{area:^[01]{1}$}/{fileid}")
-    CommJSON<FileInfoDTO> downloadFile(@PathVariable String appid, @PathVariable long fileid,
-                                       @PathVariable String area);
+    @PostMapping("/get/{area:^[01]{1}$}")
+    CommJSON<ArrayList<FileResponseDTO>> downloadFile(@PathVariable String appid, @RequestBody FileRequestDTO filereq,
+                                                      @PathVariable String area);
 
     /**
      * 删除文件
      *
      * @return
      */
-    @PostMapping("/del/{area:^[01]{1}$}/{fileid}")
-    CommJSON deleteFile(@PathVariable String appid, @PathVariable long fileid, @PathVariable String area);
+    @PostMapping("/del/{area:^[01]{1}$}")
+    CommJSON<ArrayList<FileResponseDTO>> deleteFile(@PathVariable String appid, @RequestBody FileRequestDTO filereq,
+                                                    @PathVariable String area);
 
     /**
      * 归档文件
      *
      * @param appid
-     * @param fileid
+     * @param filereq
      * @return
      */
-    @PostMapping("/archive/{fileid}")
-    CommJSON archiveFile(@PathVariable String appid, @PathVariable long fileid);
+    @PostMapping("/archive")
+    CommJSON<ArrayList<FileResponseDTO>> archiveFile(@PathVariable String appid, @RequestBody FileRequestDTO filereq);
 
     @PostMapping("/tags/{fileid}")
     CommJSON updateFileTags(@PathVariable String appid, @PathVariable long fileid,
