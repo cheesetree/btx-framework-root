@@ -17,4 +17,5 @@ import top.cheesetree.btx.framework.core.model.ValueObject;
 public class FileAccessDTO implements ValueObject {
     private String filepath;
     private String filetype;
+    private String oriname;
 }

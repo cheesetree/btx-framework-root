@@ -49,7 +49,7 @@ public class TokenApiImpl implements TokenApi {
             t.setAccesstoken(tk);
             t.setExpiresin(expire);
 
-            rt.opsForValue().set(tk, "true", expire);
+            rt.opsForValue().set(tk, "true", expire, TimeUnit.SECONDS);
             rt.opsForHash().put(FileConsts.REDIS_TOKEN_KEY, appid, tk);
             ret = new CommJSON(t);
         } else {

@@ -25,12 +25,13 @@ public interface FileApi {
      * @param file
      * @return
      */
-    @PostMapping("/upload/{area:^[01]{1}$}")
-    CommJSON<FileInfoDTO> uploadFile(@RequestParam(value = "file") MultipartFile file, @PathVariable String appid
+    @PostMapping(value = "/upload/{area:^[01]{1}$}")
+    CommJSON<FileInfoDTO> uploadFile(
+            @RequestParam(value = "file") MultipartFile file, @PathVariable String appid
             , @PathVariable String area, @RequestParam(required = false) String pubtype,
-                                     @RequestParam(required = false) Integer livetime,
-                                     @RequestParam(required = false) String[] tags,
-                                     @RequestParam(required = false) String crypto);
+            @RequestParam(required = false) Integer livetime,
+            @RequestParam(required = false) String[] tags,
+            @RequestParam(required = false) String crypto);
 
     /**
      * 获取文件路径
@@ -38,8 +39,9 @@ public interface FileApi {
      * @return
      */
     @PostMapping("/get/{area:^[01]{1}$}")
-    CommJSON<ArrayList<FileResponseDTO>> downloadFile(@PathVariable String appid, @RequestBody FileRequestDTO filereq,
-                                                      @PathVariable String area);
+    CommJSON<ArrayList<FileResponseDTO>> downloadFile(
+            @PathVariable String appid, @RequestBody FileRequestDTO filereq,
+            @PathVariable String area);
 
     /**
      * 删除文件
@@ -47,8 +49,9 @@ public interface FileApi {
      * @return
      */
     @PostMapping("/del/{area:^[01]{1}$}")
-    CommJSON<ArrayList<FileResponseDTO>> deleteFile(@PathVariable String appid, @RequestBody FileRequestDTO filereq,
-                                                    @PathVariable String area);
+    CommJSON<ArrayList<FileResponseDTO>> deleteFile(
+            @PathVariable String appid, @RequestBody FileRequestDTO filereq,
+            @PathVariable String area);
 
     /**
      * 归档文件
@@ -58,10 +61,12 @@ public interface FileApi {
      * @return
      */
     @PostMapping("/archive")
-    CommJSON<ArrayList<FileResponseDTO>> archiveFile(@PathVariable String appid, @RequestBody FileRequestDTO filereq);
+    CommJSON<ArrayList<FileResponseDTO>> archiveFile(
+            @PathVariable String appid, @RequestBody FileRequestDTO filereq);
 
     @PostMapping("/tags/{fileid}")
-    CommJSON updateFileTags(@PathVariable String appid, @PathVariable long fileid,
+    CommJSON updateFileTags(@PathVariable String appid,
+                            @PathVariable long fileid,
                             @RequestParam(required = false) String[] tags);
 
     @PostMapping("/token")

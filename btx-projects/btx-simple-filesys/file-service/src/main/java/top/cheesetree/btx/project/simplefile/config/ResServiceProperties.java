@@ -17,5 +17,6 @@ public class ResServiceProperties {
     private String gatewayUrl;
     private String shareUrl;
     private boolean storageLimit;
+    private String fileAppid;
 
 }

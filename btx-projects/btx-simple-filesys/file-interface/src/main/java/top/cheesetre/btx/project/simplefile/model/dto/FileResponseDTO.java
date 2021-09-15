@@ -13,6 +13,6 @@ import lombok.Data;
 @Data
 public class FileResponseDTO {
     private Long fileid;
-    private FileInfoDTO fileResul = null;
+    private FileInfoDTO fileResult = null;
     private String errmsg;
 }

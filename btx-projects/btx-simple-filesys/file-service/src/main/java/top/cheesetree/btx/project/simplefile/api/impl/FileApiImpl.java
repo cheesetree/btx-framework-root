@@ -114,19 +114,6 @@ public class FileApiImpl implements FileApi {
                     boolean isTagValid = true;
 
                     if (FileConsts.FILE_TMP_FLAG.equals(area)) {
-                        BtxFileArchiveResourceBO abo = new BtxFileArchiveResourceBO();
-                        abo.setFileOriName(file.getOriginalFilename());
-                        abo.setSysId(appid);
-                        abo.setFileStorage(fs);
-                        abo.setFilePath(st.getPath());
-                        abo.setFileType(type);
-                        abo.setFileStorageInfo(JSON.toJSONString(st.getMetaStorgeData()));
-                        abo.setIsCrypto(crypto);
-                        abo.setIsPub(pubtype);
-                        btxFileArchiveResourceService.save(abo);
-                        fileid = abo.getLsh();
-                        isTagOk = true;
-                    } else {
                         BtxFileTmpResourceBO tbo = new BtxFileTmpResourceBO();
                         tbo.setFileOriName(file.getOriginalFilename());
                         tbo.setSysId(appid);
@@ -139,6 +126,19 @@ public class FileApiImpl implements FileApi {
                         tbo.setEndTime(new Date(System.currentTimeMillis() + livetime * 1000));
                         btxFileTmpResourceService.save(tbo);
                         fileid = tbo.getLsh();
+                    } else {
+                        BtxFileArchiveResourceBO abo = new BtxFileArchiveResourceBO();
+                        abo.setFileOriName(file.getOriginalFilename());
+                        abo.setSysId(appid);
+                        abo.setFileStorage(fs);
+                        abo.setFilePath(st.getPath());
+                        abo.setFileType(type);
+                        abo.setFileStorageInfo(JSON.toJSONString(st.getMetaStorgeData()));
+                        abo.setIsCrypto(crypto);
+                        abo.setIsPub(pubtype);
+                        btxFileArchiveResourceService.save(abo);
+                        fileid = abo.getLsh();
+                        isTagOk = true;
 
                         if (tags != null && tags.length > 0) {
                             List<BtxFileTagBO> ts = new ArrayList<>();
@@ -202,8 +202,8 @@ public class FileApiImpl implements FileApi {
     public CommJSON<ArrayList<FileResponseDTO>> downloadFile(String appid, FileRequestDTO filereq, String area) {
         CommJSON<ArrayList<FileResponseDTO>> ret;
 
-
         if (filereq.getFileids() != null) {
+
             String pubflag;
             FileAccessDTO fa;
             FileResponseDTO fr;
@@ -219,6 +219,7 @@ public class FileApiImpl implements FileApi {
                     if (tbo != null && tbo.getSysId().equals(appid)) {
                         fa.setFilepath(tbo.getFilePath());
                         fa.setFiletype(tbo.getFileType());
+                        fa.setOriname(tbo.getFileOriName());
                         pubflag = tbo.getIsPub();
                     }
                 } else {
@@ -226,6 +227,7 @@ public class FileApiImpl implements FileApi {
                     if (abo != null && abo.getSysId().equals(appid)) {
                         fa.setFilepath(abo.getFilePath());
                         fa.setFiletype(abo.getFileType());
+                        fa.setOriname(abo.getFileOriName());
                         pubflag = abo.getIsPub();
                     }
                 }
@@ -233,6 +235,13 @@ public class FileApiImpl implements FileApi {
                 if (StringUtils.isNotBlank(fa.getFilepath())) {
                     String tk = null;
                     if (FileConsts.FILE_PRIVATE_FLAG.equals(pubflag)) {
+                        tk = UUID.randomUUID().toString().replaceAll("-", "");
+                        redisTemplateFactory.generateRedisTemplate(FileAccessDTO.class).opsForValue().set(tk +
+                                        ".downloadFile",
+                                fa, 10 * 60, TimeUnit.SECONDS);
+                        appid = resServiceProperties.getFileAppid();
+
+                    } else {
                         String key =
                                 redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().get(FileConsts.REDIS_SYS_KEY, appid).toString();
                         try {
@@ -241,17 +250,13 @@ public class FileApiImpl implements FileApi {
                             fr.setErrmsg(FileErrorMessage.FILE_DOWNLOAD_ERROR.getMessage());
                             log.error("downloadfile [{}] error:{}", f, e);
                         }
-                    } else {
-                        tk = UUID.randomUUID().toString().replaceAll("-", "");
-                        redisTemplateFactory.generateRedisTemplate(String.class).opsForValue().set(tk + "downloadFile",
-                                fa.getFilepath(), 10 * 60, TimeUnit.SECONDS);
                     }
 
                     if (StringUtils.isNoneBlank(tk)) {
                         FileInfoDTO dto = new FileInfoDTO();
                         dto.setFileType(fa.getFiletype());
                         dto.setFilePath(String.format("%s/file/%s/%s", resServiceConfig.getGatewayUrl(), appid, tk));
-                        fr.setFileResul(dto);
+                        fr.setFileResult(dto);
                     } else {
                         fr.setErrmsg(FileErrorMessage.FILE_DOWNLOAD_ERROR.getMessage());
                     }
@@ -306,7 +311,7 @@ public class FileApiImpl implements FileApi {
                         redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().increment(FileConsts.REDIS_SYS_CURRENT_KEY, appid, filestorage * -1);
                     }
                     FileInfoDTO dto = new FileInfoDTO();
-                    fr.setFileResul(dto);
+                    fr.setFileResult(dto);
                 } else {
                     fr.setErrmsg(FileErrorMessage.FILE_DEL_ERROR.getMessage());
                 }
@@ -347,7 +352,7 @@ public class FileApiImpl implements FileApi {
 
                     FileInfoDTO d = new FileInfoDTO();
                     d.setFileId(id);
-                    fr.setFileResul(d);
+                    fr.setFileResult(d);
                 } else {
                     fr.setErrmsg(FileErrorMessage.FILE_UNEXIST.getMessage());
                 }
