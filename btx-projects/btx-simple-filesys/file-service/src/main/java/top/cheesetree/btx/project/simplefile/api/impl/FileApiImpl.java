@@ -110,7 +110,7 @@ public class FileApiImpl implements FileApi {
                 FileStorageDTO st = fileClient.uploadFile(file.getBytes(), type);
                 if (st != null) {
                     Long fileid;
-                    boolean isTagOk = false;
+                    boolean isTagOk = true;
                     boolean isTagValid = true;
 
                     if (FileConsts.FILE_TMP_FLAG.equals(area)) {
@@ -138,11 +138,10 @@ public class FileApiImpl implements FileApi {
                         abo.setIsPub(pubtype);
                         btxFileArchiveResourceService.save(abo);
                         fileid = abo.getLsh();
-                        isTagOk = true;
 
                         if (tags != null && tags.length > 0) {
                             List<BtxFileTagBO> ts = new ArrayList<>();
-
+                            isTagOk = false;
                             for (String c : tags) {
                                 if (tagPattern.matcher(c).find()) {
                                     BtxFileTagBO t = new BtxFileTagBO();

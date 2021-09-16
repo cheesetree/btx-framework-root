@@ -43,6 +43,7 @@ public class ApiAuthInterceptor extends HandlerInterceptorAdapter {
             //一次性 key
             if (redisTemplateFactory.generateRedisTemplate(String.class).hasKey(tk)) {
                 redisTemplateFactory.generateRedisTemplate(String.class).delete(tk);
+                ret = true;
             } else {
                 CommJSON<String> r = new CommJSON(FileErrorMessage.TOKEN_UNEXIST);
                 response.setStatus(HttpServletResponse.SC_OK);
