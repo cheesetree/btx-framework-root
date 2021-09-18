@@ -1,5 +1,5 @@
 btx:
   file:
-    gateway-url: http://10.116.0.133:8320
+    gateway-url: http://10.116.0.19:8320
     share-url:
     file-appid: 10000000

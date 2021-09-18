@@ -19,8 +19,8 @@ public class BtxFileArchiveResourceServiceImpl extends ServiceImpl<BtxFileArchiv
     BtxFileArchiveResourceMapper btxFileArchiveResourceMapper;
 
     @Override
-    public void moveToHis(long lsh, long fileid, String sysid) {
-        btxFileArchiveResourceMapper.moveToHis(lsh, fileid, sysid);
+    public int moveToHis(long lsh) {
+        return btxFileArchiveResourceMapper.moveToHis(lsh);
     }
 }
 

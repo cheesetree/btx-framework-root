@@ -23,4 +23,21 @@
         FILE_STORAGE_INFO,FILE_HASH,IS_CRYPTO,
         IS_PUB
     </sql>
+    <insert id="moveToHis">
+        INSERT INTO TB_BTX_FILE_ARCHIVE_RESOURCE_HIS (LSH, SYS_ID, FILE_ORI_NAME, FILE_PATH, FILE_STORAGE, FILE_TYPE,
+                                                  FILE_STORAGE_INFO, FILE_HASH, IS_CRYPTO, IS_PUB)
+        SELECT LSH,
+               SYS_ID,
+               FILE_ORI_NAME,
+               FILE_PATH,
+               FILE_STORAGE,
+               FILE_TYPE,
+               FILE_STORAGE_INFO,
+               FILE_HASH,
+               IS_CRYPTO,
+               IS_PUB
+        FROM TB_BTX_FILE_ARCHIVE_RESOURCE
+        WHERE LSH = #{lsh};
+        DELETE FROM TB_BTX_FILE_ARCHIVE_RESOURCE WHERE LSH= #{lsh};
+    </insert>
 </mapper>

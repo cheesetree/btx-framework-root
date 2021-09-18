@@ -1,5 +1,7 @@
 package top.cheesetre.btx.project.simplefile.model.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import lombok.Data;
 import top.cheesetree.btx.framework.core.model.ValueObject;
 
@@ -13,6 +15,7 @@ import top.cheesetree.btx.framework.core.model.ValueObject;
  */
 @Data
 public class FileInfoDTO implements ValueObject {
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private long fileId;
     private String filePath;
     private String fileType;

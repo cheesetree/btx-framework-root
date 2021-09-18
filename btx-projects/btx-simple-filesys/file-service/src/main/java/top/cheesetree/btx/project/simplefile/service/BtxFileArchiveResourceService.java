@@ -7,5 +7,5 @@ import top.cheesetree.btx.project.simplefile.model.bo.BtxFileArchiveResourceBO;
  *
  */
 public interface BtxFileArchiveResourceService extends IService<BtxFileArchiveResourceBO> {
-    void moveToHis(long lsh, long fileid, String sysid);
+    int moveToHis(long lsh);
 }

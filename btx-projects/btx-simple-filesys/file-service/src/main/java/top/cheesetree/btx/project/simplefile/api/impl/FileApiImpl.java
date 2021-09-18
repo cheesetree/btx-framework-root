@@ -298,7 +298,7 @@ public class FileApiImpl implements FileApi {
                 } else {
                     BtxFileArchiveResourceBO abo = btxFileArchiveResourceService.getById(f);
                     if (abo != null && abo.getSysId().equals(appid)) {
-                        if (btxFileArchiveResourceService.removeById(f)) {
+                        if (btxFileArchiveResourceService.moveToHis(f) > 0) {
                             fileStorageInfo = abo.getFileStorageInfo();
                             filestorage = abo.getFileStorage();
                         }
@@ -310,6 +310,7 @@ public class FileApiImpl implements FileApi {
                         redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().increment(FileConsts.REDIS_SYS_CURRENT_KEY, appid, filestorage * -1);
                     }
                     FileInfoDTO dto = new FileInfoDTO();
+                    dto.setFileId(f);
                     fr.setFileResult(dto);
                 } else {
                     fr.setErrmsg(FileErrorMessage.FILE_DEL_ERROR.getMessage());

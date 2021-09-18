@@ -2,7 +2,7 @@ spring:
   datasource:
     username: simplefile
     password: sImplefile@2020
-    url: jdbc:mysql://rm-bp1v23hzi5x32b81mso.mysql.rds.aliyuncs.com:3306/simplefile?characterEncoding=utf8&useSSL=false&useOldAliasMetadataBehavior=true
+    url: jdbc:mysql://rm-bp1v23hzi5x32b81mso.mysql.rds.aliyuncs.com:3306/simplefile?characterEncoding=utf8&useSSL=false&useOldAliasMetadataBehavior=true&allowMultiQueries=true
     hikari:
       minimum-idle: 1
       # 空闲连接存活最大时间，默认600000（10分钟）

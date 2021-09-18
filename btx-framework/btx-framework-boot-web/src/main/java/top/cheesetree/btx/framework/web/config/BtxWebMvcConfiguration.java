@@ -27,11 +27,18 @@ import java.util.List;
 public class BtxWebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        Iterator<HttpMessageConverter<?>> iterator = converters.iterator();
+//        while(iterator.hasNext()){
+//            HttpMessageConverter<?> converter = iterator.next();
+//            if(converter instanceof MappingJackson2HttpMessageConverter){
+//                iterator.remove();
+//            }
+//        }
+
         //创建fastJson消息转换器
         FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
         List<MediaType> supportedMediaTypes = new ArrayList<>();
         supportedMediaTypes.add(MediaType.APPLICATION_JSON);
-        supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
         supportedMediaTypes.add(MediaType.APPLICATION_ATOM_XML);
         supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
         supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
