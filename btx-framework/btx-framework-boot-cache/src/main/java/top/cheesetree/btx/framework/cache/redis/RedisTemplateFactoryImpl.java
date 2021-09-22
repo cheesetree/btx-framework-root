@@ -19,6 +19,8 @@ public class RedisTemplateFactoryImpl {
 
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
+    @Autowired
+    private BtxRedisCacheProperties btxRedisCacheProperties;
 
     public <TValue> RedisTemplate<String, TValue> generateRedisTemplate(Class<TValue> clz) {
         return generateRedisTemplate(String.class, clz);
@@ -26,6 +28,12 @@ public class RedisTemplateFactoryImpl {
 
     public <TKey, TValue> RedisTemplate<TKey, TValue> generateRedisTemplate(Class<TKey> keyClz,
                                                                             Class<TValue> valueClz) {
+        return generateRedisTemplate(keyClz, valueClz, true);
+    }
+
+    public <TKey, TValue> RedisTemplate<TKey, TValue> generateRedisTemplate(Class<TKey> keyClz,
+                                                                            Class<TValue> valueClz,
+                                                                            boolean needprefix) {
         KeyValueMapKey redisTemplateMapKey = new KeyValueMapKey(keyClz, valueClz);
         RedisTemplate<TKey, TValue> result = (RedisTemplate<TKey, TValue>) redisTemplateMap.get(redisTemplateMapKey);
         if (result == null) {
@@ -41,7 +49,12 @@ public class RedisTemplateFactoryImpl {
                 redisTemplate.setConnectionFactory(redisConnectionFactory);
 
                 if (String.class.isAssignableFrom(keyClz)) {
-                    keySerializer = result.getStringSerializer();
+                    if (needprefix) {
+                        keySerializer = new BtxKeyStringRedisSerializer(btxRedisCacheProperties.getKeyPrefix());
+                    } else {
+                        keySerializer = result.getKeySerializer();
+                    }
+
                 } else {
                     keySerializer = new GenericFastJsonRedisSerializer();
                 }
