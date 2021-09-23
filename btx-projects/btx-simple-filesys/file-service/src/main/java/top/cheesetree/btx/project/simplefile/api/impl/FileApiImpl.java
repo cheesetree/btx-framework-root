@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import top.cheesetre.btx.project.simplefile.api.FileApi;
@@ -19,6 +21,8 @@ import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.project.simplefile.comm.FileConsts;
 import top.cheesetree.btx.project.simplefile.comm.FileErrorMessage;
 import top.cheesetree.btx.project.simplefile.config.ResServiceProperties;
+import top.cheesetree.btx.project.simplefile.mapper.BtxFileArchiveResourceMapper;
+import top.cheesetree.btx.project.simplefile.mapper.BtxFileTmpResourceMapper;
 import top.cheesetree.btx.project.simplefile.model.bo.BtxFileArchiveResourceBO;
 import top.cheesetree.btx.project.simplefile.model.bo.BtxFileTagBO;
 import top.cheesetree.btx.project.simplefile.model.bo.BtxFileTmpResourceBO;
@@ -28,6 +32,7 @@ import top.cheesetree.btx.project.simplefile.service.BtxFileTagService;
 import top.cheesetree.btx.project.simplefile.service.BtxFileTmpResourceService;
 import top.cheesetree.btx.project.simplefile.util.ResUtil;
 import top.cheesetree.btx.simplefile.file.client.IFileClient;
+import top.cheesetree.btx.simplefile.file.client.fastdfs.FastDfsInfo;
 import top.cheesetree.btx.simplefile.file.client.model.FileStorageDTO;
 
 import javax.annotation.Resource;
@@ -62,6 +67,10 @@ public class FileApiImpl implements FileApi {
     BtxFileTagService btxFileTagService;
     @Resource
     ResServiceProperties resServiceProperties;
+    @Resource
+    BtxFileTmpResourceMapper btxFileTmpResourceMapper;
+    @Resource
+    BtxFileArchiveResourceMapper btxFileArchiveResourceMapper;
 
     static Pattern tagPattern = Pattern.compile("^\\w{1,20}$");
 
@@ -275,6 +284,7 @@ public class FileApiImpl implements FileApi {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public CommJSON<ArrayList<FileResponseDTO>> deleteFile(String appid, FileRequestDTO filereq, String area) {
         CommJSON<ArrayList<FileResponseDTO>> ret;
         if (filereq.getFileids() != null) {
@@ -290,7 +300,7 @@ public class FileApiImpl implements FileApi {
                 if (FileConsts.FILE_TMP_FLAG.equals(area)) {
                     BtxFileTmpResourceBO tbo = btxFileTmpResourceService.getById(f);
                     if (tbo != null && tbo.getSysId().equals(appid)) {
-                        if (btxFileTmpResourceService.removeById(f)) {
+                        if (btxFileTmpResourceMapper.deleteById(f) > 0) {
                             fileStorageInfo = tbo.getFileStorageInfo();
                             filestorage = tbo.getFileStorage();
                         }
@@ -298,7 +308,7 @@ public class FileApiImpl implements FileApi {
                 } else {
                     BtxFileArchiveResourceBO abo = btxFileArchiveResourceService.getById(f);
                     if (abo != null && abo.getSysId().equals(appid)) {
-                        if (btxFileArchiveResourceService.moveToHis(f) > 0) {
+                        if (btxFileArchiveResourceMapper.moveToHis(f) > 0) {
                             fileStorageInfo = abo.getFileStorageInfo();
                             filestorage = abo.getFileStorage();
                         }
@@ -306,12 +316,19 @@ public class FileApiImpl implements FileApi {
                 }
 
                 if (StringUtils.isNotBlank(fileStorageInfo)) {
-                    if (!resServiceProperties.isStorageLimit()) {
-                        redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().increment(FileConsts.REDIS_SYS_CURRENT_KEY, appid, filestorage * -1);
+                    if (fileClient.deleteFile(JSON.parseObject(fileStorageInfo, FastDfsInfo.class))) {
+                        if (!resServiceProperties.isStorageLimit()) {
+                            redisTemplateFactory.generateRedisTemplate(String.class).opsForHash().increment(FileConsts.REDIS_SYS_CURRENT_KEY, appid, filestorage * -1);
+                        }
+
+                        FileInfoDTO dto = new FileInfoDTO();
+                        dto.setFileId(f);
+                        fr.setFileResult(dto);
+                    } else {
+                        log.error("fileid[{}] delete error", f);
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                        fr.setErrmsg(FileErrorMessage.FILE_DEL_ERROR.getMessage());
                     }
-                    FileInfoDTO dto = new FileInfoDTO();
-                    dto.setFileId(f);
-                    fr.setFileResult(dto);
                 } else {
                     fr.setErrmsg(FileErrorMessage.FILE_DEL_ERROR.getMessage());
                 }
