@@ -1,8 +1,8 @@
 package top.cheesetree.btx.project.simplefile.task;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import top.cheesetree.btx.project.simplefile.model.bo.BtxFileTmpResourceBO;
-import top.cheesetree.btx.project.simplefile.service.BtxFileArchiveResourceService;
 import top.cheesetree.btx.project.simplefile.service.BtxFileTmpResourceService;
 import top.cheesetree.btx.simplefile.file.client.IFileClient;
 
@@ -17,11 +17,9 @@ import javax.annotation.Resource;
  * @Description:
  */
 @Component
-public class BtxFileSignTask {
+public class BtxFileTask {
     @Resource
     BtxFileTmpResourceService btxFileTmpResourceService;
-    @Resource
-    BtxFileArchiveResourceService btxFileArchiveResourceService;
     @Resource
     private IFileClient fileClient;
 
@@ -30,5 +28,13 @@ public class BtxFileSignTask {
 
         });
 
+    }
+
+    @Scheduled(fixedDelay = 600000)
+    public void doCleatTmpFiles() {
+        btxFileTmpResourceService.lambdaQuery().le(BtxFileTmpResourceBO::getEndTime, System.currentTimeMillis()).list().forEach((BtxFileTmpResourceBO f) ->
+        {
+            btxFileTmpResourceService.deleteById(f.getLsh());
+        });
     }
 }

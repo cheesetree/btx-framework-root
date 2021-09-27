@@ -8,4 +8,6 @@ import top.cheesetree.btx.project.simplefile.model.bo.BtxFileTmpResourceBO;
  */
 public interface BtxFileTmpResourceService extends IService<BtxFileTmpResourceBO> {
     void moveToArchive(long lsh, long fileid, String sysid);
+
+    boolean deleteById(long lsh);
 }

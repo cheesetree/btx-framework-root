@@ -11,6 +11,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -86,6 +87,19 @@ public class RedisTemplateFactoryImpl {
             super();
             this.keyClass = keyClass;
             this.valueClass = valueClass;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            KeyValueMapKey that = (KeyValueMapKey) o;
+            return keyClass.equals(that.keyClass) && valueClass.equals(that.valueClass);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(keyClass, valueClass);
         }
     }
 
