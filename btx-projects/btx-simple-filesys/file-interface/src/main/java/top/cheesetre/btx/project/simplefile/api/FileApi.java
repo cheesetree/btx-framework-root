@@ -38,10 +38,10 @@ public interface FileApi {
      *
      * @return
      */
-    @PostMapping("/get/{area:^[01]{1}$}")
+    @PostMapping("/get/{area:^[01]{1}$}/{pubarea:^[01]{1}$}")
     CommJSON<ArrayList<FileResponseDTO>> downloadFile(
             @PathVariable String appid, @RequestBody FileRequestDTO filereq,
-            @PathVariable String area);
+            @PathVariable String area, @PathVariable String pubarea);
 
     /**
      * 删除文件

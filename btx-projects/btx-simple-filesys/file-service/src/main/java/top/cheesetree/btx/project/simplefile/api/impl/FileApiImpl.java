@@ -198,7 +198,8 @@ public class FileApiImpl implements FileApi {
     }
 
     @Override
-    public CommJSON<ArrayList<FileResponseDTO>> downloadFile(String appid, FileRequestDTO filereq, String area) {
+    public CommJSON<ArrayList<FileResponseDTO>> downloadFile(String appid, FileRequestDTO filereq, String area,
+                                                             String accessarea) {
         CommJSON<ArrayList<FileResponseDTO>> ret;
 
         if (filereq.getFileids() != null) {
@@ -254,7 +255,9 @@ public class FileApiImpl implements FileApi {
                     if (StringUtils.isNoneBlank(tk)) {
                         FileInfoDTO dto = new FileInfoDTO();
                         dto.setFileType(fa.getFiletype());
-                        dto.setFilePath(String.format("%s/file/%s/%s", resServiceConfig.getGatewayUrl(), appid, tk));
+                        dto.setFilePath(String.format("%s/file/%s/%s",
+                                FileConsts.FILE_PRIVATE_FLAG.equals(accessarea) ? resServiceConfig.getGatewayUrl() :
+                                        resServiceConfig.getGatewayPubUrl(), appid, tk));
                         fr.setFileResult(dto);
                     } else {
                         fr.setErrmsg(FileErrorMessage.FILE_DOWNLOAD_ERROR.getMessage());

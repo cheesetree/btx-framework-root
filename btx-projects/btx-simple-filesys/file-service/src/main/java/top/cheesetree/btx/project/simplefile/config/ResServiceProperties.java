@@ -15,6 +15,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class ResServiceProperties {
     private String gatewayUrl;
+    private String gatewayPubUrl;
     private String shareUrl;
     private boolean storageLimit;
     private String fileAppid;
