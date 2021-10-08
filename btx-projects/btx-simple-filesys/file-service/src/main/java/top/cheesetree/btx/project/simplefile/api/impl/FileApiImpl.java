@@ -199,7 +199,7 @@ public class FileApiImpl implements FileApi {
 
     @Override
     public CommJSON<ArrayList<FileResponseDTO>> downloadFile(String appid, FileRequestDTO filereq, String area,
-                                                             String accessarea) {
+                                                             String pubarea) {
         CommJSON<ArrayList<FileResponseDTO>> ret;
 
         if (filereq.getFileids() != null) {
@@ -256,7 +256,7 @@ public class FileApiImpl implements FileApi {
                         FileInfoDTO dto = new FileInfoDTO();
                         dto.setFileType(fa.getFiletype());
                         dto.setFilePath(String.format("%s/file/%s/%s",
-                                FileConsts.FILE_PRIVATE_FLAG.equals(accessarea) ? resServiceConfig.getGatewayUrl() :
+                                FileConsts.FILE_PRIVATE_FLAG.equals(pubarea) ? resServiceConfig.getGatewayUrl() :
                                         resServiceConfig.getGatewayPubUrl(), appid, tk));
                         fr.setFileResult(dto);
                     } else {

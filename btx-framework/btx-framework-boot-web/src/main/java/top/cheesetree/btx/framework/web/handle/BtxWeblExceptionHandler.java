@@ -11,6 +11,8 @@ import top.cheesetree.btx.framework.core.exception.BtxException;
 import top.cheesetree.btx.framework.core.exception.BusinessException;
 import top.cheesetree.btx.framework.core.json.CommJSON;
 
+import java.util.UUID;
+
 /**
  * @Author: van
  * @License:
@@ -42,8 +44,9 @@ public class BtxWeblExceptionHandler {
             log.error("系统异常:[{},{}]{}", err.getErrcode(), err.getMessage(), ex);
         } else {
             ret = new CommJSON(BtxMessage.UNKOWN_ERROR);
-            ret.setMsg(String.format("未知异常%s:%s", ret.getMsg(), ex.getMessage()));
-            log.error("系统异常:{}", ex);
+            String reqid = UUID.randomUUID().toString();
+            ret.setMsg(String.format("%s:%s", ret.getMsg(), reqid));
+            log.error("系统异常[{}]:{}", reqid, ex);
         }
 
         return ret;
