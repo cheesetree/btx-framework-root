@@ -29,7 +29,7 @@ public class RedisTemplateFactoryImpl {
 
     public <TKey, TValue> RedisTemplate<TKey, TValue> generateRedisTemplate(Class<TKey> keyClz,
                                                                             Class<TValue> valueClz) {
-        return generateRedisTemplate(keyClz, valueClz, true);
+        return generateRedisTemplate(keyClz, valueClz, btxRedisCacheProperties.getUseKeyPrefix());
     }
 
     public <TKey, TValue> RedisTemplate<TKey, TValue> generateRedisTemplate(Class<TKey> keyClz,
