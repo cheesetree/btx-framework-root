@@ -46,18 +46,22 @@ public class RedisTemplateFactoryImpl {
 
                 RedisSerializer keySerializer;
                 RedisSerializer valueSerializer;
+                RedisSerializer hashKeySerializer;
                 RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
                 redisTemplate.setConnectionFactory(redisConnectionFactory);
 
                 if (String.class.isAssignableFrom(keyClz)) {
                     if (needprefix) {
                         keySerializer = new BtxKeyStringRedisSerializer(btxRedisCacheProperties.getKeyPrefix());
+                        hashKeySerializer = result.getKeySerializer();
                     } else {
                         keySerializer = result.getKeySerializer();
+                        hashKeySerializer = keySerializer;
                     }
 
                 } else {
                     keySerializer = new GenericFastJsonRedisSerializer();
+                    hashKeySerializer = keySerializer;
                 }
 
                 if (String.class.isAssignableFrom(valueClz)) {
@@ -69,7 +73,7 @@ public class RedisTemplateFactoryImpl {
                 result.setValueSerializer(valueSerializer);
                 result.setKeySerializer(keySerializer);
                 result.setHashValueSerializer(valueSerializer);
-                result.setHashKeySerializer(keySerializer);
+                result.setHashKeySerializer(hashKeySerializer);
                 result.afterPropertiesSet();
             }
         }
