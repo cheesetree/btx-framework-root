@@ -53,9 +53,9 @@ public class RedisTemplateFactoryImpl {
                 if (String.class.isAssignableFrom(keyClz)) {
                     if (needprefix) {
                         keySerializer = new BtxKeyStringRedisSerializer(btxRedisCacheProperties.getKeyPrefix());
-                        hashKeySerializer = result.getKeySerializer();
+                        hashKeySerializer = result.getStringSerializer();
                     } else {
-                        keySerializer = result.getKeySerializer();
+                        keySerializer = result.getStringSerializer();
                         hashKeySerializer = keySerializer;
                     }
 
