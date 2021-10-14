@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class RedisTemplateFactoryImpl {
-    private static final Map<KeyValueMapKey, RedisTemplate<?, ?>> redisTemplateMap = new ConcurrentHashMap<>();
+    private static Map<KeyValueMapKey, RedisTemplate<?, ?>> redisTemplateMap = new ConcurrentHashMap<>();
 
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
