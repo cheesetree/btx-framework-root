@@ -96,9 +96,11 @@ public class CasClientConfiguration {
     @Bean
     public FilterRegistrationBean casAuthenticationFilter() {
         final FilterRegistrationBean authnFilter = new FilterRegistrationBean();
+        AuthenticationFilter a = new AuthenticationFilter();
+        a.setIgnoreUrlPatternMatcherStrategyClass(new BTxUrlPatternMatcherStrategy());
         final Filter targetCasAuthnFilter =
                 (this.configProps.getValidationType() == EnableCasClient.ValidationType.CAS || configProps.getValidationType() == EnableCasClient.ValidationType.CAS3) ?
-                        new AuthenticationFilter()
+                        a
                         : new Saml11AuthenticationFilter();
 
         Map<String, String> initParameters = new HashMap<>();
@@ -189,12 +191,5 @@ public class CasClientConfiguration {
         if (urlPatterns.size() > 0) {
             filterRegistrationBean.setUrlPatterns(urlPatterns);
         }
-    }
-
-    @Bean
-    public AuthenticationFilter authenticationFilter() {
-        AuthenticationFilter a = new AuthenticationFilter();
-        a.setIgnoreUrlPatternMatcherStrategyClass(new BTxUrlPatternMatcherStrategy());
-        return a;
     }
 }
