@@ -8,6 +8,7 @@ import org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter
 import org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter;
 import org.jasig.cas.client.validation.Saml11TicketValidationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -28,7 +29,7 @@ import java.util.Map;
 
 @Configuration
 @EnableConfigurationProperties(CasClientConfigurationProperties.class)
-@ConditionalOnProperty(name = "cas")
+@ConditionalOnExpression("!T(org.springframework.util.StringUtils).isEmpty('${cas.server-url-prefix:}')")
 public class CasClientConfiguration {
     @Autowired
     CasClientConfigurationProperties configProps;
