@@ -1,6 +1,5 @@
 package top.cheesetree.btx.framework.security.cas.config;
 
-import org.jasig.cas.client.authentication.AuthenticationFilter;
 import org.jasig.cas.client.authentication.Saml11AuthenticationFilter;
 import org.jasig.cas.client.util.AssertionThreadLocalFilter;
 import org.jasig.cas.client.util.HttpServletRequestWrapperFilter;
@@ -17,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import top.cheesetree.btx.framework.security.cas.annotation.EnableCasClient;
-import top.cheesetree.btx.framework.security.cas.authentication.BtxUrlPatternMatcherStrategy;
+import top.cheesetree.btx.framework.security.cas.authentication.BtxCasAuthenticationFilter;
 import top.cheesetree.btx.framework.security.config.BtxSecurityProperties;
 
 import javax.servlet.Filter;
@@ -97,10 +96,9 @@ public class CasClientConfiguration {
     @Bean
     public FilterRegistrationBean casAuthenticationFilter() {
         final FilterRegistrationBean authnFilter = new FilterRegistrationBean();
-        AuthenticationFilter a = new AuthenticationFilter();
         final Filter targetCasAuthnFilter =
                 (this.configProps.getValidationType() == EnableCasClient.ValidationType.CAS || configProps.getValidationType() == EnableCasClient.ValidationType.CAS3) ?
-                        a
+                        new BtxCasAuthenticationFilter()
                         : new Saml11AuthenticationFilter();
 
         Map<String, String> initParameters = new HashMap<>();
@@ -109,6 +107,8 @@ public class CasClientConfiguration {
         //忽略的url，"|"分隔多个url
         initParameters.put("ignorePattern", String.join("|",
                 btxSecurityProperties.getContextInterceptorExcludePathPatterns()));
+        initParameters.put("ignoreUrlPatternType", "ANT");
+
 
         initFilter(authnFilter,
                 targetCasAuthnFilter,
@@ -124,8 +124,6 @@ public class CasClientConfiguration {
             this.casClientConfigurer.configureAuthenticationFilter(authnFilter);
         }
 
-
-        a.setIgnoreUrlPatternMatcherStrategyClass(new BtxUrlPatternMatcherStrategy());
         return authnFilter;
     }
 
