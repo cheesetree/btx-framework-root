@@ -21,7 +21,7 @@ public class PageResult<T> extends Page {
     private List<T> data;
 
     public PageResult(long pageIndex, long pageSize, long total, List<T> data) {
-        super(pageIndex, pageSize);
+        super(pageSize, pageIndex);
         this.total = total;
         this.data = data;
     }
