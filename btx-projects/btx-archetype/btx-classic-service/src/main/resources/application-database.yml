@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    username:
+    password:
+    url:
+    hikari:
+      minimum-idle: 1
+      # 空闲连接存活最大时间，默认600000（10分钟）
+      idle-timeout: 180000
+      # 连接池最大连接数，默认是10
+      maximum-pool-size: 5
+      # 此属性控制从池返回的连接的默认自动提交行为,默认值：true
+      auto-commit: false
+      # 连接池名称
+      pool-name: MyHikariCP
+      # 此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+      max-lifetime: 1800000
+      # 数据库连接超时时间,默认30秒，即30000
+      connection-timeout: 30000
+
+mybatis-plus:
+  mapper-locations: classpath*:top/cheesetree/**/mapper/${mybatis-plus.global-config.db-config.db-type}/*.xml
+  mapper-scan: top.cheesetree.**.mapper
+  type-aliases-package: top.cheesetree.**.model.bo
+  global-config:
+    db-config:
+      db-type: mysql
+  configuration:
+    jdbc-type-for-null: null
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl

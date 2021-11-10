@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dev-parent</artifactId>
+        <groupId>cn.xxx</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>top.cheesetree.btx.project.archetype</groupId>
+    <artifactId>btx-classic-web</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <jdbc.driver.groupId>mysql</jdbc.driver.groupId>
+        <jdbc.driver.artifactId>mysql-connector-java</jdbc.driver.artifactId>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>top.cheesetree.btx.framework</groupId>
+            <artifactId>btx-framework-boot-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>top.cheesetree.btx.framework</groupId>
+            <artifactId>btx-framework-boot-cache</artifactId>
+        </dependency>
+        <dependency>
+            <artifactId>btx-framework-boot-security-basic</artifactId>
+            <groupId>top.cheesetree.btx.framework.security</groupId>
+        </dependency>
+        <dependency>
+            <groupId>top.cheesetree.btx.framework</groupId>
+            <artifactId>btx-framework-boot-database</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${jdbc.driver.groupId}</groupId>
+            <artifactId>${jdbc.driver.artifactId}</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.3.0.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <properties.active>dev</properties.active>
+                <log.path>./${project.artifactId}</log.path>
+                <log.filename>${project.artifactId}</log.filename>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <properties.active>prod</properties.active>
+                <log.path>/data/logs/${project.artifactId}</log.path>
+                <log.filename>${project.artifactId}</log.filename>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>

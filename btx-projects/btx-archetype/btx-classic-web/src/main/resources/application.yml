@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: "@project.artifactId@"
+  profiles:
+    include: web,database,config,cache
+    active: "@properties.active@"
+  tomcat:
+    resource:
+      allow-caching: false # Whether static resource caching is permitted for this web application.
+      #cache-ttl= # Time-to-live of the static resource cache.
+    uri-encoding: UTF-8 # Character encoding to use to decode the URI.
+  main:
+    allow-bean-definition-overriding: true
+
+

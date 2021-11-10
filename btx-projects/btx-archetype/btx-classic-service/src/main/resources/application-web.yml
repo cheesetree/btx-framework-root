@@ -1,0 +1,11 @@
+server:
+  port: 9202
+  servlet:
+    #以微服务部署最好别配置context-path以提高zuul的配置灵活性
+    context-path: /${spring.application.name}
+  tomcat:
+    resource:
+      allow-caching: false # Whether static resource caching is permitted for this web application.
+      #cache-ttl= # Time-to-live of the static resource cache.
+    uri-encoding: UTF-8 # Character encoding to use to decode the URI.
+
