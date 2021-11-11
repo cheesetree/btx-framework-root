@@ -11,7 +11,7 @@
 
     <groupId>top.cheesetree.btx.project.archetype</groupId>
     <artifactId>btx-classic-service</artifactId>
-    <packaging>jar</packaging>
+    <packaging>${packaging.type}</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -76,7 +76,14 @@
                 <properties.active>dev</properties.active>
                 <log.path>./${project.artifactId}</log.path>
                 <log.filename>${project.artifactId}</log.filename>
+                <packaging.type>jar</packaging.type>
             </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>top.cheesetree.btx.framework</groupId>
+                    <artifactId>btx-framework-boot-web</artifactId>
+                </dependency>
+            </dependencies>
         </profile>
         <profile>
             <id>prod</id>
@@ -84,7 +91,54 @@
                 <properties.active>prod</properties.active>
                 <log.path>/data/logs/${project.artifactId}</log.path>
                 <log.filename>${project.artifactId}</log.filename>
+                <packaging.type>jar</packaging.type>
             </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>top.cheesetree.btx.framework</groupId>
+                    <artifactId>btx-framework-boot-web</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>prodwar</id>
+            <properties>
+                <properties.active>prodwar</properties.active>
+                <log.path>/data/raw_log/${project.artifactId}</log.path>
+                <log.filename>${project.artifactId}</log.filename>
+                <packaging.type>war</packaging.type>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>top.cheesetree.btx.framework</groupId>
+                    <artifactId>btx-framework-boot-web</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-starter-tomcat</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                    <version>3.1.0</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <finalName>${project.artifactId}</finalName>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>3.3.2</version>
+                        <configuration>
+                            <!--如果想在没有web.xml文件的情况下构建WAR，请设置为false。-->
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
