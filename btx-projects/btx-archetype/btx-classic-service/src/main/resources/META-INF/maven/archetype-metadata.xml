@@ -22,6 +22,12 @@
         </requiredProperty>
     </requiredProperties>
     <fileSets>
+        <fileSet encoding="UTF-8">
+            <directory></directory>
+            <includes>
+                <include>__gitignore__</include>
+            </includes>
+        </fileSet>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
             <directory>src/main/java</directory>
             <includes>
