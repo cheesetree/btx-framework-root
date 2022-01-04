@@ -12,11 +12,36 @@
     <modules>
         <module>btx-idgenerator</module>
         <module>btx-archetype</module>
+        <module>btx-scheduler</module>
     </modules>
+
+    <properties>
+        <lombok.version>1.18.20</lombok.version>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Team Nexus Release Repository</name>
+            <url>http://10.116.0.12:8081/repository/nbwd-release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Team Nexus Snapshot Repository</name>
+            <url>http://10.116.0.12:8081/repository/nbwd-snapshots/</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

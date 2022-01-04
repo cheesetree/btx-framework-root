@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>btx-scheduler</artifactId>
+        <groupId>top.cheesetree.btx.project</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>btx-scheduler-xxl</artifactId>
+    <groupId>top.cheesetree.btx.project.scheduler</groupId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>btx-scheduler-xxl</name>
+    <!-- FIXME change it to the project's website -->
+    <url>http://www.example.com</url>
+
+    <properties>
+        <xxl.job.version>2.3.0</xxl.job.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+            <version>${xxl.job.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>top.cheesetree.btx.framework</groupId>
+            <artifactId>
+                btx-framework-boot
+            </artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

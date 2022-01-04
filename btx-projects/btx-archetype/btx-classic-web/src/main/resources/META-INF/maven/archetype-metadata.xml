@@ -50,7 +50,7 @@
         <fileSet encoding="UTF-8">
             <directory></directory>
             <includes>
-                <include>.gitignore</include>
+                <include>__gitignore__</include>
             </includes>
         </fileSet>
     </fileSets>
