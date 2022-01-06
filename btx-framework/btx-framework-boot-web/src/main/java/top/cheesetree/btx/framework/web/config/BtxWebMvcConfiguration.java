@@ -69,7 +69,8 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
                 SerializerFeature.WriteMapNullValue,
                 SerializerFeature.WriteNullListAsEmpty,
                 SerializerFeature.WriteNullStringAsEmpty,
-                SerializerFeature.WriteNullBooleanAsFalse
+                SerializerFeature.WriteNullBooleanAsFalse,
+                SerializerFeature.WriteDateUseDateFormat
 
         );
         fastConverter.setFastJsonConfig(fastJsonConfig);
