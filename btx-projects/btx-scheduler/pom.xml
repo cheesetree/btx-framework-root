@@ -12,17 +12,16 @@
     <artifactId>btx-scheduler</artifactId>
     <groupId>top.cheesetree.btx.project</groupId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <modules>
         <module>btx-scheduler-xxl</module>
     </modules>
 
-    <name>btx-scheduler</name>
-    <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+    <name>${project.artifactId}</name>
+    <url>https://github.com/cheesetree/btx-framework-root</url>
 
     <properties>
-        <btx.framework.version>1.0-SNAPSHOT</btx.framework.version>
+        <btx.framework.version>1.1-SNAPSHOT</btx.framework.version>
     </properties>
 
     <dependencies>

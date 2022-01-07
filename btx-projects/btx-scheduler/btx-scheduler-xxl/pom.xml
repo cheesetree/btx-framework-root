@@ -5,18 +5,17 @@
     <parent>
         <artifactId>btx-scheduler</artifactId>
         <groupId>top.cheesetree.btx.project</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>btx-scheduler-xxl</artifactId>
     <groupId>top.cheesetree.btx.project.scheduler</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>btx-scheduler-xxl</name>
-    <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+    <name>${project.artifactId}</name>
+    <url>https://github.com/cheesetree/btx-framework-root</url>
 
     <properties>
         <xxl.job.version>2.3.0</xxl.job.version>
