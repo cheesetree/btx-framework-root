@@ -3,8 +3,10 @@ package top.cheesetree.btx.framework.web.config;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -24,7 +26,11 @@ import java.util.List;
  * @Description:
  */
 @Configuration
+@EnableConfigurationProperties({BtxWebProperties.class})
 public class BtxWebMvcConfiguration implements WebMvcConfigurer {
+    @Autowired
+    BtxWebProperties btxWebProperties;
+
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 //        Iterator<HttpMessageConverter<?>> iterator = converters.iterator();
@@ -69,10 +75,21 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
                 SerializerFeature.WriteMapNullValue,
                 SerializerFeature.WriteNullListAsEmpty,
                 SerializerFeature.WriteNullStringAsEmpty,
-                SerializerFeature.WriteNullBooleanAsFalse,
-                SerializerFeature.WriteDateUseDateFormat
-
+                SerializerFeature.WriteNullBooleanAsFalse
         );
+
+        if (btxWebProperties.isWritedateusedateformat()) {
+            fastJsonConfig.setSerializerFeatures(
+                    SerializerFeature.DisableCircularReferenceDetect,
+                    SerializerFeature.WriteMapNullValue,
+                    SerializerFeature.WriteNullListAsEmpty,
+                    SerializerFeature.WriteNullStringAsEmpty,
+                    SerializerFeature.WriteNullBooleanAsFalse,
+                    SerializerFeature.WriteDateUseDateFormat
+            );
+            fastJsonConfig.setDateFormat(btxWebProperties.getDateformat());
+        }
+
         fastConverter.setFastJsonConfig(fastJsonConfig);
         //将fastjson添加到视图消息转换器列表内
         converters.add(fastConverter);
