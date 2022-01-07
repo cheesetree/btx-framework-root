@@ -1,12 +1,11 @@
 package top.cheesetree.btx.project.scheduler;
 
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import top.cheesetree.btx.project.scheduler.config.SchedulerProperties;
-
-import javax.annotation.Resource;
 
 /**
  * @Author: van
@@ -19,7 +18,7 @@ import javax.annotation.Resource;
 @Component
 @EnableConfigurationProperties({SchedulerProperties.class})
 public class SchedulerStarter {
-    @Resource
+    @Autowired
     SchedulerProperties schedulerProperties;
 
     @Bean
