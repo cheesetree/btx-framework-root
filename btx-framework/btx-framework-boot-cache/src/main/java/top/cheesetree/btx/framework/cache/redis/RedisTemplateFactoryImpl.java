@@ -95,8 +95,12 @@ public class RedisTemplateFactoryImpl {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             KeyValueMapKey that = (KeyValueMapKey) o;
             return keyClass.equals(that.keyClass) && valueClass.equals(that.valueClass);
         }

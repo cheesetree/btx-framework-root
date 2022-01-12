@@ -42,7 +42,7 @@ public class HttpUtil {
 
     public static String httpPostJson(String url, String pa, int to, boolean isHttps) {
         HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
+        headers.put(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
         return httpPost(url, pa, headers, to, isHttps);
     }

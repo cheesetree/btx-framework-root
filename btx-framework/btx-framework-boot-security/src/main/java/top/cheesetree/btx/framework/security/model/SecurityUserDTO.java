@@ -32,9 +32,9 @@ public class SecurityUserDTO implements ValueObject {
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof SecurityUserDTO) {
             SecurityUserDTO gt = (SecurityUserDTO) obj;
-            if (ExceptionCodeUtil.isNotBlank(this.uid))
+            if (ExceptionCodeUtil.isNotBlank(this.uid)) {
                 return this.uid.equals(gt.getUid());
-            else if (ExceptionCodeUtil.isNotBlank(gt.getUid())) {
+            } else if (ExceptionCodeUtil.isNotBlank(gt.getUid())) {
                 return gt.getUid().equals(this.uid);
             } else {
                 return true;

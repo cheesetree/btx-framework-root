@@ -5,11 +5,9 @@ import lombok.Setter;
 import top.cheesetree.btx.framework.core.constants.BtxMessage;
 import top.cheesetree.btx.framework.core.model.ValueObject;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
-public class CommJSON<T extends Serializable> implements ValueObject {
+public class CommJSON<T> implements ValueObject {
     private Integer ret;
     private String subcode;
     private String msg;
@@ -47,7 +45,7 @@ public class CommJSON<T extends Serializable> implements ValueObject {
     }
 
     public boolean checkSuc() {
-        return this.ret == BtxMessage.SUCCESS.getCode();
+        return this.ret.equals(BtxMessage.SUCCESS.getCode());
     }
 
 

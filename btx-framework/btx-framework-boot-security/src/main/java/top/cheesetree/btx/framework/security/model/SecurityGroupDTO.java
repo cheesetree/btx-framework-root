@@ -28,9 +28,9 @@ public class SecurityGroupDTO implements ValueObject {
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof SecurityGroupDTO) {
             SecurityGroupDTO gt = (SecurityGroupDTO) obj;
-            if (ExceptionCodeUtil.isNotBlank(this.groupId))
+            if (ExceptionCodeUtil.isNotBlank(this.groupId)) {
                 return this.groupId.equals(gt.getGroupId());
-            else if (ExceptionCodeUtil.isNotBlank(gt.getGroupId())) {
+            } else if (ExceptionCodeUtil.isNotBlank(gt.getGroupId())) {
                 return gt.getGroupId().equals(this.groupId);
             } else {
                 return true;

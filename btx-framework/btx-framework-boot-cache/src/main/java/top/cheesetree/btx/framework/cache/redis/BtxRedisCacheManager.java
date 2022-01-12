@@ -28,7 +28,7 @@ public class BtxRedisCacheManager extends RedisCacheManager implements BtxCacheM
     @Autowired
     BtxRedisCacheProperties btxRedisCacheProperties;
 
-    public static final Map<String, BtxRedisConfigProperties> configMap = new ConcurrentHashMap<>();
+    public static final Map<String, BtxRedisConfigProperties> CONFIG_MAP = new ConcurrentHashMap<>();
 
     public BtxRedisCacheManager(RedisCacheWriter cacheWriter, RedisCacheConfiguration defaultCacheConfiguration,
                                 Map<String, RedisCacheConfiguration> initialCacheConfigurations) {
@@ -66,8 +66,8 @@ public class BtxRedisCacheManager extends RedisCacheManager implements BtxCacheM
 
         if (btxCacheConfig == null) {
             btxCacheConfig = defaultBtxCacheConfig;
-            if (configMap.containsKey(name)) {
-                btxCacheConfig.setDefaultValues(configMap.get(name));
+            if (CONFIG_MAP.containsKey(name)) {
+                btxCacheConfig.setDefaultValues(CONFIG_MAP.get(name));
             }
         } else {
             btxCacheConfig.setDefaultValues(defaultBtxCacheConfig);

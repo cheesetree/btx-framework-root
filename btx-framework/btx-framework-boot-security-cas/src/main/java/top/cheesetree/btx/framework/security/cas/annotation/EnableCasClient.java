@@ -13,8 +13,11 @@ import java.lang.annotation.*;
 public @interface EnableCasClient {
 
     enum ValidationType {
+        //cas
         CAS,
+        //cas3
         CAS3,
+        //saml
         SAML
     }
 }

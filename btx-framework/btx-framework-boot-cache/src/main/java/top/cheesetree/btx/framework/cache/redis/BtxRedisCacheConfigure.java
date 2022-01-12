@@ -95,7 +95,7 @@ public class BtxRedisCacheConfigure extends CachingConfigurerSupport implements 
                     c.setKeyPrefix(name);
                     try {
                         c.setTimeToLive(Duration.parse(an.duration()));
-                        BtxRedisCacheManager.configMap.put(name, c);
+                        BtxRedisCacheManager.CONFIG_MAP.put(name, c);
                     } catch (DateTimeParseException err) {
                         log.error("缓存[{}]ttl不能正常解析,ttl设置失败", an.duration());
                     }
