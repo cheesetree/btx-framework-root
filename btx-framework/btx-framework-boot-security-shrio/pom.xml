@@ -18,14 +18,22 @@
     <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <org.apache.shiro.version>1.8.0</org.apache.shiro.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId></groupId>
-            <artifactId></artifactId>
+            <groupId>top.cheesetree.btx.framework</groupId>
+            <artifactId>btx-framework-boot-web</artifactId>
+        </dependency>
+        <dependency>
+            <artifactId>btx-framework-boot-security</artifactId>
+            <groupId>top.cheesetree.btx.framework</groupId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring-boot-starter</artifactId>
+            <version>${org.apache.shiro.version}</version>
         </dependency>
     </dependencies>
 

@@ -18,5 +18,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class BtxSecurityProperties {
     private String[] contextInterceptorExcludePathPatterns;
     private String errorPath;
-    private String indexPath;
+    private String loginPath;
+    private String noAuthPath;
 }

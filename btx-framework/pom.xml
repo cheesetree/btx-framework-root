@@ -70,6 +70,13 @@
                 </artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>top.cheesetree.btx.framework</groupId>
+                <artifactId>
+                    btx-framework-boot-web
+                </artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
