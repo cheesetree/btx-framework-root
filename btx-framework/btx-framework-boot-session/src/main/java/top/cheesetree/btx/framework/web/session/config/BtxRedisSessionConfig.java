@@ -5,11 +5,8 @@ import org.springframework.session.data.redis.config.annotation.web.http.RedisHt
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/4/2 15:01
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Configuration
 public class BtxRedisSessionConfig extends RedisHttpSessionConfiguration {

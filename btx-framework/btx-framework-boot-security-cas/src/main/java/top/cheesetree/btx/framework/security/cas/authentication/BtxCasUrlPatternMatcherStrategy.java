@@ -8,11 +8,8 @@ import java.util.Arrays;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/9/6 09:22
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 public class BtxCasUrlPatternMatcherStrategy implements UrlPatternMatcherStrategy {
     private PathMatcher pathMatcher;

@@ -5,8 +5,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+
 /**
- * Spring Bean Factory, use to get bean class in application context.
+ * @Author: van
+ * @Date: 2021/8/6 16:02
+ * @Description: Spring Bean Factory, use to get bean class in application context.
  */
 @Component
 public class ApplicationBeanFactory implements ApplicationContextAware {

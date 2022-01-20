@@ -7,11 +7,8 @@ import java.lang.annotation.*;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2020/9/27 09:56
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Cacheable
 @Documented

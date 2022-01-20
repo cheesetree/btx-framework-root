@@ -6,23 +6,28 @@
         <artifactId>btx-framework</artifactId>
         <groupId>top.cheesetree.btx.framework</groupId>
         <version>1.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>btx-framework-boot</artifactId>
+    <artifactId>btx-framework-boot-security-shrio-redis</artifactId>
+    <groupId>top.cheesetree.btx.framework.security</groupId>
+
     <name>${project.artifactId}</name>
     <url>https://github.com/cheesetree/btx-framework-root</url>
+    <packaging>jar</packaging>
+
+    <properties>
+    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <groupId>top.cheesetree.btx.framework</groupId>
+            <artifactId>btx-framework-boot-cache</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
+            <artifactId>btx-framework-boot-security-shrio</artifactId>
+            <groupId>top.cheesetree.btx.framework.security</groupId>
         </dependency>
     </dependencies>
+
 </project>

@@ -5,11 +5,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2022/1/6 16:01
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @ConfigurationProperties("btx.web")
 @Data

@@ -6,11 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/8/27 13:58
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @ConfigurationProperties(prefix = "btx.security")
 @Getter

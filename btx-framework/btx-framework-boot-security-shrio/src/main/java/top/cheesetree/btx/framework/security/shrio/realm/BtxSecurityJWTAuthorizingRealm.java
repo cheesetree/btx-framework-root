@@ -10,11 +10,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2022/1/13 09:11
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Component
 public class BtxSecurityJWTAuthorizingRealm extends AuthorizingRealm {

@@ -5,11 +5,8 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/8/27 13:59
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @EnableConfigurationProperties({BtxSecurityProperties.class})
 @Configuration

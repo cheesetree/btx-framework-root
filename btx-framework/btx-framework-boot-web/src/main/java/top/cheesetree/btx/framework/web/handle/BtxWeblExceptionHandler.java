@@ -15,11 +15,8 @@ import java.util.UUID;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/8/27 10:05
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice

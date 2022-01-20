@@ -11,11 +11,8 @@ import org.springframework.context.annotation.Primary;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/8/25 17:28
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Configuration
 @MapperScan("${mybatis-plus.mapper-scan:top.cheesetree.**.mapper}")

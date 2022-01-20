@@ -10,11 +10,8 @@ import top.cheesetree.btx.framework.security.config.BtxSecurityProperties;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/8/27 16:31
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Configuration
 public class BtxWebConfigure implements WebMvcConfigurer {

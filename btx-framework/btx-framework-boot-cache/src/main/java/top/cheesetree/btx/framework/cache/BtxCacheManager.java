@@ -4,11 +4,8 @@ import org.springframework.cache.CacheManager;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2020/9/27 13:46
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 public interface BtxCacheManager extends CacheManager {
 }

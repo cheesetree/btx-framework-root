@@ -10,11 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2020/9/27 13:51
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @ConfigurationProperties(prefix = "btx.cache.redis")
 @Setter

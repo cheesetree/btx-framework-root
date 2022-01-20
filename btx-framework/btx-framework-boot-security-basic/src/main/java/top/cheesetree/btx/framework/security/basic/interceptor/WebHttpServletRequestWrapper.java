@@ -7,10 +7,8 @@ import java.io.*;
 
 /**
  * @author van
- * @version 1.0
  * @Description TODO
  * @date 创建时间：2018年5月22日 上午9:09:55
- * @since
  */
 public class WebHttpServletRequestWrapper extends HttpServletRequestWrapper {
     private final byte[] body;

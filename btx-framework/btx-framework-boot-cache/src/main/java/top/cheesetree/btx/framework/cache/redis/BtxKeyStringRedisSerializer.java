@@ -6,11 +6,8 @@ import top.cheesetree.btx.framework.core.constants.BtxConsts;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/9/22 10:37
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 public class BtxKeyStringRedisSerializer implements RedisSerializer<String> {
     private String keyprefix;

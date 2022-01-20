@@ -13,11 +13,8 @@ import java.util.Base64;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2020/10/27 14:36
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Component
 public class BtxHikariBeanPostProcessor implements BeanPostProcessor {

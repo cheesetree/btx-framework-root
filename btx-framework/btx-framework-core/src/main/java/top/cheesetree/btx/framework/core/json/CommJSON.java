@@ -5,6 +5,12 @@ import lombok.Setter;
 import top.cheesetree.btx.framework.core.constants.BtxMessage;
 import top.cheesetree.btx.framework.core.model.ValueObject;
 
+/**
+ * @Author: van
+ * @Date: 2021/8/12 14:08
+ * @Description: TODO
+ */
+
 @Getter
 @Setter
 public class CommJSON<T> implements ValueObject {

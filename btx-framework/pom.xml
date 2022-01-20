@@ -25,9 +25,8 @@
         <module>btx-framework-boot-web-netty</module>
         <module>btx-framework-boot-security-basic</module>
         <module>btx-framework-dependencies</module>
+        <module>btx-framework-boot-security-shrio-redis</module>
     </modules>
-    <groupId>top.cheesetree.btx.framework</groupId>
-    <version>1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <url>https://github.com/cheesetree/btx-framework-root</url>
@@ -74,6 +73,13 @@
                 <groupId>top.cheesetree.btx.framework</groupId>
                 <artifactId>
                     btx-framework-boot-web
+                </artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.cheesetree.btx.framework.security</groupId>
+                <artifactId>
+                    btx-framework-boot-security-shrio
                 </artifactId>
                 <version>${project.version}</version>
             </dependency>

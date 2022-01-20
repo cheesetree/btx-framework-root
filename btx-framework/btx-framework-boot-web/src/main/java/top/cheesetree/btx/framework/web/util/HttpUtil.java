@@ -13,6 +13,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * @Author: van
+ * @Date: 2021/8/27 10:05
+ * @Description: TODO
+ */
 @Slf4j
 public class HttpUtil {
 

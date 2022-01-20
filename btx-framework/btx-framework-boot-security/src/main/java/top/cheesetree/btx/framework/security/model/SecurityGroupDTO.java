@@ -7,11 +7,8 @@ import top.cheesetree.btx.framework.core.model.ValueObject;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/8/27 13:48
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Getter
 @Setter

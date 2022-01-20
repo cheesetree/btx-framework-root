@@ -4,11 +4,8 @@ import top.cheesetree.btx.framework.core.constants.BtxMessage;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2022/1/13 10:28
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 public class BtxSecurityMessage extends BtxMessage {
     public BtxSecurityMessage(Integer code, String message) {

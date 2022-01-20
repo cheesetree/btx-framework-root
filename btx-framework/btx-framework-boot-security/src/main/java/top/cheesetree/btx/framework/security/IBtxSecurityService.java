@@ -9,11 +9,8 @@ import java.util.List;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2022/1/12 15:10
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 public interface IBtxSecurityService {
     List<SecurityMenuDTO> getMenu(String userid, String authlevel);

@@ -5,11 +5,8 @@ import lombok.Setter;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/8/12 14:08
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Getter
 @Setter

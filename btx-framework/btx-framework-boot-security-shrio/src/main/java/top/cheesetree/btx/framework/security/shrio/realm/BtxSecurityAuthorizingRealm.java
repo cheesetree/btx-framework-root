@@ -1,6 +1,5 @@
 package top.cheesetree.btx.framework.security.shrio.realm;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -18,11 +17,8 @@ import java.util.Set;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2022/1/12 15:15
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Component
 public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
@@ -33,10 +29,11 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         Set<String> stringPermissions = new HashSet<>();
-        btxSecurityService.getFunc((String) SecurityUtils.getSubject().getPrincipal()).forEach((SecurityFuncDTO f) -> {
+        btxSecurityService.getFunc((String) principalCollection.getPrimaryPrincipal()).forEach((SecurityFuncDTO f) -> {
             stringPermissions.add(f.getFuncCode());
         });
         info.setStringPermissions(stringPermissions);
+
         return info;
     }
 
@@ -52,5 +49,10 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
         } else {
             throw new AccountException(ret.getMsg());
         }
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
     }
 }

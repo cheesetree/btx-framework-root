@@ -8,11 +8,8 @@ import java.time.Duration;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2020/9/27 13:57
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Getter
 @Setter

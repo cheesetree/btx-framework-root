@@ -10,11 +10,8 @@ import java.time.temporal.ChronoUnit;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/4/2 15:05
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Getter
 public class BtxSessionConfigProperties {

@@ -20,11 +20,8 @@ import java.util.Map;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2022/1/12 13:25
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Configuration
 @EnableConfigurationProperties({BtxSecurityShiroProperties.class})

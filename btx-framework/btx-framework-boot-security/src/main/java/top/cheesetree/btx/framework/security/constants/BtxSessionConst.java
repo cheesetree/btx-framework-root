@@ -4,11 +4,8 @@ import top.cheesetree.btx.framework.core.constants.BtxConsts;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/8/27 11:31
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 public interface BtxSessionConst extends BtxConsts {
     String SESSION_ID = "S_ID";

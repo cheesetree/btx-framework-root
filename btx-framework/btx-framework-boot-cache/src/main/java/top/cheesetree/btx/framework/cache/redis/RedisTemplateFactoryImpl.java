@@ -14,6 +14,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+
+/**
+ * @Author: van
+ * @Date: 2020/9/27 13:57
+ * @Description: TODO
+ */
+
 @Slf4j
 public class RedisTemplateFactoryImpl {
     private static Map<KeyValueMapKey, RedisTemplate<?, ?>> redisTemplateMap = new ConcurrentHashMap<>();

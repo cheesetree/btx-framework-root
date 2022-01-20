@@ -10,11 +10,8 @@ import java.io.PrintWriter;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2019/11/4 15:49
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 public class WebHttpServletResponseWrapper extends HttpServletResponseWrapper {
     private ByteArrayOutputStream buffer;

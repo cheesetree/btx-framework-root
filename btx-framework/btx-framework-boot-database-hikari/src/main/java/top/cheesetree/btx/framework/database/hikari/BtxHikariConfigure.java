@@ -18,11 +18,8 @@ import java.security.SecureRandom;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2020/10/26 10:23
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @EnableConfigurationProperties({BtxDataSourceConfigure.class})
 @Configuration

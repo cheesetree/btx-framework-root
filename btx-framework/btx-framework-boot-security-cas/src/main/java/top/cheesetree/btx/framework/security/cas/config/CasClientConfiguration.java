@@ -25,7 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * @Author: van
+ * @Date: 2021/9/6 09:22
+ * @Description: TODO
+ */
 @Configuration
 @EnableConfigurationProperties(CasClientConfigurationProperties.class)
 @ConditionalOnExpression("!T(org.springframework.util.StringUtils).isEmpty('${cas.server-url-prefix:}')")

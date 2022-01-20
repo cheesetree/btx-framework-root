@@ -7,11 +7,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2020/10/23 10:55
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @ConfigurationProperties(prefix = "btx.database")
 @Getter

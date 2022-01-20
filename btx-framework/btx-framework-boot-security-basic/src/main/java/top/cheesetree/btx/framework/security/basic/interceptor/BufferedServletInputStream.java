@@ -9,8 +9,6 @@ import java.io.IOException;
  * @Description TODO
  * @author van
  * @date 创建时间：2018年5月22日 上午9:56:17
- * @version 1.0
- * @since
  */
 public class BufferedServletInputStream extends ServletInputStream {
 

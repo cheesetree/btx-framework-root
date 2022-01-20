@@ -28,18 +28,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>Team Nexus Release Repository</name>
-            <url>http://10.116.0.12:8081/repository/nbwd-release/</url>
-        </repository>
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>snapshots</id>
-            <name>Team Nexus Snapshot Repository</name>
-            <url>http://10.116.0.12:8081/repository/nbwd-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>

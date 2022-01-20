@@ -2,6 +2,7 @@ package top.cheesetree.btx.framework.security.cas.config;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 
+
 /**
  * An implementation of {@link net.unicon.cas.client.configuration.CasClientConfigurer} with empty methods allowing
  * sub-classes to override only the methods they're interested in.

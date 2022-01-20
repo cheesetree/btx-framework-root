@@ -11,17 +11,14 @@ import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2022/1/13 09:29
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Slf4j
-public abstract class BtxSecurityShiroOperation implements IBtxSecurityOperation {
+public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
     @Override
     public CommJSON<SecurityUserDTO> login(String loginid, String loginpwd) {
-        CommJSON<SecurityUserDTO> ret = new CommJSON<>();
+        CommJSON<SecurityUserDTO> ret;
         UsernamePasswordToken t = new UsernamePasswordToken(loginid, loginpwd);
         try {
             SecurityUtils.getSubject().login(t);

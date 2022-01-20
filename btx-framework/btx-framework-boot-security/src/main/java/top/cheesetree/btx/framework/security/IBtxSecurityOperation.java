@@ -5,11 +5,8 @@ import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2022/1/13 09:21
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 public interface IBtxSecurityOperation {
     CommJSON<SecurityUserDTO> login(String loginid,

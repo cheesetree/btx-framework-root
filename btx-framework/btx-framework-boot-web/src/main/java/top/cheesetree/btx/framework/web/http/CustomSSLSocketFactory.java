@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
+/**
+ * @Author: van
+ * @Date: 2021/8/27 10:05
+ * @Description: TODO
+ */
 public class CustomSSLSocketFactory extends SSLSocketFactory {
     private final SSLSocketFactory delegate;
 

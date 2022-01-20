@@ -7,11 +7,8 @@ import java.io.IOException;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2019/11/4 16:41
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 public class BufferedServletOutputStream extends ServletOutputStream {
     private ByteArrayOutputStream bos;

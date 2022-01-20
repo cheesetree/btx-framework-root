@@ -6,11 +6,8 @@ import top.cheesetree.btx.framework.security.shrio.constants.ShiroEnum;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2022/1/13 09:03
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @ConfigurationProperties("btx.security.shiro")
 @Data

@@ -5,6 +5,11 @@ import top.cheesetree.btx.framework.security.cas.config.CasClientConfiguration;
 
 import java.lang.annotation.*;
 
+/**
+ * @Author: van
+ * @Date: 2021/10/25 17:22
+ * @Description: TODO
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

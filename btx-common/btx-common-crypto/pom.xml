@@ -11,9 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>top.cheesetree.btx.common</groupId>
     <artifactId>btx-common-crypto</artifactId>
-    <version>1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <url>https://github.com/cheesetree/btx-framework-root</url>

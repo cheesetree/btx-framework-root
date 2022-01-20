@@ -6,11 +6,8 @@ import org.springframework.data.redis.cache.RedisCacheWriter;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/8/25 14:56
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 public class BtxRedisCache extends RedisCache {
 

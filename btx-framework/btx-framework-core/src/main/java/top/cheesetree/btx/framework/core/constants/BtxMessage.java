@@ -6,11 +6,8 @@ import java.io.Serializable;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/8/25 09:43
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 @Data
 public class BtxMessage implements Serializable {

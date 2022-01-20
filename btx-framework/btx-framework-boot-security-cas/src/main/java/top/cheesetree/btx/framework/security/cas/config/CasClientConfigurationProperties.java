@@ -6,7 +6,11 @@ import top.cheesetree.btx.framework.security.cas.annotation.EnableCasClient;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @Author: van
+ * @Date: 2021/9/6 09:22
+ * @Description: TODO
+ */
 @ConfigurationProperties(prefix = "cas", ignoreUnknownFields = false)
 public class CasClientConfigurationProperties {
 

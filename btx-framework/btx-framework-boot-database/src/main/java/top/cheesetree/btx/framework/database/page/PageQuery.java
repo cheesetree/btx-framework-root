@@ -3,6 +3,11 @@ package top.cheesetree.btx.framework.database.page;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @Author: van
+ * @Date: 2021/8/25 17:28
+ * @Description: TODO
+ */
 @Getter
 @Setter
 public class PageQuery extends Page {

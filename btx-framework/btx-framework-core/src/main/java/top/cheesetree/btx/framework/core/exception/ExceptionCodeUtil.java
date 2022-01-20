@@ -4,10 +4,7 @@ import top.cheesetree.btx.framework.core.constants.BtxMessage;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/8/27 11:01
- * @Version: 1.0
  * @Description: 异常编码有4段组成 系统编码-业务编码-预留码(0000)-具体异常码(4位数字)
  */
 public class ExceptionCodeUtil {

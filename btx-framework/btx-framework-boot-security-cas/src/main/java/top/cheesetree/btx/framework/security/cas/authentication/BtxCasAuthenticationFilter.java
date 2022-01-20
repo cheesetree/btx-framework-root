@@ -18,11 +18,8 @@ import java.util.Map;
 
 /**
  * @Author: van
- * @License:
- * @Contact:
  * @Date: 2021/10/25 17:22
- * @Version: 1.0
- * @Description:
+ * @Description: TODO
  */
 public class BtxCasAuthenticationFilter extends AbstractCasFilter {
     private String casServerLoginUrl;
