@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 
 
 /**
- * @Author: van
- * @Date: 2021/8/6 16:02
- * @Description: Spring Bean Factory, use to get bean class in application context.
+ * @author van
+ * @date 2021/8/6 16:02
+ * @description Spring Bean Factory, use to get bean class in application context.
  */
 @Component
 public class ApplicationBeanFactory implements ApplicationContextAware {
