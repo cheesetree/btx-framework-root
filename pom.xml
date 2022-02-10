@@ -7,7 +7,7 @@
     <groupId>top.cheesetree.btx.framework</groupId>
     <artifactId>btx-framework-root</artifactId>
     <packaging>pom</packaging>
-    <version>${env.project.version}</version>
+    <version>${revision}</version>
     <modules>
         <module>btx-framework-parent</module>
         <module>btx-framework</module>
