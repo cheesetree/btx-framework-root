@@ -1,6 +1,10 @@
 package top.cheesetree.btx.framework.security.shrio.config;
 
+import org.apache.shiro.authc.Authenticator;
+import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -12,11 +16,9 @@ import org.springframework.util.StringUtils;
 import top.cheesetree.btx.framework.security.config.BtxSecurityProperties;
 import top.cheesetree.btx.framework.security.shrio.realm.BtxSecurityAuthorizingRealm;
 import top.cheesetree.btx.framework.security.shrio.realm.BtxSecurityJWTAuthorizingRealm;
-import top.cheesetree.btx.framework.security.shrio.realm.BtxSecurityTokenAuthorizingRealm;
+import top.cheesetree.btx.framework.security.shrio.realm.BtxSecurityOauthTokenAuthorizingRealm;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: van
@@ -31,9 +33,9 @@ public class ShiroConfiguration {
     @Autowired
     BtxSecurityShiroProperties btxSecurityShiroProperties;
     @Autowired
-    BtxSecurityAuthorizingRealm btxSecurityRealm;
+    BtxSecurityAuthorizingRealm btxSecurityAuthorizingRealm;
     @Autowired
-    BtxSecurityTokenAuthorizingRealm btxSecurityTokenRealm;
+    BtxSecurityOauthTokenAuthorizingRealm btxSecurityTokenRealm;
     @Autowired
     BtxSecurityJWTAuthorizingRealm btxSecurityJWTRealm;
 
@@ -84,26 +86,30 @@ public class ShiroConfiguration {
         return shiroFilterFactoryBean;
     }
 
+    @Bean
+    public Authenticator authenticator() {
+        ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator();
+        authenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
+        return authenticator;
+    }
+
     /**
      * 注入 securityManager
      */
     @Bean
     public SecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        //注入自定义认证
-        switch (btxSecurityShiroProperties.getAuthType()) {
-            case TOKEN:
-                securityManager.setRealm(btxSecurityTokenRealm);
-                break;
-            case JWT:
-                securityManager.setRealm(btxSecurityJWTRealm);
-                break;
-            case PASSWORD:
-            default:
-                securityManager.setRealm(btxSecurityRealm);
-                break;
-        }
+
+        List<Realm> rs = new ArrayList<>();
+        rs.add(btxSecurityTokenRealm);
+        rs.add(btxSecurityJWTRealm);
+        rs.add(btxSecurityAuthorizingRealm);
+
+        securityManager.setAuthenticator(authenticator());
+        securityManager.setRealms(rs);
 
         return securityManager;
     }
+
+
 }

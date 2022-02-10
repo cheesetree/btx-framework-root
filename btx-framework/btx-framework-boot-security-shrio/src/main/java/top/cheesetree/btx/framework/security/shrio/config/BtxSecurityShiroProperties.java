@@ -2,7 +2,10 @@ package top.cheesetree.btx.framework.security.shrio.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import top.cheesetree.btx.framework.security.shrio.constants.ShiroEnum;
+import top.cheesetree.btx.framework.security.constants.BtxSecurityEnum;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: van
@@ -12,5 +15,5 @@ import top.cheesetree.btx.framework.security.shrio.constants.ShiroEnum;
 @ConfigurationProperties("btx.security.shiro")
 @Data
 public class BtxSecurityShiroProperties {
-    private ShiroEnum.AuthType authType = ShiroEnum.AuthType.PASSWORD;
+    private List<BtxSecurityEnum.AuthType> authTypes = new ArrayList<>();
 }

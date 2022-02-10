@@ -7,7 +7,7 @@
     <parent>
         <artifactId>btx-common</artifactId>
         <groupId>top.cheesetree.btx.common</groupId>
-        <version>1.1-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

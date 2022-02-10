@@ -26,6 +26,11 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     IBtxSecurityService btxSecurityService;
 
     @Override
+    public boolean supports(AuthenticationToken token) {
+        return token != null && this.getAuthenticationTokenClass().isAssignableFrom(UsernamePasswordToken.class);
+    }
+
+    @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         Set<String> stringPermissions = new HashSet<>();
@@ -51,8 +56,4 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
         }
     }
 
-    @Override
-    public String getName() {
-        return super.getName();
-    }
 }

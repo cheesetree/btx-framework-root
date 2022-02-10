@@ -1,6 +1,7 @@
 package top.cheesetree.btx.framework.security;
 
 import top.cheesetree.btx.framework.core.json.CommJSON;
+import top.cheesetree.btx.framework.security.constants.BtxSecurityEnum;
 import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 
 /**
@@ -9,8 +10,8 @@ import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
  * @Description: TODO
  */
 public interface IBtxSecurityOperation {
-    CommJSON<SecurityUserDTO> login(String loginid,
-                                    String loginpwd);
+
+    CommJSON<SecurityUserDTO> login(BtxSecurityEnum.AuthType authtype, String... args);
 
     String getUserId();
 

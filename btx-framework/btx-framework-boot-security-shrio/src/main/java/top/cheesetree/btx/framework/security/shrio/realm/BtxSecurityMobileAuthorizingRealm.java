@@ -6,15 +6,19 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.stereotype.Component;
 
 /**
- * @Author: van
- * @Date: 2022/1/13 09:00
- * @Description: TODO
+ * @author van
+ * @date 2022/2/10 14:21
+ * @description TODO
  */
-@Component
-public class BtxSecurityTokenAuthorizingRealm extends AuthorizingRealm {
+public class BtxSecurityMobileAuthorizingRealm extends AuthorizingRealm {
+
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token != null && this.getAuthenticationTokenClass().isAssignableFrom(MobileToken.class);
+    }
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         return null;
