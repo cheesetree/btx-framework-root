@@ -5,6 +5,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.springframework.stereotype.Component;
 import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.IBtxSecurityOperation;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityEnum;
@@ -19,6 +20,7 @@ import top.cheesetree.btx.framework.security.shrio.realm.MobileToken;
  * @Description: TODO
  */
 @Slf4j
+@Component
 public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
 
     @Override

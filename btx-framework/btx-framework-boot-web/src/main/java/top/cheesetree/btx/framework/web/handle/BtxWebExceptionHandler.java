@@ -21,7 +21,7 @@ import java.util.UUID;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 @Slf4j
-public class BtxWeblExceptionHandler {
+public class BtxWebExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     @ResponseBody

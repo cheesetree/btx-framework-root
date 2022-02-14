@@ -4,6 +4,7 @@ import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -14,10 +15,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 import top.cheesetree.btx.framework.security.config.BtxSecurityProperties;
+import top.cheesetree.btx.framework.security.shrio.filter.BtxSecurityShiroFormFilter;
+import top.cheesetree.btx.framework.security.shrio.filter.BtxSecurityShiroPermissionsFilter;
+import top.cheesetree.btx.framework.security.shrio.filter.BtxSecurityShiroUserFilter;
+import top.cheesetree.btx.framework.security.shrio.matcher.BtxNoAuthCredentialsMatcher;
 import top.cheesetree.btx.framework.security.shrio.realm.BtxSecurityAuthorizingRealm;
 import top.cheesetree.btx.framework.security.shrio.realm.BtxSecurityJWTAuthorizingRealm;
-import top.cheesetree.btx.framework.security.shrio.realm.BtxSecurityOauthTokenAuthorizingRealm;
+import top.cheesetree.btx.framework.security.shrio.realm.BtxSecurityOAuthTokenAuthorizingRealm;
 
+import javax.servlet.Filter;
 import java.util.*;
 
 /**
@@ -30,31 +36,37 @@ import java.util.*;
 public class ShiroConfiguration {
     @Autowired
     BtxSecurityProperties btxSecurityProperties;
+    //    @Autowired
+//    BtxSecurityAuthorizingRealm btxSecurityAuthorizingRealm;
     @Autowired
-    BtxSecurityShiroProperties btxSecurityShiroProperties;
-    @Autowired
-    BtxSecurityAuthorizingRealm btxSecurityAuthorizingRealm;
-    @Autowired
-    BtxSecurityOauthTokenAuthorizingRealm btxSecurityTokenRealm;
+    BtxSecurityOAuthTokenAuthorizingRealm btxSecurityOAuthTokenAuthorizingRealm;
     @Autowired
     BtxSecurityJWTAuthorizingRealm btxSecurityJWTRealm;
 
     /**
-     * 开启Shiro注解(如@RequiresRoles,@RequiresPermissions)
+     * 开启shiro aop注解支持.
+     * 使用代理方式;所以需要开启代码支持;
      */
     @Bean
     public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
-        advisorAutoProxyCreator.setUsePrefix(true);
+        advisorAutoProxyCreator.setProxyTargetClass(true);
         return advisorAutoProxyCreator;
     }
 
-    @Bean
+    @Bean(name = "shiroFilterFactoryBean")
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         // 必须设置 SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
 
+        //设置过滤器
+        Map<String, Filter> filterMap = shiroFilterFactoryBean.getFilters();
+        filterMap.put("authc", new BtxSecurityShiroFormFilter());
+        filterMap.put("user", new BtxSecurityShiroUserFilter());
+        filterMap.put("perms", new BtxSecurityShiroPermissionsFilter());
+
+        shiroFilterFactoryBean.setFilters(filterMap);
         // 设置拦截器
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         if (btxSecurityProperties.getContextInterceptorExcludePathPatterns() != null) {
@@ -71,18 +83,17 @@ public class ShiroConfiguration {
         }
         //设置未授权页面
         if (!StringUtils.isEmpty(btxSecurityProperties.getNoAuthPath())) {
-            shiroFilterFactoryBean.setLoginUrl(btxSecurityProperties.getNoAuthPath());
+            shiroFilterFactoryBean.setUnauthorizedUrl(btxSecurityProperties.getNoAuthPath());
             filterChainDefinitionMap.put(btxSecurityProperties.getNoAuthPath(), "anon");
         }
-
         //设置错误页面
         if (!StringUtils.isEmpty(btxSecurityProperties.getErrorPath())) {
             filterChainDefinitionMap.put(btxSecurityProperties.getErrorPath(), "anon");
         }
-
-        filterChainDefinitionMap.put("/**", "user");
+        filterChainDefinitionMap.put("/**", "authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+
         return shiroFilterFactoryBean;
     }
 
@@ -93,17 +104,18 @@ public class ShiroConfiguration {
         return authenticator;
     }
 
+
     /**
      * 注入 securityManager
      */
     @Bean
-    public SecurityManager securityManager() {
+    public SessionsSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
         List<Realm> rs = new ArrayList<>();
-        rs.add(btxSecurityTokenRealm);
+        rs.add(btxSecurityOAuthTokenAuthorizingRealm);
         rs.add(btxSecurityJWTRealm);
-        rs.add(btxSecurityAuthorizingRealm);
+        rs.add(btxSecurityAuthorizingRealm());
 
         securityManager.setAuthenticator(authenticator());
         securityManager.setRealms(rs);
@@ -111,5 +123,10 @@ public class ShiroConfiguration {
         return securityManager;
     }
 
+    @Bean
+    public BtxSecurityAuthorizingRealm btxSecurityAuthorizingRealm() {
+        BtxSecurityAuthorizingRealm r = new BtxSecurityAuthorizingRealm(new BtxNoAuthCredentialsMatcher());
+        return r;
+    }
 
 }

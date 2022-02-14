@@ -14,7 +14,11 @@ import org.springframework.stereotype.Component;
  * @Description: TODO
  */
 @Component
-public class BtxSecurityOauthTokenAuthorizingRealm extends AuthorizingRealm {
+public class BtxSecurityOAuthTokenAuthorizingRealm extends AuthorizingRealm {
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token != null && this.getAuthenticationTokenClass().isAssignableFrom(OAuthToken.class);    }
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         return null;

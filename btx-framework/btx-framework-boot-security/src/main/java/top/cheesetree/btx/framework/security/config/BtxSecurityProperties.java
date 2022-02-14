@@ -13,8 +13,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 public class BtxSecurityProperties {
-    private String[] contextInterceptorExcludePathPatterns;
-    private String errorPath;
-    private String loginPath;
-    private String noAuthPath;
+    private String[] contextInterceptorExcludePathPatterns = new String[1];
+    private String errorPath = "";
+    private String loginPath = "";
+    private String noAuthPath = "";
 }
