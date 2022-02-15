@@ -53,7 +53,7 @@
             </dependency>
             <dependency>
                 <groupId>top.cheesetree.btx.framework.security</groupId>
-                <artifactId>btx-framework-boot-security-shrio</artifactId>
+                <artifactId>btx-framework-boot-security-shiro</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

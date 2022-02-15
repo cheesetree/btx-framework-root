@@ -13,7 +13,6 @@
     <artifactId>btx-scheduler</artifactId>
     <groupId>top.cheesetree.btx.project</groupId>
     <packaging>pom</packaging>
-    <version>1.1-SNAPSHOT</version>
     <modules>
         <module>btx-scheduler-xxl</module>
     </modules>
@@ -22,7 +21,6 @@
     <url>https://github.com/cheesetree/btx-framework-root</url>
 
     <properties>
-        <btx.framework.version>1.1-SNAPSHOT</btx.framework.version>
     </properties>
 
     <dependencies>
@@ -40,7 +38,7 @@
                 <artifactId>
                     btx-framework-boot
                 </artifactId>
-                <version>${btx.framework.version}</version>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

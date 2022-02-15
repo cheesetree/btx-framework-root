@@ -18,14 +18,14 @@
         <module>btx-framework-core</module>
         <module>btx-framework-boot-session</module>
         <module>btx-framework-boot-security</module>
-        <module>btx-framework-boot-security-shrio</module>
+        <module>btx-framework-boot-security-shiro</module>
         <module>btx-framework-boot-security-cas</module>
         <module>btx-framework-boot-database</module>
         <module>btx-framework-boot-web</module>
         <module>btx-framework-boot-web-netty</module>
         <module>btx-framework-boot-security-basic</module>
         <module>btx-framework-dependencies</module>
-        <module>btx-framework-boot-security-shrio-redis</module>
+        <module>btx-framework-boot-security-shiro-redis</module>
     </modules>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
@@ -79,7 +79,7 @@
             <dependency>
                 <groupId>top.cheesetree.btx.framework.security</groupId>
                 <artifactId>
-                    btx-framework-boot-security-shrio
+                    btx-framework-boot-security-shiro
                 </artifactId>
                 <version>${project.version}</version>
             </dependency>

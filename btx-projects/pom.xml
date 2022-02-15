@@ -13,7 +13,6 @@
 
     <groupId>top.cheesetree.btx.project</groupId>
     <artifactId>btx-projects</artifactId>
-    <version>${revision}</version>
 
     <packaging>pom</packaging>
     <modules>
