@@ -42,7 +42,7 @@ public class RedisTemplateFactoryImpl {
     public <TKey, TValue> RedisTemplate<TKey, TValue> generateRedisTemplate(Class<TKey> keyClz,
                                                                             Class<TValue> valueClz,
                                                                             boolean needprefix) {
-        KeyValueMapKey redisTemplateMapKey = new KeyValueMapKey(keyClz, valueClz);
+        KeyValueMapKey redisTemplateMapKey = new KeyValueMapKey(keyClz, valueClz, needprefix);
         RedisTemplate<TKey, TValue> result = (RedisTemplate<TKey, TValue>) redisTemplateMap.get(redisTemplateMapKey);
         if (result == null) {
             result = (RedisTemplate<TKey, TValue>) redisTemplateMap.get(redisTemplateMapKey);
@@ -93,11 +93,13 @@ public class RedisTemplateFactoryImpl {
     public static class KeyValueMapKey implements Serializable {
         private Class<?> keyClass;
         private Class<?> valueClass;
+        private boolean needprefix;
 
-        public KeyValueMapKey(Class<?> keyClass, Class<?> valueClass) {
+        public KeyValueMapKey(Class<?> keyClass, Class<?> valueClass, boolean needprefix) {
             super();
             this.keyClass = keyClass;
             this.valueClass = valueClass;
+            this.needprefix = needprefix;
         }
 
         @Override
@@ -109,12 +111,12 @@ public class RedisTemplateFactoryImpl {
                 return false;
             }
             KeyValueMapKey that = (KeyValueMapKey) o;
-            return keyClass.equals(that.keyClass) && valueClass.equals(that.valueClass);
+            return keyClass.equals(that.keyClass) && valueClass.equals(that.valueClass) && needprefix == that.needprefix;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(keyClass, valueClass);
+            return Objects.hash(keyClass, valueClass, needprefix);
         }
     }
 
