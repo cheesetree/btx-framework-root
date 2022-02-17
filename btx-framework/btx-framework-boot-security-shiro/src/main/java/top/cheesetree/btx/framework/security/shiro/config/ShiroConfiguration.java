@@ -11,6 +11,7 @@ import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -43,6 +44,8 @@ public class ShiroConfiguration {
     BtxSecurityProperties btxSecurityProperties;
     @Autowired
     BtxShiroCacheProperties BtxShiroCacheProperties;
+    @Autowired
+    BtxShiroProperties btxShiroProperties;
 
     /**
      * 开启shiro aop注解支持.
@@ -106,9 +109,16 @@ public class ShiroConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "btx.security.shiro.cache.cacheType",havingValue = "INNER",matchIfMissing = true)
+    @ConditionalOnProperty(value = "btx.security.shiro.cache.cacheType", havingValue = "INNER", matchIfMissing = true)
     public org.apache.shiro.cache.CacheManager shiroCacheManager() {
         return new MemoryConstrainedCacheManager();
+    }
+
+    @Bean
+    public DefaultWebSessionManager sessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setGlobalSessionTimeout(btxShiroProperties.getSessionTimeOut());
+        return sessionManager;
     }
 
     /**
@@ -127,22 +137,11 @@ public class ShiroConfiguration {
         securityManager.setRealms(rs);
 
         if (BtxShiroCacheProperties.isEnabled()) {
-            CacheManager cm = null;
-            switch (BtxShiroCacheProperties.getCacheType()) {
-                case EHCACHE2:
-                    break;
-                case INNER:
-                    cm = shiroCacheManager();
-                    break;
-                case REDIS:
-                    break;
-            }
-            if (cm != null) {
-                securityManager.setCacheManager(cm);
-            } else {
-                log.error("shiro missing cacheManager");
-            }
+            CacheManager cm = shiroCacheManager();
+            securityManager.setCacheManager(cm);
         }
+
+        securityManager.setSessionManager(sessionManager());
 
         return securityManager;
     }
@@ -151,7 +150,9 @@ public class ShiroConfiguration {
     public BtxSecurityAuthorizingRealm btxSecurityAuthorizingRealm() {
         BtxSecurityAuthorizingRealm r = new BtxSecurityAuthorizingRealm(new BtxNoAuthCredentialsMatcher());
         r.setAuthenticationCachingEnabled(true);
-        r.setAuthenticationCachingEnabled(true);
+        r.setAuthorizationCachingEnabled(true);
+        r.setAuthenticationCacheName(btxShiroProperties.getAuthenticationCacheName());
+        r.setAuthorizationCacheName(btxShiroProperties.getAuthorizationCacheName());
         return r;
     }
 

@@ -58,6 +58,11 @@
             </dependency>
             <dependency>
                 <groupId>top.cheesetree.btx.framework.security</groupId>
+                <artifactId>btx-framework-boot-security-shiro-redis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.cheesetree.btx.framework.security</groupId>
                 <artifactId>btx-framework-boot-security-cas</artifactId>
                 <version>${project.version}</version>
             </dependency>

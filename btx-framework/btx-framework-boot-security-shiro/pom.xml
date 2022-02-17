@@ -18,8 +18,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <org.apache.shiro.version>1.8.0</org.apache.shiro.version>
-        <ehcache.version>3.9.9</ehcache.version>
+
     </properties>
 
     <dependencies>
@@ -34,7 +33,6 @@
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-spring-boot-starter</artifactId>
-            <version>${org.apache.shiro.version}</version>
         </dependency>
     </dependencies>
 

@@ -16,4 +16,5 @@ import top.cheesetree.btx.framework.security.shiro.constants.BtxSecurityShiroEnu
 public class BtxShiroCacheProperties {
     private boolean enabled = true;
     private BtxSecurityShiroEnum.CACHE_TYPE cacheType = BtxSecurityShiroEnum.CACHE_TYPE.INNER;
+    private int sessionTimeOut = 3600;
 }

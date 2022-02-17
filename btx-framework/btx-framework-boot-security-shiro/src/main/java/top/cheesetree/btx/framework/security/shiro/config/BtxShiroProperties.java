@@ -9,8 +9,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @Date: 2022/1/13 09:03
  * @Description: TODO
  */
-@ConfigurationProperties("btx.security")
+@ConfigurationProperties("btx.security.shiro")
 @Getter
 @Setter
 public class BtxShiroProperties {
+    private String authenticationCacheName = "authenticationCache";
+    private String authorizationCacheName = "authorizationCache";
+    private int sessionTimeOut = 3600;
 }

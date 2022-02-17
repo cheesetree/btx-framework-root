@@ -13,6 +13,7 @@ import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
 import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
+import top.cheesetree.btx.framework.security.shiro.subject.BtxSimplePrincipalCollection;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -60,7 +61,7 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
                 token.getCredentials().toString());
         if (ret.checkSuc()) {
             SecurityUserDTO u = ret.getResult();
-            return new SimpleAuthenticationInfo(u, u.getUid(), u.getName());
+            return new SimpleAuthenticationInfo(new BtxSimplePrincipalCollection(u, u.getName()), u.getUid());
         } else {
             throw new AccountException(ret.getMsg());
         }
