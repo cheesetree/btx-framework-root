@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import top.cheesetree.btx.framework.cache.redis.RedisTemplateFactoryImpl;
 import top.cheesetree.btx.framework.security.shiro.cache.redis.RedisShiroCacheManager;
 import top.cheesetree.btx.framework.security.shiro.config.BtxShiroCacheProperties;
+import top.cheesetree.btx.framework.security.shiro.config.BtxShiroProperties;
 
 /**
  * @Author: van
@@ -20,12 +21,15 @@ import top.cheesetree.btx.framework.security.shiro.config.BtxShiroCachePropertie
 @Slf4j
 public class ShiroRedisConfiguration {
     @Autowired
+    BtxShiroProperties btxShiroProperties;
+    @Autowired
     BtxShiroCacheProperties btxShiroCacheProperties;
 
     @Bean
-    @ConditionalOnProperty(value = "btx.security.shiro.cache.cacheType", havingValue = "REDIS")
+    @ConditionalOnProperty(value = "btx.security.shiro.cache.cache-type", havingValue = "REDIS")
     public CacheManager shiroCacheManager() {
-        return new RedisShiroCacheManager(redisTemplateFactory(), btxShiroCacheProperties.getSessionTimeOut());
+        return new RedisShiroCacheManager(redisTemplateFactory(), btxShiroCacheProperties.getCacheExpire() == null ?
+                btxShiroProperties.getSessionTimeOut() : btxShiroCacheProperties.getCacheExpire());
     }
 
     @Bean

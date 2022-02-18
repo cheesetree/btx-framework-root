@@ -3,6 +3,8 @@ package top.cheesetree.btx.framework.security.shiro.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import top.cheesetree.btx.framework.security.constants.BtxSecurityEnum;
+import top.cheesetree.btx.framework.security.shiro.constants.BtxSecurityShiroConst;
 
 /**
  * @Author: van
@@ -13,7 +15,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 public class BtxShiroProperties {
-    private String authenticationCacheName = "authenticationCache";
-    private String authorizationCacheName = "authorizationCache";
-    private int sessionTimeOut = 3600;
+    private int sessionTimeOut = 1800;
+    private BtxSecurityEnum.AuthType authType = BtxSecurityEnum.AuthType.SESSION;
+    private String tokenKey = BtxSecurityShiroConst.AUTHORIZATION_KEY;
 }

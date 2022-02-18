@@ -6,11 +6,14 @@ import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
+import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.mgt.DefaultWebSubjectFactory;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +23,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 import top.cheesetree.btx.framework.security.config.BtxSecurityProperties;
+import top.cheesetree.btx.framework.security.constants.BtxSecurityEnum;
 import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroFormFilter;
 import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroPermissionsFilter;
+import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroTokenFilter;
 import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroUserFilter;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
-import top.cheesetree.btx.framework.security.shiro.realm.custom.BtxSecurityAuthorizingRealm;
-import top.cheesetree.btx.framework.security.shiro.realm.jwt.BtxSecurityJWTAuthorizingRealm;
-import top.cheesetree.btx.framework.security.shiro.realm.oauth.BtxSecurityOAuthAuthorizingRealm;
+import top.cheesetree.btx.framework.security.shiro.realm.BtxSecurityAuthorizingRealm;
+import top.cheesetree.btx.framework.security.shiro.subject.StatelessDefaultSubjectFactory;
 
 import javax.servlet.Filter;
 import java.util.*;
@@ -39,11 +43,11 @@ import java.util.*;
 @Configuration
 @EnableConfigurationProperties({BtxShiroProperties.class, BtxShiroCacheProperties.class})
 @Slf4j
-public class ShiroConfiguration {
+public class BtxShiroConfiguration {
     @Autowired
     BtxSecurityProperties btxSecurityProperties;
     @Autowired
-    BtxShiroCacheProperties BtxShiroCacheProperties;
+    BtxShiroCacheProperties btxShiroCacheProperties;
     @Autowired
     BtxShiroProperties btxShiroProperties;
 
@@ -66,11 +70,9 @@ public class ShiroConfiguration {
 
         //设置过滤器
         Map<String, Filter> filterMap = shiroFilterFactoryBean.getFilters();
-        filterMap.put("authc", new BtxSecurityShiroFormFilter());
         filterMap.put("user", new BtxSecurityShiroUserFilter());
         filterMap.put("perms", new BtxSecurityShiroPermissionsFilter());
 
-        shiroFilterFactoryBean.setFilters(filterMap);
         // 设置拦截器
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         if (btxSecurityProperties.getContextInterceptorExcludePathPatterns() != null) {
@@ -94,8 +96,24 @@ public class ShiroConfiguration {
         if (StringUtils.hasLength(btxSecurityProperties.getErrorPath())) {
             filterChainDefinitionMap.put(btxSecurityProperties.getErrorPath(), "anon");
         }
-        filterChainDefinitionMap.put("/**", "authc");
 
+        switch (btxShiroProperties.getAuthType()) {
+            case TOKEN:
+                filterMap.put("authc", new BtxSecurityShiroTokenFilter(btxShiroProperties.getTokenKey()));
+                filterChainDefinitionMap.put("/**", "authc");
+                break;
+            case JWT:
+                break;
+            case CAS:
+                break;
+            case SESSION:
+                filterMap.put("authc", new BtxSecurityShiroFormFilter());
+                filterChainDefinitionMap.put("/**", "authc");
+            default:
+                break;
+        }
+
+        shiroFilterFactoryBean.setFilters(filterMap);
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
         return shiroFilterFactoryBean;
@@ -109,15 +127,21 @@ public class ShiroConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "btx.security.shiro.cache.cacheType", havingValue = "INNER", matchIfMissing = true)
+    @ConditionalOnProperty(value = "btx.security.shiro.cache.cache-type", havingValue = "INNER", matchIfMissing = true)
     public org.apache.shiro.cache.CacheManager shiroCacheManager() {
         return new MemoryConstrainedCacheManager();
     }
 
     @Bean
+    public DefaultWebSubjectFactory subjectFactory() {
+        return new StatelessDefaultSubjectFactory();
+    }
+
+    @Bean
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setGlobalSessionTimeout(btxShiroProperties.getSessionTimeOut());
+        sessionManager.setGlobalSessionTimeout(btxShiroProperties.getSessionTimeOut() * 1000);
+        sessionManager.setSessionValidationSchedulerEnabled(!btxShiroCacheProperties.isEnabled());
         return sessionManager;
     }
 
@@ -129,16 +153,24 @@ public class ShiroConfiguration {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
         List<Realm> rs = new ArrayList<>();
-        rs.add(btxSecurityOAuthTokenAuthorizingRealm());
-        rs.add(btxSecurityJWTAuthorizingRealm());
         rs.add(btxSecurityAuthorizingRealm());
 
         securityManager.setAuthenticator(authenticator());
         securityManager.setRealms(rs);
 
-        if (BtxShiroCacheProperties.isEnabled()) {
+        if (btxShiroCacheProperties.isEnabled()) {
             CacheManager cm = shiroCacheManager();
             securityManager.setCacheManager(cm);
+        }
+
+        if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION) {
+            // 禁用session
+            DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+            DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+            defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
+            subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
+            securityManager.setSubjectDAO(subjectDAO);
+            securityManager.setSubjectFactory(subjectFactory());
         }
 
         securityManager.setSessionManager(sessionManager());
@@ -149,22 +181,13 @@ public class ShiroConfiguration {
     @Bean
     public BtxSecurityAuthorizingRealm btxSecurityAuthorizingRealm() {
         BtxSecurityAuthorizingRealm r = new BtxSecurityAuthorizingRealm(new BtxNoAuthCredentialsMatcher());
-        r.setAuthenticationCachingEnabled(true);
-        r.setAuthorizationCachingEnabled(true);
-        r.setAuthenticationCacheName(btxShiroProperties.getAuthenticationCacheName());
-        r.setAuthorizationCacheName(btxShiroProperties.getAuthorizationCacheName());
-        return r;
-    }
+        if (btxShiroCacheProperties.isEnabled()) {
+            r.setAuthenticationCachingEnabled(true);
+            r.setAuthorizationCachingEnabled(true);
+            r.setAuthenticationCacheName(btxShiroCacheProperties.getAuthenticationCacheName());
+            r.setAuthorizationCacheName(btxShiroCacheProperties.getAuthorizationCacheName());
+        }
 
-    @Bean
-    public BtxSecurityOAuthAuthorizingRealm btxSecurityOAuthTokenAuthorizingRealm() {
-        BtxSecurityOAuthAuthorizingRealm r = new BtxSecurityOAuthAuthorizingRealm(new BtxNoAuthCredentialsMatcher());
-        return r;
-    }
-
-    @Bean
-    public BtxSecurityJWTAuthorizingRealm btxSecurityJWTAuthorizingRealm() {
-        BtxSecurityJWTAuthorizingRealm r = new BtxSecurityJWTAuthorizingRealm(new BtxNoAuthCredentialsMatcher());
         return r;
     }
 }

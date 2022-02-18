@@ -2,8 +2,13 @@ package top.cheesetree.btx.framework.security.shiro.cache.redis;
 
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -32,8 +37,8 @@ public class RedisShiroCache<K, V> implements Cache<K, V> {
     @Override
     public V put(K k, V v) throws CacheException {
         String rk = getRealKey(k.toString());
-        redisTemplate.opsForValue().set(rk, v);
-        return redisTemplate.opsForValue().getAndExpire(rk, expire, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(rk, v, expire, TimeUnit.SECONDS);
+        return null;
     }
 
     @Override
@@ -43,31 +48,36 @@ public class RedisShiroCache<K, V> implements Cache<K, V> {
 
     @Override
     public void clear() throws CacheException {
-        redisTemplate.delete(redisTemplate.keys(prefix + ":*"));
+        redisTemplate.delete((Collection<String>) keys());
     }
 
     @Override
     public int size() {
-        return redisTemplate.opsForValue().size(prefix + ":*").intValue();
+        return keys().size();
     }
 
     @Override
     public Set<K> keys() {
-        return (Set<K>) redisTemplate.keys(prefix + ":*");
+        Set<K> keys = (Set<K>) redisTemplate.execute(new RedisCallback<Set<K>>() {
+            @Override
+            public Set<K> doInRedis(RedisConnection connection) {
+                Set<K> keys = new HashSet<K>();
+                //可以找到对应名字的所有key
+                Cursor<byte[]> scan = connection.scan(ScanOptions.scanOptions().match(prefix + "*").build());
+                while (scan.hasNext()) {
+                    String key = new String(scan.next(), Charset.defaultCharset());
+                    keys.add((K) key);
+                }
+                return keys;
+            }
+        });
+        return !keys.isEmpty() ? Collections.unmodifiableSet(keys) : (Set<K>) Collections.emptySet();
     }
 
     @Override
     public Collection<V> values() {
-        Set<String> keys = null;
-
-        List<V> values = new ArrayList<V>(keys.size());
-        for (String key : keys) {
-            V value = value = redisTemplate.opsForValue().get(key);
-            if (value != null) {
-                values.add(value);
-            }
-        }
-        return Collections.unmodifiableList(values);
+        List values = redisTemplate.opsForValue().multiGet((Collection<String>) keys());
+        return (Collection) (!values.isEmpty() ? Collections.unmodifiableCollection(values) : Collections.emptyList());
     }
 
     private String getRealKey(String key) {

@@ -42,5 +42,4 @@ public class BtxSecurityShiroFormFilter extends FormAuthenticationFilter {
             return super.onAccessDenied(request, response);
         }
     }
-
 }
