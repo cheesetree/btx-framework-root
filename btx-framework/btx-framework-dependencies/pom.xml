@@ -62,11 +62,6 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>top.cheesetree.btx.framework.security</groupId>
-                <artifactId>btx-framework-boot-security-cas</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>top.cheesetree.btx.framework</groupId>
                 <artifactId>btx-framework-boot-database</artifactId>
                 <version>${project.version}</version>
@@ -74,16 +69,6 @@
             <dependency>
                 <groupId>top.cheesetree.btx.framework</groupId>
                 <artifactId>btx-framework-boot-web</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>top.cheesetree.btx.framework.security</groupId>
-                <artifactId>btx-framework-boot-security-basic</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>top.cheesetree.btx.common</groupId>
-                <artifactId>btx-common-crypto</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
