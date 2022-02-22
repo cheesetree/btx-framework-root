@@ -35,7 +35,6 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
         switch (btxShiroProperties.getAuthType()) {
             case JWT:
                 break;
-            case TOKEN:
             case CAS:
                 if (args.length > 0) {
                     t = new CasToken(null, args[0]);
@@ -43,6 +42,7 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
 
                 }
                 break;
+            case TOKEN:
             case SESSION:
             default:
                 if (args.length > 1) {

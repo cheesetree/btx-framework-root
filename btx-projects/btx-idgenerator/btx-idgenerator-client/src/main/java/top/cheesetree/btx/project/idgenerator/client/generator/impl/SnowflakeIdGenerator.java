@@ -1,11 +1,11 @@
 package top.cheesetree.btx.project.idgenerator.client.generator.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import top.cheesetree.btx.project.idgenerator.client.config.SnowflakeConfig;
 import top.cheesetree.btx.project.idgenerator.core.exception.BtxIdgeneratorException;
 import top.cheesetree.btx.project.idgenerator.core.generator.IdGenerator;
 import top.cheesetree.btx.project.idgenerator.core.util.NetWorkUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package top.cheesetree.btx.project.idgenerator.client.config;
 
-import top.cheesetree.btx.project.idgenerator.core.common.IdGeneratorEnum;
 import lombok.Data;
+import top.cheesetree.btx.project.idgenerator.core.common.IdGeneratorEnum;
 
 /**
  * @Author: van
