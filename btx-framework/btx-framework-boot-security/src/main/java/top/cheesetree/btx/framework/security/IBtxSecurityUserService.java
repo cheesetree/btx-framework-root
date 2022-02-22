@@ -8,9 +8,9 @@ import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
  * @Date: 2022/1/12 15:10
  * @Description: TODO
  */
-public interface IBtxSecurityUserService {
-    CommJSON<SecurityUserDTO> login(String loginid,
-                                    String loginpwd);
+public interface IBtxSecurityUserService<T extends SecurityUserDTO> {
+    CommJSON<T> login(String loginid,
+                      String loginpwd);
 
     CommJSON logout();
 
@@ -18,4 +18,6 @@ public interface IBtxSecurityUserService {
 
     CommJSON changePwd(String userid, String loginpwd,
                        String newpwd);
+
+    CommJSON<T> getUserInfo(String uid);
 }

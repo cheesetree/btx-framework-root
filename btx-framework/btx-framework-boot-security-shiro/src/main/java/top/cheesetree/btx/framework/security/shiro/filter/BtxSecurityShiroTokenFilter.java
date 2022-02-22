@@ -2,6 +2,7 @@ package top.cheesetree.btx.framework.security.shiro.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import lombok.SneakyThrows;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.springframework.http.MediaType;
@@ -30,10 +31,11 @@ public class BtxSecurityShiroTokenFilter extends AuthenticatingFilter {
         this.tokenKey = tokenKey;
     }
 
-//    @Override
-//    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-//        return ((HttpServletRequest) request).getMethod().equals(RequestMethod.OPTIONS.name());
-//    }
+    @SneakyThrows
+    @Override
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        return StringUtils.hasLength(getToken((HttpServletRequest) request)) && super.executeLogin(request, response);
+    }
 
     @Override
     protected AuthenticationToken createToken(ServletRequest servletRequest, ServletResponse servletResponse) {
@@ -47,22 +49,19 @@ public class BtxSecurityShiroTokenFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        if (!StringUtils.hasLength(getToken((HttpServletRequest) request))) {
-            HttpServletRequest req = (HttpServletRequest) request;
-            if (RequestUtil.isAjaxRequest(req)) {
-                HttpServletResponse rep = (HttpServletResponse) response;
-                rep.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                rep.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                rep.setCharacterEncoding(BtxConsts.DEF_ENCODE.toString());
-                OutputStream outputStream = response.getOutputStream();
-                outputStream.write(JSON.toJSONBytes(new CommJSON(BtxSecurityMessage.SECURIT_UNLOGIN_ERROR),
-                        SerializerFeature.WriteMapNullValue));
-            }
-            return false;
-        } else {
-            return super.executeLogin(request, response);
+        HttpServletRequest req = (HttpServletRequest) request;
+        if (RequestUtil.isAjaxRequest(req)) {
+            HttpServletResponse rep = (HttpServletResponse) response;
+            rep.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            rep.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            rep.setCharacterEncoding(BtxConsts.DEF_ENCODE.toString());
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(JSON.toJSONBytes(new CommJSON(BtxSecurityMessage.SECURIT_UNLOGIN_ERROR),
+                    SerializerFeature.WriteMapNullValue));
         }
+        return false;
     }
+
 
     private String getToken(HttpServletRequest request) {
         return request.getHeader(tokenKey);

@@ -10,8 +10,8 @@ import java.util.List;
  * @Date: 2022/1/12 15:10
  * @Description: TODO
  */
-public interface IBtxSecurityPermissionService {
-    List<SecurityMenuDTO> getMenu(String userid, String authlevel);
+public interface IBtxSecurityPermissionService<T extends SecurityMenuDTO, F extends SecurityFuncDTO> {
+    List<T> getMenu(String userid, String authlevel);
 
-    List<SecurityFuncDTO> getFunc(String userid);
+    List<F> getFunc(String userid);
 }

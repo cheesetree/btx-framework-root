@@ -18,8 +18,6 @@
     <packaging>jar</packaging>
 
     <properties>
-        <org.jasig.cas.client.version>3.5.1</org.jasig.cas.client.version>
-        <com.fasterxml.jackson.version>2.11.4</com.fasterxml.jackson.version>
     </properties>
 
     <dependencies>
@@ -47,7 +45,6 @@
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-support-saml</artifactId>
-            <version>${org.jasig.cas.client.version}</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
@@ -59,7 +56,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${com.fasterxml.jackson.version}</version>
         </dependency>
     </dependencies>
 

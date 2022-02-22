@@ -4,14 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.IBtxSecurityOperation;
-import top.cheesetree.btx.framework.security.constants.BtxSecurityEnum;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.model.SecurityAuthUserDTO;
 import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
+import top.cheesetree.btx.framework.security.shiro.config.BtxShiroProperties;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessToken;
+import top.cheesetree.btx.framework.security.shiro.support.cas.CasToken;
 
 /**
  * @Author: van
@@ -21,17 +23,26 @@ import top.cheesetree.btx.framework.security.shiro.subject.StatelessToken;
 @Slf4j
 @Component
 public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
+    @Autowired
+    BtxShiroProperties btxShiroProperties;
 
     @Override
-    public CommJSON<SecurityAuthUserDTO> login(BtxSecurityEnum.AuthType authtype, String... args) {
+    public CommJSON<SecurityAuthUserDTO> login(String... args) {
         CommJSON<SecurityAuthUserDTO> ret;
 
         AuthenticationToken t = null;
 
-        switch (authtype) {
+        switch (btxShiroProperties.getAuthType()) {
             case JWT:
                 break;
             case TOKEN:
+            case CAS:
+                if (args.length > 0) {
+                    t = new CasToken(null, args[0]);
+                } else {
+
+                }
+                break;
             case SESSION:
             default:
                 if (args.length > 1) {

@@ -9,4 +9,5 @@ import top.cheesetree.btx.framework.security.constants.BtxSecurityConst;
  */
 public interface BtxSecurityShiroConst extends BtxSecurityConst {
     String AUTH_EXT_PARAMS_KEY = "realm_params";
+    String TICKET_PARAMETER = "ticket";
 }

@@ -8,11 +8,14 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.util.StringUtils;
 import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.IBtxSecurityPermissionService;
 import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
+import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.model.SecurityAuthUserDTO;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
+import top.cheesetree.btx.framework.security.model.SecurityMenuDTO;
 import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
 import top.cheesetree.btx.framework.security.shiro.model.AuthTokenInfo;
@@ -29,19 +32,20 @@ import java.util.Set;
 public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     @Autowired
     @Lazy
-    IBtxSecurityPermissionService btxSecurityPermissionService;
+    IBtxSecurityPermissionService<SecurityMenuDTO, SecurityFuncDTO> btxSecurityPermissionService;
 
     @Autowired
     @Lazy
-    private IBtxSecurityUserService btxSecurityUserService;
+    private IBtxSecurityUserService<SecurityUserDTO> btxSecurityUserService;
 
     public BtxSecurityAuthorizingRealm(BtxNoAuthCredentialsMatcher btxNoAuthCredentialsMatcher) {
         super(btxNoAuthCredentialsMatcher);
+        this.setAuthenticationTokenClass(StatelessToken.class);
     }
 
     @Override
     public boolean supports(AuthenticationToken token) {
-        return token != null && this.getAuthenticationTokenClass().isAssignableFrom(StatelessToken.class);
+        return token != null && token.getClass().isAssignableFrom(StatelessToken.class);
     }
 
     @Override
@@ -60,19 +64,24 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         StatelessToken token = (StatelessToken) authenticationToken;
 
-        CommJSON<SecurityUserDTO> ret = btxSecurityUserService.login(token.getUsername(),
-                token.getCredentials().toString());
-        if (ret.checkSuc()) {
-            SecurityAuthUserDTO u = new SecurityAuthUserDTO();
-            u.setUser(ret.getResult());
-            AuthTokenInfo t = new AuthTokenInfo();
-            t.setAccessToken(token.getToken());
-            u.setAuthinfo(t);
-            return new SimpleAuthenticationInfo(new SimplePrincipalCollection(u, "user"),
-                    t.getAccessToken());
+        if (StringUtils.hasLength(token.getUsername()) && token.getCredentials() != null) {
+            CommJSON<SecurityUserDTO> ret = btxSecurityUserService.login(token.getUsername(),
+                    token.getCredentials().toString());
+            if (ret.checkSuc()) {
+                SecurityAuthUserDTO u = new SecurityAuthUserDTO();
+                u.setUser(ret.getResult());
+                AuthTokenInfo t = new AuthTokenInfo();
+                t.setAccessToken(token.getToken());
+                u.setAuthinfo(t);
+                return new SimpleAuthenticationInfo(new SimplePrincipalCollection(u, "user"),
+                        t.getAccessToken());
+            } else {
+                throw new AccountException(ret.getMsg());
+            }
         } else {
-            throw new AccountException(ret.getMsg());
+            throw new AccountException(BtxSecurityMessage.SECURIT_UNLOGIN_ERROR.getMessage());
         }
+
     }
 
     @Override

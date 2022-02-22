@@ -31,6 +31,9 @@ import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroUserFi
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
 import top.cheesetree.btx.framework.security.shiro.realm.BtxSecurityAuthorizingRealm;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessDefaultSubjectFactory;
+import top.cheesetree.btx.framework.security.shiro.support.cas.BtxSecurityCasAuthorizingRealm;
+import top.cheesetree.btx.framework.security.shiro.support.cas.BtxSecurityShiroCasFilter;
+import top.cheesetree.btx.framework.security.shiro.support.cas.BtxShiroCasProperties;
 
 import javax.servlet.Filter;
 import java.util.*;
@@ -41,7 +44,7 @@ import java.util.*;
  * @Description: TODO
  */
 @Configuration
-@EnableConfigurationProperties({BtxShiroProperties.class, BtxShiroCacheProperties.class})
+@EnableConfigurationProperties({BtxShiroProperties.class, BtxShiroCacheProperties.class, BtxShiroCasProperties.class})
 @Slf4j
 public class BtxShiroConfiguration {
     @Autowired
@@ -50,6 +53,8 @@ public class BtxShiroConfiguration {
     BtxShiroCacheProperties btxShiroCacheProperties;
     @Autowired
     BtxShiroProperties btxShiroProperties;
+    @Autowired
+    BtxShiroCasProperties btxShiroCasProperties;
 
     /**
      * 开启shiro aop注解支持.
@@ -100,18 +105,18 @@ public class BtxShiroConfiguration {
         switch (btxShiroProperties.getAuthType()) {
             case TOKEN:
                 filterMap.put("authc", new BtxSecurityShiroTokenFilter(btxShiroProperties.getTokenKey()));
-                filterChainDefinitionMap.put("/**", "authc");
                 break;
             case JWT:
                 break;
             case CAS:
+                filterMap.put("authc", new BtxSecurityShiroCasFilter(btxShiroCasProperties.getServerLoginUrl()));
                 break;
             case SESSION:
                 filterMap.put("authc", new BtxSecurityShiroFormFilter());
-                filterChainDefinitionMap.put("/**", "authc");
             default:
                 break;
         }
+        filterChainDefinitionMap.put("/**", "authc");
 
         shiroFilterFactoryBean.setFilters(filterMap);
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -154,6 +159,7 @@ public class BtxShiroConfiguration {
 
         List<Realm> rs = new ArrayList<>();
         rs.add(btxSecurityAuthorizingRealm());
+        rs.add(btxSecurityCasAuthorizingRealm());
 
         securityManager.setAuthenticator(authenticator());
         securityManager.setRealms(rs);
@@ -163,7 +169,7 @@ public class BtxShiroConfiguration {
             securityManager.setCacheManager(cm);
         }
 
-        if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION) {
+        if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION && btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.CAS) {
             // 禁用session
             DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
             DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
@@ -181,6 +187,21 @@ public class BtxShiroConfiguration {
     @Bean
     public BtxSecurityAuthorizingRealm btxSecurityAuthorizingRealm() {
         BtxSecurityAuthorizingRealm r = new BtxSecurityAuthorizingRealm(new BtxNoAuthCredentialsMatcher());
+        if (btxShiroCacheProperties.isEnabled()) {
+            r.setAuthenticationCachingEnabled(true);
+            r.setAuthorizationCachingEnabled(true);
+            r.setAuthenticationCacheName(btxShiroCacheProperties.getAuthenticationCacheName());
+            r.setAuthorizationCacheName(btxShiroCacheProperties.getAuthorizationCacheName());
+        }
+
+        return r;
+    }
+
+    @Bean
+    public BtxSecurityCasAuthorizingRealm btxSecurityCasAuthorizingRealm() {
+        BtxSecurityCasAuthorizingRealm r = new BtxSecurityCasAuthorizingRealm(new BtxNoAuthCredentialsMatcher(),
+                btxShiroCasProperties.getServerUrlPrefix(), btxShiroCasProperties.getValidationType(),
+                btxShiroCasProperties.getClientHostUrl());
         if (btxShiroCacheProperties.isEnabled()) {
             r.setAuthenticationCachingEnabled(true);
             r.setAuthorizationCachingEnabled(true);
