@@ -64,6 +64,11 @@ public class BtxSecurityShiroTokenFilter extends AuthenticatingFilter {
 
 
     private String getToken(HttpServletRequest request) {
-        return request.getHeader(tokenKey);
+        String tk = request.getHeader(tokenKey);
+        if (!StringUtils.hasText(tk)) {
+            tk = request.getParameter(tokenKey);
+        }
+        return tk;
+
     }
 }
