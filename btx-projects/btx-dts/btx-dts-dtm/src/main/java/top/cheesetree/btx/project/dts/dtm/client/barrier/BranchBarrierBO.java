@@ -7,11 +7,6 @@ import lombok.Data;
 
 import java.util.Date;
 
-/**
- * @author van
- * @date 2022/3/1 11:20
- * @description TODO
- */
 @Data
 @TableName("barrier")
 public class BranchBarrierBO {

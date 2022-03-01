@@ -30,9 +30,6 @@ import top.cheesetree.btx.project.dts.dtm.client.common.model.DtmConsumer;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * @author lixiaoshuang
- */
 @Slf4j
 public class BranchBarrier {
     private BranchBarrierBO branchBarrierBO = new BranchBarrierBO();

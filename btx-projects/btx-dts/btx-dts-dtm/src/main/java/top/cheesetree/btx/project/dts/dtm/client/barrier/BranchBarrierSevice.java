@@ -9,14 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.cheesetree.btx.project.dts.dtm.client.barrier.mapper.BranchBarrierMapper;
 import top.cheesetree.btx.project.dts.dtm.client.common.constant.ParamFieldConstant;
+import top.cheesetree.btx.project.dts.dtm.client.exception.FailureException;
 
 import java.util.LinkedHashMap;
 
-/**
- * @author van
- * @date 2022/3/1 17:32
- * @description TODO
- */
 @Service
 public class BranchBarrierSevice extends ServiceImpl<BranchBarrierMapper, BranchBarrierBO> implements IService<BranchBarrierBO> {
     @Autowired
@@ -37,7 +33,7 @@ public class BranchBarrierSevice extends ServiceImpl<BranchBarrierMapper, Branch
                         put(BranchBarrierBO::getBarrierId, branchBarrierBO.getBarrierId());
                     }
                 })) == 0) {
-                    throw new Exception("");
+                    throw new FailureException("barrier call error");
                 }
                 ret = true;
             }

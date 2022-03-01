@@ -26,9 +26,6 @@ package top.cheesetree.btx.project.dts.dtm.client.common.model;
 
 import lombok.Data;
 
-/**
- * @author lixiaoshuang
- */
 @Data
 public class TransResponse {
 

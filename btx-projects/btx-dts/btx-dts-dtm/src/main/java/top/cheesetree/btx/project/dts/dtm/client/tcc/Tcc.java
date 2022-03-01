@@ -28,15 +28,9 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import top.cheesetree.btx.project.dts.dtm.client.client.DtmClient;
 import top.cheesetree.btx.project.dts.dtm.client.common.config.BtxDtmProperties;
-import top.cheesetree.btx.project.dts.dtm.client.common.constant.Constant;
-import top.cheesetree.btx.project.dts.dtm.client.common.constant.ParamFieldConstant;
 import top.cheesetree.btx.project.dts.dtm.client.common.enums.TransTypeEnum;
-import top.cheesetree.btx.project.dts.dtm.client.common.model.DtmConsumer;
-import top.cheesetree.btx.project.dts.dtm.client.common.model.DtmServerInfo;
-import top.cheesetree.btx.project.dts.dtm.client.common.model.TransBase;
+import top.cheesetree.btx.project.dts.dtm.client.common.model.*;
 import top.cheesetree.btx.project.dts.dtm.client.common.utils.BranchIdGeneratorUtil;
-
-import java.util.HashMap;
 
 /**
  * @author lixiaoshuang
@@ -74,19 +68,18 @@ public class Tcc {
     }
 
     public void tccGlobalTransaction(DtmConsumer<Tcc> consumer) throws Exception {
-        HashMap<String, Object> paramMap = new HashMap<>(Constant.DEFAULT_INITIAL_CAPACITY);
-        paramMap.put(ParamFieldConstant.GID, transBase.getGid());
-        paramMap.put(ParamFieldConstant.TRANS_TYPE, TransTypeEnum.TCC.getValue());
+        DtmGLobalRequest req =
+                DtmGLobalRequest.builder().gid(transBase.getGid()).trans_type(TransTypeEnum.TCC.getValue()).build();
 
-        new DtmClient(btxDtmProperties).getRestTemplate().postForObject(dtmServerInfo.prepare(), paramMap,
+        new DtmClient(btxDtmProperties).getRestTemplate().postForObject(dtmServerInfo.prepare(), req,
                 String.class);
 
         try {
             consumer.accept(this);
-            new DtmClient(btxDtmProperties).getRestTemplate().postForObject(dtmServerInfo.submit(), paramMap,
+            new DtmClient(btxDtmProperties).getRestTemplate().postForObject(dtmServerInfo.submit(), req,
                     String.class);
         } catch (Exception e) {
-            new DtmClient(btxDtmProperties).getRestTemplate().postForObject(dtmServerInfo.abort(), paramMap,
+            new DtmClient(btxDtmProperties).getRestTemplate().postForObject(dtmServerInfo.abort(), req,
                     String.class);
             throw e;
         }
@@ -94,18 +87,11 @@ public class Tcc {
 
     public String callBranch(Object body, String tryUrl, String confirmUrl, String cancelUrl) throws Exception {
         String branchId = branchIdGeneratorUtil.genBranchId();
-        HashMap<String, Object> registerParam = new HashMap<>(Constant.DEFAULT_INITIAL_CAPACITY);
-        registerParam.put(ParamFieldConstant.GID, transBase.getGid());
-        registerParam.put(ParamFieldConstant.BRANCH_ID, branchId);
-        registerParam.put(ParamFieldConstant.TRANS_TYPE, TransTypeEnum.TCC.getValue());
-        registerParam.put(ParamFieldConstant.STATUS, DEFAULT_STATUS);
-        registerParam.put(ParamFieldConstant.DATA, JSONObject.toJSONString(body));
-        registerParam.put(ParamFieldConstant.TRY, tryUrl);
-        registerParam.put(ParamFieldConstant.CONFIRM, confirmUrl);
-        registerParam.put(ParamFieldConstant.CANCEL, cancelUrl);
+        DtmRegRequest req =
+                DtmRegRequest.builder().branch_id(branchId).gid(transBase.getGid()).trans_type(TransTypeEnum.TCC.getValue()).status(DEFAULT_STATUS).data(JSONObject.toJSONString(body)).tryd(tryUrl).confirm(confirmUrl).cancel(cancelUrl).build();
 
         new DtmClient(btxDtmProperties).getRestTemplate().postForObject(dtmServerInfo.registerTccBranch(),
-                registerParam, String.class);
+                req, String.class);
 
         return new DtmClient(btxDtmProperties).getRestTemplate().postForObject(splicingTryUrl(tryUrl,
                         transBase.getGid(),

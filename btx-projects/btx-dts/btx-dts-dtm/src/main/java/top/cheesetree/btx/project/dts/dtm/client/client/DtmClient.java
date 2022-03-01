@@ -58,12 +58,6 @@ public class DtmClient {
         this.btxDtmProperties = btxDtmProperties;
     }
 
-    /**
-     * 生成全局事务id
-     *
-     * @return
-     * @throws Exception
-     */
     public String genGid() throws Exception {
         DtmServerInfo dtmServerInfo = new DtmServerInfo(btxDtmProperties.getTccUrl());
         JSONObject jsonObject = null;
@@ -89,14 +83,6 @@ public class DtmClient {
         return jsonObject.get("gid").toString();
     }
 
-    /**
-     * tcc事务
-     *
-     * @param gid
-     * @param function
-     * @return
-     * @throws Exception
-     */
     public void tccGlobalTransaction(String gid, DtmConsumer<Tcc> function) throws Exception {
         Tcc tcc = new Tcc(btxDtmProperties, gid);
         tcc.tccGlobalTransaction(function);

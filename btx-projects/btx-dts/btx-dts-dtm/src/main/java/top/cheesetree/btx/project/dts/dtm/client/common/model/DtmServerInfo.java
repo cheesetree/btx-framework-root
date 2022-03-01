@@ -27,9 +27,6 @@ package top.cheesetree.btx.project.dts.dtm.client.common.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * @author lixiaoshuang
- */
 @Data
 @NoArgsConstructor
 public class DtmServerInfo {
@@ -38,8 +35,7 @@ public class DtmServerInfo {
      * ip+port
      */
     private String ipPort;
-    
-    
+
     public static final String PREFIX = "http://";
     
     public static final String BASE = "/api/dtmsvr";

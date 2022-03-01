@@ -26,9 +26,6 @@ package top.cheesetree.btx.project.dts.dtm.client.common.utils;
 
 import lombok.Data;
 
-/**
- * @author lixiaoshuang
- */
 @Data
 public class BranchIdGeneratorUtil {
 
