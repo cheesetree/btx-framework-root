@@ -3,6 +3,11 @@ package top.cheesetree.btx.project.dts.dtm.client.common.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author van
+ * @date 2022/3/1 19:57
+ * @description TODO
+ */
 @Data
 @NoArgsConstructor
 public class DtmServerInfo {

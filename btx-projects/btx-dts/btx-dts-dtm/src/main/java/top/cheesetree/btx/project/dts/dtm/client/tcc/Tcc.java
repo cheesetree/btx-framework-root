@@ -9,7 +9,11 @@ import top.cheesetree.btx.project.dts.dtm.client.common.enums.TransTypeEnum;
 import top.cheesetree.btx.project.dts.dtm.client.common.model.*;
 import top.cheesetree.btx.project.dts.dtm.client.common.utils.BranchIdGeneratorUtil;
 
-
+/**
+ * @author van
+ * @date 2022/3/1 19:57
+ * @description TODO
+ */
 @Slf4j
 public class Tcc {
     private BtxDtmProperties btxDtmProperties;
