@@ -3,6 +3,9 @@ package top.cheesetree.btx.framework.web.config;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import okhttp3.ConnectionPool;
+import okhttp3.ConnectionSpec;
+import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
@@ -10,12 +13,18 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import top.cheesetree.btx.framework.web.http.CustomSSLSocketFactory;
+import top.cheesetree.btx.framework.web.http.CustomTrustManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: van
@@ -23,10 +32,13 @@ import java.util.List;
  * @Description: TODO
  */
 @Configuration
-@EnableConfigurationProperties({BtxWebProperties.class})
+@EnableConfigurationProperties({BtxWebProperties.class, BtxRestProperties.class})
 public class BtxWebMvcConfiguration implements WebMvcConfigurer {
     @Autowired
     BtxWebProperties btxWebProperties;
+
+    @Autowired
+    BtxRestProperties btxRestProperties;
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -110,5 +122,63 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
             }
 
         };
+    }
+
+    @Bean("btxRestTemplate")
+    public RestTemplate getRestTemplate() {
+        FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
+        List<MediaType> supportedMediaTypes = new ArrayList<>();
+        supportedMediaTypes.add(MediaType.APPLICATION_JSON);
+        supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
+        supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
+        supportedMediaTypes.add(MediaType.TEXT_HTML);
+        supportedMediaTypes.add(MediaType.TEXT_PLAIN);
+        fastConverter.setSupportedMediaTypes(supportedMediaTypes);
+
+        //创建配置类
+        FastJsonConfig fastJsonConfig = new FastJsonConfig();
+        fastJsonConfig.setSerializerFeatures(
+                SerializerFeature.DisableCircularReferenceDetect,
+                SerializerFeature.WriteMapNullValue,
+                SerializerFeature.WriteNullListAsEmpty,
+                SerializerFeature.WriteNullStringAsEmpty,
+                SerializerFeature.WriteNullBooleanAsFalse
+        );
+        fastConverter.setFastJsonConfig(fastJsonConfig);
+        OkHttpClient okclient =
+                new OkHttpClient().newBuilder().connectionPool(new ConnectionPool(btxRestProperties.getMaxPoolIdle(),
+                        btxRestProperties.getMaxPoolLiveTime(), TimeUnit.MINUTES)).retryOnConnectionFailure(false).connectTimeout(btxRestProperties.getConnectTimeOut(),
+                        TimeUnit.SECONDS).readTimeout(btxRestProperties.getReadTimeOut(), TimeUnit.SECONDS).writeTimeout(btxRestProperties.getWriteTimeOut(), TimeUnit.SECONDS).build();
+        return new RestTemplate(new OkHttp3ClientHttpRequestFactory(okclient));
+    }
+
+    @Bean("btxRestSslTemplate")
+    public RestTemplate getRestSslTemplate() {
+        FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
+        List<MediaType> supportedMediaTypes = new ArrayList<>();
+        supportedMediaTypes.add(MediaType.APPLICATION_JSON);
+        supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
+        supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
+        supportedMediaTypes.add(MediaType.TEXT_HTML);
+        supportedMediaTypes.add(MediaType.TEXT_PLAIN);
+        fastConverter.setSupportedMediaTypes(supportedMediaTypes);
+
+        //创建配置类
+        FastJsonConfig fastJsonConfig = new FastJsonConfig();
+        fastJsonConfig.setSerializerFeatures(
+                SerializerFeature.DisableCircularReferenceDetect,
+                SerializerFeature.WriteMapNullValue,
+                SerializerFeature.WriteNullListAsEmpty,
+                SerializerFeature.WriteNullStringAsEmpty,
+                SerializerFeature.WriteNullBooleanAsFalse
+        );
+        fastConverter.setFastJsonConfig(fastJsonConfig);
+        OkHttpClient okclient =
+                new OkHttpClient().newBuilder().connectionSpecs(Arrays.asList(ConnectionSpec.MODERN_TLS,
+                        ConnectionSpec.COMPATIBLE_TLS)).sslSocketFactory(new CustomSSLSocketFactory(),
+                        new CustomTrustManager()).hostnameVerifier((hostname, session) -> true).connectionPool(new ConnectionPool(btxRestProperties.getMaxPoolIdle(),
+                        btxRestProperties.getMaxPoolLiveTime(), TimeUnit.MINUTES)).retryOnConnectionFailure(false).connectTimeout(btxRestProperties.getConnectTimeOut(),
+                        TimeUnit.SECONDS).readTimeout(btxRestProperties.getReadTimeOut(), TimeUnit.SECONDS).writeTimeout(btxRestProperties.getWriteTimeOut(), TimeUnit.SECONDS).build();
+        return new RestTemplate(new OkHttp3ClientHttpRequestFactory(okclient));
     }
 }

@@ -1,19 +1,16 @@
-package top.cheesetree.btx.project.dts.dtm.client.common.config;
+package top.cheesetree.btx.framework.web.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author van
- * @date 2022/3/1 11:37
- * @description TODO
+ * @Author: van
+ * @Date: 2022/1/6 16:01
+ * @Description: TODO
  */
-@ConfigurationProperties("btx.dts.dtm")
+@ConfigurationProperties("btx.web.rest")
 @Data
-public class BtxDtmProperties {
-
-    private String tccUrl;
-
+public class BtxRestProperties {
     private int connectTimeOut = 2;
 
     private int readTimeOut = 10;

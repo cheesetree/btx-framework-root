@@ -1,18 +1,47 @@
 package top.cheesetree.btx.framework.web.http;
 
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.security.cert.X509Certificate;
 
 /**
  * @Author: van
  * @Date: 2021/8/27 10:05
  * @Description: TODO
  */
+@Slf4j
 public class CustomSSLSocketFactory extends SSLSocketFactory {
-    private final SSLSocketFactory delegate;
+    private SSLSocketFactory delegate;
+
+    public CustomSSLSocketFactory() {
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+
+        }};
+        try {
+            SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            this.delegate = sslContext.getSocketFactory();
+        } catch (Exception e) {
+            log.error("init  error", e);
+        }
+
+    }
 
     public CustomSSLSocketFactory(SSLSocketFactory delegate) {
         this.delegate = delegate;

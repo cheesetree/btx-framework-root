@@ -41,8 +41,9 @@ public class BranchBarrierSevice extends ServiceImpl<BranchBarrierMapper, Branch
                 })) == 0) {
                     throw new FailureException("barrier call error");
                 }
-                ret = true;
             }
+
+            ret = true;
         }
 
         return ret;
