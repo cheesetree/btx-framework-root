@@ -14,4 +14,6 @@ public interface IBtxSecurityPermissionService<T extends SecurityMenuDTO, F exte
     List<T> getMenu(String userid, String authlevel);
 
     List<F> getFunc(String userid);
+
+    List<F> getAllFunc();
 }

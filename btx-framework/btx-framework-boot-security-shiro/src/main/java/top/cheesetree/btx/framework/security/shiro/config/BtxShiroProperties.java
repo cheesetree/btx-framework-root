@@ -18,4 +18,5 @@ public class BtxShiroProperties {
     private int sessionTimeOut = 1800;
     private BtxSecurityEnum.AuthType authType = BtxSecurityEnum.AuthType.SESSION;
     private String tokenKey = BtxSecurityShiroConst.AUTHORIZATION_KEY;
+    private boolean autoPermission = false;
 }
