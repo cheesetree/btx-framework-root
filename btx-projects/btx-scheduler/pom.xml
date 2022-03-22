@@ -29,16 +29,21 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>top.cheesetree.btx.framework</groupId>
-                <artifactId>
-                    btx-framework-boot
-                </artifactId>
+                <artifactId>btx-framework-dependencies</artifactId>
                 <version>${project.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -17,4 +17,5 @@ public class BtxSecurityProperties {
     private String errorPath = "";
     private String loginPath = "";
     private String noAuthPath = "";
+    private String expirePath = noAuthPath;
 }

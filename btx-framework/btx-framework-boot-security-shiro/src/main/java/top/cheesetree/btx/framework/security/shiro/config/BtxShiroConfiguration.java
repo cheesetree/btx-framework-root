@@ -109,6 +109,10 @@ public class BtxShiroConfiguration {
             filterChainDefinitionMap.put(btxSecurityProperties.getErrorPath(), "anon");
         }
 
+        if (StringUtils.hasLength(btxSecurityProperties.getExpirePath())) {
+            filterChainDefinitionMap.put(btxSecurityProperties.getExpirePath(), "anon");
+        }
+
         //配置权限自动映射
         if (btxShiroProperties.isAutoPermission()) {
             List<SecurityFuncDTO> funcs = btxSecurityPermissionService.getAllFunc();
