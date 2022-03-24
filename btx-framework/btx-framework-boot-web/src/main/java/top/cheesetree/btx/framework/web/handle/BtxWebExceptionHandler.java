@@ -1,7 +1,6 @@
 package top.cheesetree.btx.framework.web.handle;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,7 +17,7 @@ import java.util.UUID;
  * @Date: 2021/8/27 10:05
  * @Description: TODO
  */
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order()
 @ControllerAdvice
 @Slf4j
 public class BtxWebExceptionHandler {

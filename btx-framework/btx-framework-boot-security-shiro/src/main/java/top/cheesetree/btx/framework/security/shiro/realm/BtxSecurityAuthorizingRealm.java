@@ -32,11 +32,11 @@ import java.util.Set;
 public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     @Autowired
     @Lazy
-    IBtxSecurityPermissionService<SecurityMenuDTO, SecurityFuncDTO> btxSecurityPermissionService;
+    IBtxSecurityPermissionService<? extends SecurityMenuDTO, ? extends SecurityFuncDTO> btxSecurityPermissionService;
 
     @Autowired
     @Lazy
-    private IBtxSecurityUserService<SecurityUserDTO> btxSecurityUserService;
+    private IBtxSecurityUserService<? extends SecurityUserDTO> btxSecurityUserService;
 
     public BtxSecurityAuthorizingRealm(BtxNoAuthCredentialsMatcher btxNoAuthCredentialsMatcher) {
         super(btxNoAuthCredentialsMatcher);
@@ -65,7 +65,7 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
         StatelessToken token = (StatelessToken) authenticationToken;
 
         if (StringUtils.hasLength(token.getUsername()) && token.getCredentials() != null) {
-            CommJSON<SecurityUserDTO> ret = btxSecurityUserService.login(token.getUsername(),
+            CommJSON<? extends SecurityUserDTO> ret = btxSecurityUserService.login(token.getUsername(),
                     token.getCredentials().toString());
             if (ret.checkSuc()) {
                 SecurityAuthUserDTO u = new SecurityAuthUserDTO();

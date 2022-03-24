@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class SecurityMenuDTO {
+public abstract class SecurityMenuDTO {
     private String menuId;
     private String menuName;
     private String menuUrl;

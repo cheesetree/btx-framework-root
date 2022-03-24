@@ -5,5 +5,5 @@ package top.cheesetree.btx.framework.security.model;
  * @Date: 2021/8/27 13:51
  * @Description: TODO
  */
-public interface  BtxGrantedAuthority {
+public abstract class BtxGrantedAuthority {
 }

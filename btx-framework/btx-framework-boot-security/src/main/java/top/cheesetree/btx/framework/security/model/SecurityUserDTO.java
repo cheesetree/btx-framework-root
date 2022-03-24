@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class SecurityUserDTO implements ValueObject {
+public abstract class SecurityUserDTO implements ValueObject {
     private String uid;
     private String hdUrl;
     private String loginname;

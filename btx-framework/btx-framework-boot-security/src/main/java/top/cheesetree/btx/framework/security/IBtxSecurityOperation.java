@@ -13,6 +13,8 @@ public interface IBtxSecurityOperation {
 
     CommJSON<SecurityAuthUserDTO> login(String... args);
 
+    CommJSON logout();
+
     String getUserId();
 
     SecurityUserDTO getUserInfo();

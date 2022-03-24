@@ -66,6 +66,13 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
     }
 
     @Override
+    public CommJSON logout() {
+        SecurityUtils.getSubject().logout();
+
+        return new CommJSON("");
+    }
+
+    @Override
     public String getUserId() {
         return ((SecurityUserDTO) SecurityUtils.getSubject().getPrincipal()).getUid();
     }
