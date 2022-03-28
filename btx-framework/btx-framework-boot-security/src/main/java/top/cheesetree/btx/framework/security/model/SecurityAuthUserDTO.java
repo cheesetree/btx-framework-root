@@ -1,6 +1,7 @@
 package top.cheesetree.btx.framework.security.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import top.cheesetree.btx.framework.core.model.ValueObject;
 
@@ -11,7 +12,8 @@ import top.cheesetree.btx.framework.core.model.ValueObject;
  */
 @Getter
 @Setter
-public class SecurityAuthUserDTO<T> implements ValueObject {
+@NoArgsConstructor
+public abstract class SecurityAuthUserDTO<T> implements ValueObject {
     private SecurityUserDTO user;
     private T authinfo;
 }

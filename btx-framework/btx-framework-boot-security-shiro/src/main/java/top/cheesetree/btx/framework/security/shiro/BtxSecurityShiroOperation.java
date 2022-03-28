@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.IBtxSecurityOperation;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
-import top.cheesetree.btx.framework.security.model.SecurityAuthUserDTO;
-import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.config.BtxShiroProperties;
+import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityAuthUserDTO;
+import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessToken;
 import top.cheesetree.btx.framework.security.shiro.support.cas.CasToken;
 
@@ -27,8 +27,8 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
     BtxShiroProperties btxShiroProperties;
 
     @Override
-    public CommJSON<SecurityAuthUserDTO> login(String... args) {
-        CommJSON<SecurityAuthUserDTO> ret;
+    public CommJSON<BtxShiroSecurityAuthUserDTO> login(String... args) {
+        CommJSON<BtxShiroSecurityAuthUserDTO> ret;
 
         AuthenticationToken t = null;
 
@@ -56,7 +56,7 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
         try {
             SecurityUtils.getSubject().login(t);
 
-            ret = new CommJSON<>((SecurityAuthUserDTO) SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal());
+            ret = new CommJSON<>((BtxShiroSecurityAuthUserDTO) SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal());
         } catch (AuthenticationException e) {
             log.warn("login error:{}", e);
             ret = new CommJSON<>(BtxSecurityMessage.SECURIT_LOGIN_ERROR.getCode(), e.getMessage());
@@ -74,11 +74,11 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
 
     @Override
     public String getUserId() {
-        return ((SecurityUserDTO) SecurityUtils.getSubject().getPrincipal()).getUid();
+        return ((BtxShiroSecurityUserDTO) SecurityUtils.getSubject().getPrincipal()).getUid();
     }
 
     @Override
-    public SecurityUserDTO getUserInfo() {
-        return (SecurityUserDTO) SecurityUtils.getSubject().getPrincipal();
+    public BtxShiroSecurityUserDTO getUserInfo() {
+        return (BtxShiroSecurityUserDTO) SecurityUtils.getSubject().getPrincipal();
     }
 }

@@ -1,6 +1,7 @@
 package top.cheesetree.btx.framework.security.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import top.cheesetree.btx.framework.core.exception.ExceptionCodeUtil;
 import top.cheesetree.btx.framework.core.model.ValueObject;
@@ -12,7 +13,8 @@ import top.cheesetree.btx.framework.core.model.ValueObject;
  */
 @Getter
 @Setter
-public abstract class SecurityGroupDTO implements ValueObject {
+@NoArgsConstructor
+public class SecurityGroupDTO implements ValueObject {
     private String groupId;
     private String pGroupId;
     private String groupCode; // 机构编码

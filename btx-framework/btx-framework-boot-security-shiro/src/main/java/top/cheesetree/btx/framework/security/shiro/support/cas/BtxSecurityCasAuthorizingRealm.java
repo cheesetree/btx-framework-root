@@ -17,11 +17,11 @@ import org.springframework.util.StringUtils;
 import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.IBtxSecurityPermissionService;
 import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
-import top.cheesetree.btx.framework.security.model.SecurityAuthUserDTO;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
 import top.cheesetree.btx.framework.security.model.SecurityMenuDTO;
-import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
+import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityAuthUserDTO;
+import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityUserDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +48,7 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
 
     @Autowired(required = false)
     @Lazy
-    private IBtxSecurityUserService btxSecurityUserService;
+    private IBtxSecurityUserService<BtxShiroSecurityUserDTO> btxSecurityUserService;
 
     public BtxSecurityCasAuthorizingRealm(BtxNoAuthCredentialsMatcher btxNoAuthCredentialsMatcher,
                                           String casServerUrlPrefix,
@@ -85,8 +85,8 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
 
         Object principal = principalCollection.getPrimaryPrincipal();
         String uid;
-        if (principal instanceof SecurityAuthUserDTO) {
-            SecurityAuthUserDTO p = (SecurityAuthUserDTO) principal;
+        if (principal instanceof BtxShiroSecurityAuthUserDTO) {
+            BtxShiroSecurityAuthUserDTO p = (BtxShiroSecurityAuthUserDTO) principal;
             if (p.getUser() != null) {
                 uid = p.getUser().getUid();
             } else {
@@ -127,9 +127,9 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
             String userId = casPrincipal.getName();
 
             if (btxSecurityUserService != null) {
-                CommJSON<SecurityUserDTO> ret = btxSecurityUserService.getUserInfo(userId);
+                CommJSON<BtxShiroSecurityUserDTO> ret = btxSecurityUserService.getUserInfo(userId);
                 if (ret.checkSuc()) {
-                    SecurityAuthUserDTO u = new SecurityAuthUserDTO();
+                    BtxShiroSecurityAuthUserDTO u = new BtxShiroSecurityAuthUserDTO();
                     u.setUser(ret.getResult());
                     return new SimpleAuthenticationInfo(new SimplePrincipalCollection(u, "user"),
                             ticket);
@@ -137,7 +137,7 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
                     throw new AccountException(ret.getMsg());
                 }
             } else {
-                SecurityAuthUserDTO u = new SecurityAuthUserDTO();
+                BtxShiroSecurityAuthUserDTO u = new BtxShiroSecurityAuthUserDTO();
                 u.setAuthinfo(casPrincipal);
                 return new SimpleAuthenticationInfo(new SimplePrincipalCollection(u, "user"),
                         ticket);

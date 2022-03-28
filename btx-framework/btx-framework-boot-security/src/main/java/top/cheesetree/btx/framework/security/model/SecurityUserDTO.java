@@ -23,7 +23,6 @@ public abstract class SecurityUserDTO implements ValueObject {
     private String email;
     private List<SecurityGroupDTO> depts;
     private List<SecurityFuncDTO> funcs;
-    private List<BtxGrantedAuthority> authorities;
 
     @Override
     public boolean equals(Object obj) {

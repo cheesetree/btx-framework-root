@@ -13,12 +13,12 @@ import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.IBtxSecurityPermissionService;
 import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
-import top.cheesetree.btx.framework.security.model.SecurityAuthUserDTO;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
 import top.cheesetree.btx.framework.security.model.SecurityMenuDTO;
-import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
 import top.cheesetree.btx.framework.security.shiro.model.AuthTokenInfo;
+import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityAuthUserDTO;
+import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessToken;
 
 import java.util.HashSet;
@@ -36,7 +36,7 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
 
     @Autowired
     @Lazy
-    private IBtxSecurityUserService<? extends SecurityUserDTO> btxSecurityUserService;
+    private IBtxSecurityUserService<BtxShiroSecurityUserDTO> btxSecurityUserService;
 
     public BtxSecurityAuthorizingRealm(BtxNoAuthCredentialsMatcher btxNoAuthCredentialsMatcher) {
         super(btxNoAuthCredentialsMatcher);
@@ -52,7 +52,7 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         Set<String> stringPermissions = new HashSet<>();
-        btxSecurityPermissionService.getFunc(((SecurityAuthUserDTO) principalCollection.getPrimaryPrincipal()).getUser().getUid()).forEach((SecurityFuncDTO f) -> {
+        btxSecurityPermissionService.getFunc(((BtxShiroSecurityAuthUserDTO) principalCollection.getPrimaryPrincipal()).getUser().getUid()).forEach((SecurityFuncDTO f) -> {
             stringPermissions.add(f.getFuncCode());
         });
         info.setStringPermissions(stringPermissions);
@@ -65,10 +65,10 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
         StatelessToken token = (StatelessToken) authenticationToken;
 
         if (StringUtils.hasLength(token.getUsername()) && token.getCredentials() != null) {
-            CommJSON<? extends SecurityUserDTO> ret = btxSecurityUserService.login(token.getUsername(),
+            CommJSON<BtxShiroSecurityUserDTO> ret = btxSecurityUserService.login(token.getUsername(),
                     token.getCredentials().toString());
             if (ret.checkSuc()) {
-                SecurityAuthUserDTO u = new SecurityAuthUserDTO();
+                BtxShiroSecurityAuthUserDTO u = new BtxShiroSecurityAuthUserDTO();
                 u.setUser(ret.getResult());
                 AuthTokenInfo t = new AuthTokenInfo();
                 t.setAccessToken(token.getToken());

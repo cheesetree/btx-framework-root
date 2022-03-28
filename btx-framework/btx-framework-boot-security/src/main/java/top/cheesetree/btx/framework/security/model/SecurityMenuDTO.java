@@ -1,6 +1,7 @@
 package top.cheesetree.btx.framework.security.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -10,7 +11,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class SecurityMenuDTO {
+@NoArgsConstructor
+public class SecurityMenuDTO {
     private String menuId;
     private String menuName;
     private String menuUrl;

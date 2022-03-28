@@ -11,11 +11,11 @@ import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
  */
 public interface IBtxSecurityOperation {
 
-    CommJSON<SecurityAuthUserDTO> login(String... args);
+    CommJSON<? extends SecurityAuthUserDTO> login(String... args);
 
     CommJSON logout();
 
     String getUserId();
 
-    SecurityUserDTO getUserInfo();
+    <T extends SecurityUserDTO> T getUserInfo();
 }
