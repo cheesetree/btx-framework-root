@@ -65,10 +65,9 @@
                 <version>${mybatis-plus-boot.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus</artifactId>
-                <version>${mybatis-plus.version}</version>
-                <scope>compile</scope>
+                <groupId>top.cheesetree.btx.project.archetype</groupId>
+                <artifactId>btx-classic-service-archetype</artifactId>
+                <version>1.2.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.hutool</groupId>
