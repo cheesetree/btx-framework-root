@@ -15,6 +15,7 @@ import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
 import top.cheesetree.btx.framework.security.model.SecurityMenuDTO;
+import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
 import top.cheesetree.btx.framework.security.shiro.model.AuthTokenInfo;
 import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityAuthUserDTO;
@@ -22,6 +23,7 @@ import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityUserDTO
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessToken;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,7 +34,7 @@ import java.util.Set;
 public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     @Autowired
     @Lazy
-    IBtxSecurityPermissionService<? extends SecurityMenuDTO, ? extends SecurityFuncDTO> btxSecurityPermissionService;
+    IBtxSecurityPermissionService<? extends SecurityMenuDTO, ? extends SecurityFuncDTO, ? extends SecurityRoleDTO> btxSecurityPermissionService;
 
     @Autowired
     @Lazy
@@ -51,11 +53,39 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        Set<String> stringPermissions = new HashSet<>();
-        btxSecurityPermissionService.getFunc(((BtxShiroSecurityAuthUserDTO) principalCollection.getPrimaryPrincipal()).getUser().getUid()).forEach((SecurityFuncDTO f) -> {
-            stringPermissions.add(f.getFuncCode());
-        });
-        info.setStringPermissions(stringPermissions);
+
+        BtxShiroSecurityAuthUserDTO u = (BtxShiroSecurityAuthUserDTO) principalCollection.getPrimaryPrincipal();
+
+        List<? extends SecurityFuncDTO> funcs;
+        List<? extends SecurityRoleDTO> roles;
+
+        if (u.getUser().getFuncs() != null && u.getUser().getFuncs().size() > 0) {
+            funcs = u.getUser().getFuncs();
+        } else {
+            funcs = btxSecurityPermissionService.getFunc(u.getUser().getUid());
+        }
+
+        if (u.getUser().getRoles() != null && u.getUser().getRoles().size() > 0) {
+            roles = u.getUser().getRoles();
+        } else {
+            roles = btxSecurityPermissionService.getRole(u.getUser().getUid());
+        }
+
+        if (funcs != null) {
+            Set<String> stringPermissions = new HashSet<>();
+            funcs.forEach((SecurityFuncDTO f) -> {
+                stringPermissions.add(f.getFuncCode());
+            });
+            info.setStringPermissions(stringPermissions);
+        }
+
+        if (roles != null) {
+            Set<String> stringRoles = new HashSet<>();
+            roles.forEach((SecurityRoleDTO f) -> {
+                stringRoles.add(f.getRoleCode());
+            });
+            info.setRoles(stringRoles);
+        }
 
         return info;
     }
@@ -73,8 +103,7 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
                 AuthTokenInfo t = new AuthTokenInfo();
                 t.setAccessToken(token.getToken());
                 u.setAuthinfo(t);
-                return new SimpleAuthenticationInfo(new SimplePrincipalCollection(u, "user"),
-                        t.getAccessToken());
+                return new SimpleAuthenticationInfo(new SimplePrincipalCollection(u, "user"), t.getAccessToken());
             } else {
                 throw new AccountException(ret.getMsg());
             }

@@ -28,6 +28,7 @@ import top.cheesetree.btx.framework.security.config.BtxSecurityProperties;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityEnum;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
 import top.cheesetree.btx.framework.security.model.SecurityMenuDTO;
+import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
 import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroFormFilter;
 import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroPermissionsFilter;
 import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroTokenFilter;
@@ -61,7 +62,7 @@ public class BtxShiroConfiguration {
     BtxShiroCasProperties btxShiroCasProperties;
     @Autowired
     @Lazy
-    IBtxSecurityPermissionService<SecurityMenuDTO, SecurityFuncDTO> btxSecurityPermissionService;
+    IBtxSecurityPermissionService<? extends SecurityMenuDTO, ? extends SecurityFuncDTO, ? extends SecurityRoleDTO> btxSecurityPermissionService;
 
     /**
      * 开启shiro aop注解支持.
@@ -115,7 +116,7 @@ public class BtxShiroConfiguration {
 
         //配置权限自动映射
         if (btxShiroProperties.isAutoPermission()) {
-            List<SecurityFuncDTO> funcs = btxSecurityPermissionService.getAllFunc();
+            List<? extends SecurityFuncDTO> funcs = btxSecurityPermissionService.getAllFunc();
             if (funcs != null) {
                 for (SecurityFuncDTO func : funcs) {
                     if (StringUtils.hasLength(func.getActionLink())) {
@@ -126,6 +127,7 @@ public class BtxShiroConfiguration {
         }
 
         switch (btxShiroProperties.getAuthType()) {
+            case EXT_TOKEN:
             case TOKEN:
                 filterMap.put("authc", new BtxSecurityShiroTokenFilter(btxShiroProperties.getTokenKey()));
                 break;

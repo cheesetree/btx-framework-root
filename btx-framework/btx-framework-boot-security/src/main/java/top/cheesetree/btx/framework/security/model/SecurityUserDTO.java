@@ -21,8 +21,9 @@ public abstract class SecurityUserDTO implements ValueObject {
     private String name;
     private String phone;
     private String email;
-    private List<SecurityGroupDTO> depts;
-    private List<SecurityFuncDTO> funcs;
+    private List<? extends SecurityGroupDTO> depts;
+    private List<? extends SecurityFuncDTO> funcs;
+    private List<? extends SecurityRoleDTO> roles;
 
     @Override
     public boolean equals(Object obj) {

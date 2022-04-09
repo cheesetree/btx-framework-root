@@ -3,6 +3,7 @@ package top.cheesetree.btx.framework.security.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import top.cheesetree.btx.framework.core.model.ValueObject;
 
 /**
  * @Author: van
@@ -12,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SecurityMenuDTO {
+public class SecurityMenuDTO implements ValueObject {
     private String menuId;
     private String menuName;
     private String menuUrl;

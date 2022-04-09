@@ -7,6 +7,6 @@ package top.cheesetree.btx.framework.security.constants;
  */
 public class BtxSecurityEnum {
     public enum AuthType {
-        SESSION, TOKEN, JWT, CAS
+        SESSION, TOKEN, JWT, CAS, EXT_TOKEN
     }
 }

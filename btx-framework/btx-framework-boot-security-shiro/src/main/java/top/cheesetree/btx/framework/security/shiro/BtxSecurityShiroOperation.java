@@ -42,6 +42,13 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
 
                 }
                 break;
+            case EXT_TOKEN:
+                if (args.length > 0) {
+                    t = new StatelessToken(args[0]);
+                } else {
+
+                }
+                break;
             case TOKEN:
             case SESSION:
             default:

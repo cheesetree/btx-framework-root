@@ -19,6 +19,7 @@ import top.cheesetree.btx.framework.security.IBtxSecurityPermissionService;
 import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
 import top.cheesetree.btx.framework.security.model.SecurityMenuDTO;
+import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
 import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityAuthUserDTO;
 import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityUserDTO;
@@ -40,7 +41,7 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
 
     @Autowired
     @Lazy
-    IBtxSecurityPermissionService<SecurityMenuDTO, SecurityFuncDTO> btxSecurityPermissionService;
+    IBtxSecurityPermissionService<? extends SecurityMenuDTO, ? extends SecurityFuncDTO, ? extends SecurityRoleDTO> btxSecurityPermissionService;
     @Autowired
     HttpServletRequest request;
     @Autowired
