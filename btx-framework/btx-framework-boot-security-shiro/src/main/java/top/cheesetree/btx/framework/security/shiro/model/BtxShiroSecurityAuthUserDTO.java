@@ -9,5 +9,5 @@ import top.cheesetree.btx.framework.security.model.SecurityAuthUserDTO;
  * @description TODO
  */
 @NoArgsConstructor
-public class BtxShiroSecurityAuthUserDTO extends SecurityAuthUserDTO {
+public class BtxShiroSecurityAuthUserDTO<U extends BtxShiroSecurityUserDTO, T extends AuthTokenInfo> extends SecurityAuthUserDTO<U, T> {
 }

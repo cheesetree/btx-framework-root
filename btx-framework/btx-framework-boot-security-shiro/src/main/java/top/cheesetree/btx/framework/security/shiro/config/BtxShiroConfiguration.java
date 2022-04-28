@@ -19,6 +19,7 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -29,10 +30,7 @@ import top.cheesetree.btx.framework.security.constants.BtxSecurityEnum;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
 import top.cheesetree.btx.framework.security.model.SecurityMenuDTO;
 import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
-import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroFormFilter;
-import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroPermissionsFilter;
-import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroTokenFilter;
-import top.cheesetree.btx.framework.security.shiro.filter.BtxSecurityShiroUserFilter;
+import top.cheesetree.btx.framework.security.shiro.filter.*;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
 import top.cheesetree.btx.framework.security.shiro.realm.BtxSecurityAuthorizingRealm;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessDefaultSubjectFactory;
@@ -40,6 +38,7 @@ import top.cheesetree.btx.framework.security.shiro.support.cas.BtxSecurityCasAut
 import top.cheesetree.btx.framework.security.shiro.support.cas.BtxSecurityShiroCasFilter;
 import top.cheesetree.btx.framework.security.shiro.support.cas.BtxShiroCasProperties;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import java.util.*;
 
@@ -49,7 +48,8 @@ import java.util.*;
  * @Description: TODO
  */
 @Configuration
-@EnableConfigurationProperties({BtxShiroProperties.class, BtxShiroCacheProperties.class, BtxShiroCasProperties.class})
+@EnableConfigurationProperties({BtxShiroProperties.class, BtxShiroCacheProperties.class, BtxShiroCasProperties.class,
+        BtxShiroCorsProperties.class})
 @Slf4j
 public class BtxShiroConfiguration {
     @Autowired
@@ -61,8 +61,12 @@ public class BtxShiroConfiguration {
     @Autowired
     BtxShiroCasProperties btxShiroCasProperties;
     @Autowired
+    BtxShiroCorsProperties btxShiroCorsProperties;
+    @Autowired
     @Lazy
     IBtxSecurityPermissionService<? extends SecurityMenuDTO, ? extends SecurityFuncDTO, ? extends SecurityRoleDTO> btxSecurityPermissionService;
+    @Autowired
+    ShiroFilterFactoryBean shiroFilterFactoryBean;
 
     /**
      * 开启shiro aop注解支持.
@@ -83,6 +87,7 @@ public class BtxShiroConfiguration {
 
         //设置过滤器
         Map<String, Filter> filterMap = shiroFilterFactoryBean.getFilters();
+
         filterMap.put("user", new BtxSecurityShiroUserFilter());
         filterMap.put("perms", new BtxSecurityShiroPermissionsFilter());
 
@@ -184,7 +189,9 @@ public class BtxShiroConfiguration {
 
         List<Realm> rs = new ArrayList<>();
         rs.add(btxSecurityAuthorizingRealm());
-        rs.add(btxSecurityCasAuthorizingRealm());
+        if (BtxSecurityEnum.AuthType.CAS.equals(btxShiroProperties.getAuthType())) {
+            rs.add(btxSecurityCasAuthorizingRealm());
+        }
 
         securityManager.setAuthenticator(authenticator());
         securityManager.setRealms(rs);
@@ -222,6 +229,7 @@ public class BtxShiroConfiguration {
         return r;
     }
 
+    @ConditionalOnProperty(value = "btx.security.shiro.cache.auth-type", havingValue = "CAS")
     @Bean
     public BtxSecurityCasAuthorizingRealm btxSecurityCasAuthorizingRealm() {
         BtxSecurityCasAuthorizingRealm r = new BtxSecurityCasAuthorizingRealm(new BtxNoAuthCredentialsMatcher(),
@@ -236,4 +244,17 @@ public class BtxShiroConfiguration {
 
         return r;
     }
+
+    @ConditionalOnProperty(value = "btx.security.shiro.cors.enabled", havingValue = "true")
+    @Bean
+    public FilterRegistrationBean corsFilterRegistrationBean() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setDispatcherTypes(DispatcherType.REQUEST);
+        registration.setFilter(new BtxSecurityShiroCorsFilter(btxShiroCorsProperties));
+        registration.addUrlPatterns("/*");
+        registration.setName("CorsFilter");
+        registration.setOrder(1);
+        return registration;
+    }
+
 }

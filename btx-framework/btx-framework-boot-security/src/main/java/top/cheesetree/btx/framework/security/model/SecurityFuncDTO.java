@@ -13,7 +13,7 @@ import top.cheesetree.btx.framework.core.model.ValueObject;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SecurityFuncDTO implements ValueObject {
+public abstract class SecurityFuncDTO implements ValueObject {
     private String funcCode;
     private String funcName;
     private String funcDesc;

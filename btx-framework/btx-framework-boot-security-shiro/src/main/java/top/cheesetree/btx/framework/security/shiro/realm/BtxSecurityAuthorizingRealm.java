@@ -1,5 +1,6 @@
 package top.cheesetree.btx.framework.security.shiro.realm;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -38,7 +39,7 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
 
     @Autowired
     @Lazy
-    private IBtxSecurityUserService<BtxShiroSecurityUserDTO> btxSecurityUserService;
+    private IBtxSecurityUserService<? extends BtxShiroSecurityUserDTO> btxSecurityUserService;
 
     public BtxSecurityAuthorizingRealm(BtxNoAuthCredentialsMatcher btxNoAuthCredentialsMatcher) {
         super(btxNoAuthCredentialsMatcher);
@@ -95,7 +96,7 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
         StatelessToken token = (StatelessToken) authenticationToken;
 
         if (StringUtils.hasLength(token.getUsername()) && token.getCredentials() != null) {
-            CommJSON<BtxShiroSecurityUserDTO> ret = btxSecurityUserService.login(token.getUsername(),
+            CommJSON<? extends BtxShiroSecurityUserDTO> ret = btxSecurityUserService.login(token.getUsername(),
                     token.getCredentials().toString());
             if (ret.checkSuc()) {
                 BtxShiroSecurityAuthUserDTO u = new BtxShiroSecurityAuthUserDTO();
@@ -105,7 +106,7 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
                 u.setAuthinfo(t);
                 return new SimpleAuthenticationInfo(new SimplePrincipalCollection(u, "user"), t.getAccessToken());
             } else {
-                throw new AccountException(ret.getMsg());
+                throw new AccountException(JSON.toJSONString(ret));
             }
         } else {
             throw new AccountException(BtxSecurityMessage.SECURIT_UNLOGIN_ERROR.getMessage());

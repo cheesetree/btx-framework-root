@@ -13,7 +13,7 @@ import top.cheesetree.btx.framework.core.model.ValueObject;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SecurityMenuDTO implements ValueObject {
+public abstract class SecurityMenuDTO implements ValueObject {
     private String menuId;
     private String menuName;
     private String menuUrl;

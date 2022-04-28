@@ -1,5 +1,7 @@
 package top.cheesetree.btx.framework.security.shiro;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -9,9 +11,9 @@ import org.springframework.stereotype.Component;
 import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.IBtxSecurityOperation;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
+import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.config.BtxShiroProperties;
 import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityAuthUserDTO;
-import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessToken;
 import top.cheesetree.btx.framework.security.shiro.support.cas.CasToken;
 
@@ -66,7 +68,12 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
             ret = new CommJSON<>((BtxShiroSecurityAuthUserDTO) SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal());
         } catch (AuthenticationException e) {
             log.warn("login error:{}", e);
-            ret = new CommJSON<>(BtxSecurityMessage.SECURIT_LOGIN_ERROR.getCode(), e.getMessage());
+            String errmsg = e.getMessage();
+            if (JSONValidator.from(errmsg).getType().equals(CommJSON.class)) {
+                ret = JSON.parseObject(errmsg, CommJSON.class);
+            } else {
+                ret = new CommJSON<>(BtxSecurityMessage.SECURIT_LOGIN_ERROR.getCode(), e.getMessage());
+            }
         }
 
         return ret;
@@ -81,11 +88,11 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
 
     @Override
     public String getUserId() {
-        return ((BtxShiroSecurityUserDTO) SecurityUtils.getSubject().getPrincipal()).getUid();
+        return getUserInfo().getUid();
     }
 
     @Override
-    public BtxShiroSecurityUserDTO getUserInfo() {
-        return (BtxShiroSecurityUserDTO) SecurityUtils.getSubject().getPrincipal();
+    public <T extends SecurityUserDTO> T getUserInfo() {
+        return (T) (((BtxShiroSecurityAuthUserDTO) SecurityUtils.getSubject().getPrincipal()).getUser());
     }
 }
