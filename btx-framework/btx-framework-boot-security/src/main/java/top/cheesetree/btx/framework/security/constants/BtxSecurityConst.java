@@ -8,10 +8,5 @@ import top.cheesetree.btx.framework.core.constants.BtxConsts;
  * @Description: TODO
  */
 public interface BtxSecurityConst extends BtxConsts {
-    String SESSION_ID = "S_ID";
-    String SESSION_USER = "S_USER";
-    String SESSION_USER_NAME = "S_USER_NAME";
-    String SESSION_LOGIN_NAME = "S_LOGIN_NAME";
-    String SESSION_USER_FUNCSTR = "S_USER_FUNCSTR";
     String AUTHORIZATION_KEY = "Authorization";
 }

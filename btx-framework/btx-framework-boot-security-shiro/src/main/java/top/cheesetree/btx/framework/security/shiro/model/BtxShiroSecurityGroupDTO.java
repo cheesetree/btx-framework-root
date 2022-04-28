@@ -3,17 +3,15 @@ package top.cheesetree.btx.framework.security.shiro.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import top.cheesetree.btx.framework.core.model.ValueObject;
+import top.cheesetree.btx.framework.security.model.SecurityGroupDTO;
 
 /**
  * @author van
- * @date 2022/2/18 08:58
+ * @date 2022/4/14 09:03
  * @description TODO
  */
 @Getter
 @Setter
 @NoArgsConstructor
-public class AuthTokenInfo implements ValueObject {
-    private String accessToken;
-    private String refreshToken;
+public class BtxShiroSecurityGroupDTO extends SecurityGroupDTO {
 }

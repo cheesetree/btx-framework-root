@@ -2,7 +2,10 @@ package top.cheesetree.btx.framework.security;
 
 import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.model.SecurityAuthUserDTO;
+import top.cheesetree.btx.framework.security.model.SecurityMenuDTO;
 import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
+
+import java.util.List;
 
 /**
  * @Author: van
@@ -18,4 +21,7 @@ public interface IBtxSecurityOperation {
     String getUserId();
 
     <T extends SecurityUserDTO> T getUserInfo();
+
+    List<? extends SecurityMenuDTO> getUserMenus();
+
 }

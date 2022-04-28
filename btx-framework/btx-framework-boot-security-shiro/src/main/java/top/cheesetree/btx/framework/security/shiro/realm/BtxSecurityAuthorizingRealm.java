@@ -15,12 +15,9 @@ import top.cheesetree.btx.framework.security.IBtxSecurityPermissionService;
 import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
-import top.cheesetree.btx.framework.security.model.SecurityMenuDTO;
 import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
-import top.cheesetree.btx.framework.security.shiro.model.AuthTokenInfo;
-import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityAuthUserDTO;
-import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityUserDTO;
+import top.cheesetree.btx.framework.security.shiro.model.*;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessToken;
 
 import java.util.HashSet;
@@ -35,7 +32,8 @@ import java.util.Set;
 public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     @Autowired
     @Lazy
-    IBtxSecurityPermissionService<? extends SecurityMenuDTO, ? extends SecurityFuncDTO, ? extends SecurityRoleDTO> btxSecurityPermissionService;
+    IBtxSecurityPermissionService<? extends BtxShiroSecurityMenuDTO, ? extends BtxShiroSecurityFuncDTO, ?
+            extends BtxShiroSecurityRoleDTO> btxSecurityPermissionService;
 
     @Autowired
     @Lazy

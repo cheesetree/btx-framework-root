@@ -10,5 +10,5 @@ import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 public interface SecurityController {
     String getUserId();
 
-    SecurityUserDTO getUser();
+    <T extends SecurityUserDTO> T getUser();
 }
