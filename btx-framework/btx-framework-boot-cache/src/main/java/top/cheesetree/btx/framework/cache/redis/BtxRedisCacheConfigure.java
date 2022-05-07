@@ -9,20 +9,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
-import top.cheesetree.btx.framework.boot.spring.ApplicationBeanFactory;
-import top.cheesetree.btx.framework.cache.annotation.BtxCacheable;
 
-import java.time.Duration;
-import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +30,7 @@ import java.util.Map;
 @Configuration
 @EnableConfigurationProperties({BtxRedisCacheProperties.class, CacheProperties.class})
 @Slf4j
-public class BtxRedisCacheConfigure extends CachingConfigurerSupport implements ApplicationListener<ContextRefreshedEvent> {
+public class BtxRedisCacheConfigure extends CachingConfigurerSupport {
     @Autowired
     RedisConnectionFactory redisConnectionFactory;
     @Autowired
@@ -80,24 +73,4 @@ public class BtxRedisCacheConfigure extends CachingConfigurerSupport implements 
         return new RedisTemplateFactoryImpl();
     }
 
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        Map<String, Object> beanWhithAnnotation =
-                ApplicationBeanFactory.getApplicationContext().getBeansWithAnnotation(BtxCacheable.class);
-        beanWhithAnnotation.forEach((k, v) -> {
-            BtxCacheable an = v.getClass().getAnnotation(BtxCacheable.class);
-            Arrays.stream(an.cacheNames()).forEach((name) -> {
-                if (btxRedisCacheProperties.getCaches().get(name) == null) {
-                    BtxRedisConfigProperties c = new BtxRedisConfigProperties();
-                    c.setKeyPrefix(name);
-                    try {
-                        c.setTimeToLive(Duration.parse(an.duration()));
-                        BtxRedisCacheManager.CONFIG_MAP.put(name, c);
-                    } catch (DateTimeParseException err) {
-                        log.error("缓存[{}]ttl不能正常解析,ttl设置失败", an.duration());
-                    }
-                }
-            });
-        });
-    }
 }
