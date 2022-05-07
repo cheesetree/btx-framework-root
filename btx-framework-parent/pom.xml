@@ -27,7 +27,7 @@
         <com.alibaba.fastjson.version>1.2.78</com.alibaba.fastjson.version>
         <mybatis-plus-boot.version>3.5.1</mybatis-plus-boot.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
-        <cn.hutool.version>5.7.20</cn.hutool.version>
+        <cn.hutool.version>5.7.22</cn.hutool.version>
         <org.apache.shiro.version>1.8.0</org.apache.shiro.version>
         <org.jasig.cas.client.version>3.6.4</org.jasig.cas.client.version>
         <com.fasterxml.jackson.version>2.13.1</com.fasterxml.jackson.version>
