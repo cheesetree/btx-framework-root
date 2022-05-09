@@ -95,4 +95,5 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
     public <T extends SecurityUserDTO> T getUserInfo() {
         return (T) (((BtxShiroSecurityAuthUserDTO) SecurityUtils.getSubject().getPrincipal()).getUser());
     }
+
 }
