@@ -65,8 +65,6 @@ public class BtxShiroConfiguration {
     @Autowired
     @Lazy
     IBtxSecurityPermissionService<? extends SecurityMenuDTO, ? extends SecurityFuncDTO, ? extends SecurityRoleDTO> btxSecurityPermissionService;
-    @Autowired
-    ShiroFilterFactoryBean shiroFilterFactoryBean;
 
     /**
      * 开启shiro aop注解支持.
