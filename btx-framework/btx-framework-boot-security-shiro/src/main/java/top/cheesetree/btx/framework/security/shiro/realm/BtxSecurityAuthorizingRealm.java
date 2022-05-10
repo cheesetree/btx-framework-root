@@ -93,9 +93,9 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         StatelessToken token = (StatelessToken) authenticationToken;
 
-        if (StringUtils.hasLength(token.getUsername()) && token.getCredentials() != null) {
+        if (StringUtils.hasLength(token.getUsername()) && token.getPassword() != null) {
             CommJSON<? extends BtxShiroSecurityUserDTO> ret = btxSecurityUserService.login(token.getUsername(),
-                    token.getCredentials().toString());
+                    new String(token.getPassword()));
             if (ret.checkSuc()) {
                 BtxShiroSecurityAuthUserDTO u = new BtxShiroSecurityAuthUserDTO();
                 u.setUser(ret.getResult());
@@ -107,7 +107,7 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
                 throw new AccountException(JSON.toJSONString(ret));
             }
         } else {
-            throw new AccountException(BtxSecurityMessage.SECURIT_UNLOGIN_ERROR.getMessage());
+            throw new AccountException(BtxSecurityMessage.SECURIT_LOGIN_ERROR.getMessage());
         }
 
     }

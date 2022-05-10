@@ -1,5 +1,7 @@
 package top.cheesetree.btx.framework.security.shiro.config;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONValidator;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.UnauthenticatedException;
@@ -9,9 +11,8 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 
@@ -23,26 +24,34 @@ import javax.servlet.http.HttpServletResponse;
  * @Description: TODO
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@ControllerAdvice
+@RestControllerAdvice
 public class BtxShiroExceptionHandler {
     @Autowired
     HttpServletResponse response;
 
     @ExceptionHandler({UnauthorizedException.class, AuthorizationException.class})
-    @ResponseBody
     public ResponseEntity<CommJSON> authrizeErrorHandler(Exception ex) {
         CommJSON ret = new CommJSON(BtxSecurityMessage.SECURIT_UNAUTH_ERROR);
-        ret.setMsg(ex.getMessage());
+        if (JSONValidator.from(ex.getMessage()).validate()) {
+            ret = JSON.parseObject(ex.getMessage(), CommJSON.class);
+        } else {
+            ret.setMsg(ex.getMessage());
+        }
 
         return new ResponseEntity<>(ret, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler({UnauthenticatedException.class, AuthenticationException.class})
-    @ResponseBody
     public ResponseEntity<CommJSON> authenterrorHandler(Exception ex) {
         CommJSON ret = new CommJSON(BtxSecurityMessage.SECURIT_UNLOGIN_ERROR);
-        ret.setMsg(ex.getMessage());
+
+        if (JSONValidator.from(ex.getMessage()).validate()) {
+            ret = JSON.parseObject(ex.getMessage(), CommJSON.class);
+        } else {
+            ret.setMsg(ex.getMessage());
+        }
 
         return new ResponseEntity<>(ret, HttpStatus.UNAUTHORIZED);
     }
+
 }

@@ -69,7 +69,7 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
         } catch (AuthenticationException e) {
             log.warn("login error:{}", e);
             String errmsg = e.getMessage();
-            if (JSONValidator.from(errmsg).getType().equals(CommJSON.class)) {
+            if (JSONValidator.from(errmsg).validate()) {
                 ret = JSON.parseObject(errmsg, CommJSON.class);
             } else {
                 ret = new CommJSON<>(BtxSecurityMessage.SECURIT_LOGIN_ERROR.getCode(), e.getMessage());
