@@ -53,7 +53,7 @@ public class BtxSecurityShiroCorsFilter extends OncePerRequestFilter {
                         ));
 
 
-        if (RequestMethod.OPTIONS.equals(request.getMethod())) {
+        if (RequestMethod.OPTIONS.toString().equals(request.getMethod())) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
             return;
         } else {

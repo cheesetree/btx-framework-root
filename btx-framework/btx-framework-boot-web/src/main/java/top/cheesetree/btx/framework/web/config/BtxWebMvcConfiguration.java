@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -23,6 +24,7 @@ import top.cheesetree.btx.framework.web.http.CustomTrustManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -42,13 +44,13 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//        Iterator<HttpMessageConverter<?>> iterator = converters.iterator();
-//        while(iterator.hasNext()){
-//            HttpMessageConverter<?> converter = iterator.next();
-//            if(converter instanceof MappingJackson2HttpMessageConverter){
-//                iterator.remove();
-//            }
-//        }
+        Iterator<HttpMessageConverter<?>> iterator = converters.iterator();
+        while (iterator.hasNext()) {
+            HttpMessageConverter<?> converter = iterator.next();
+            if (converter instanceof MappingJackson2HttpMessageConverter) {
+                iterator.remove();
+            }
+        }
 
         //创建fastJson消息转换器
         FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
