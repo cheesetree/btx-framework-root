@@ -1,7 +1,7 @@
 package top.cheesetree.btx.framework.security.shiro.filter;
 
 import org.apache.shiro.web.servlet.OncePerRequestFilter;
-import org.apache.tomcat.websocket.Constants;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 import top.cheesetree.btx.framework.security.shiro.config.BtxShiroCorsProperties;
@@ -34,16 +34,20 @@ public class BtxSecurityShiroCorsFilter extends OncePerRequestFilter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
         response.setHeader(BtxSecurityShiroConst.XDOMAIN_REQUEST_ALLOWED, "1");//允许COOKIE共享
-        response.setHeader(BtxSecurityShiroConst.ACCESS_CONTROL_ALLOW_ORIGIN,
-                btxShiroCorsProperties.getOrigins().length > 0 ? String.join(",",
-                        btxShiroCorsProperties.getOrigins()) : request.getHeader(Constants.ORIGIN_HEADER_NAME));
+        if (btxShiroCorsProperties.getOrigins().isEmpty()) {
+            response.setHeader(BtxSecurityShiroConst.ACCESS_CONTROL_ALLOW_ORIGIN,
+                    request.getHeader(HttpHeaders.ORIGIN));
+        } else if (btxShiroCorsProperties.getOrigins().contains(request.getHeader(HttpHeaders.ORIGIN))) {
+            response.setHeader(BtxSecurityShiroConst.ACCESS_CONTROL_ALLOW_ORIGIN,
+                    request.getHeader(HttpHeaders.ORIGIN));
+        }
 
         response.setHeader(BtxSecurityShiroConst.ACCESS_CONTROL_ALLOW_CREDENTIALS,
                 btxShiroCorsProperties.getAllowCredentials());
         //允许请求方式
         response.setHeader(BtxSecurityShiroConst.ACCESS_CONTROL_ALLOW_METHODS,
                 btxShiroCorsProperties.getAllowHeaders().length > 0 ? String.join(",",
-                btxShiroCorsProperties.getAllowHeaders()) : request.getMethod());
+                        btxShiroCorsProperties.getAllowHeaders()) : request.getMethod());
 
         response.setHeader(BtxSecurityShiroConst.ACCESS_CONTROL_ALLOW_HEADERS,
                 btxShiroCorsProperties.getAllowHeaders().length > 0 ?
