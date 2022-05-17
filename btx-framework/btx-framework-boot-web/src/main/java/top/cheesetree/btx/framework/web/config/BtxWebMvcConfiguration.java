@@ -83,18 +83,12 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
         //WriteMapNullValue：是否输出值为null的字段,默认为false
         fastJsonConfig.setSerializerFeatures(
                 SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteMapNullValue,
-                SerializerFeature.WriteNullListAsEmpty,
-                SerializerFeature.WriteNullStringAsEmpty,
                 SerializerFeature.WriteNullBooleanAsFalse
         );
 
         if (btxWebProperties.isWritedateusedateformat()) {
             fastJsonConfig.setSerializerFeatures(
                     SerializerFeature.DisableCircularReferenceDetect,
-                    SerializerFeature.WriteMapNullValue,
-                    SerializerFeature.WriteNullListAsEmpty,
-                    SerializerFeature.WriteNullStringAsEmpty,
                     SerializerFeature.WriteNullBooleanAsFalse,
                     SerializerFeature.WriteDateUseDateFormat
             );
@@ -141,9 +135,6 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
         fastJsonConfig.setSerializerFeatures(
                 SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteMapNullValue,
-                SerializerFeature.WriteNullListAsEmpty,
-                SerializerFeature.WriteNullStringAsEmpty,
                 SerializerFeature.WriteNullBooleanAsFalse
         );
         fastConverter.setFastJsonConfig(fastJsonConfig);
@@ -169,9 +160,6 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
         fastJsonConfig.setSerializerFeatures(
                 SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteMapNullValue,
-                SerializerFeature.WriteNullListAsEmpty,
-                SerializerFeature.WriteNullStringAsEmpty,
                 SerializerFeature.WriteNullBooleanAsFalse
         );
         fastConverter.setFastJsonConfig(fastJsonConfig);

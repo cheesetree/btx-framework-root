@@ -51,7 +51,7 @@ public class CommJSON<T> implements ValueObject {
     }
 
     public boolean checkSuc() {
-        return this.ret.equals(BtxMessage.SUCCESS.getCode());
+        return BtxMessage.SUCCESS.getCode().equals(this.ret);
     }
 
 
