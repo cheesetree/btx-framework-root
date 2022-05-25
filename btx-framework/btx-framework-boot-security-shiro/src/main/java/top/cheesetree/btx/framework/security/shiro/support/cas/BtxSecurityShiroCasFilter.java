@@ -31,7 +31,7 @@ import java.net.URLEncoder;
  */
 @Slf4j
 public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
-    private String loginurl;
+    private final String loginurl;
 
     public BtxSecurityShiroCasFilter(String loginurl) {
         this.loginurl = loginurl;
@@ -88,18 +88,19 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                 log.error("Cannot redirect to the default success url", e);
             }
         } else {
+            String url = null;
             try {
                 HttpServletRequest req = (HttpServletRequest) request;
                 StringBuffer reqUrlStr = req.getRequestURL();
                 if (StringUtils.hasLength(req.getQueryString())) {
                     reqUrlStr.append("?").append(req.getQueryString());
                 }
-                loginurl = String.format("%s?service=%s", loginurl,
+                url = String.format("%s?service=%s", loginurl,
                         URLEncoder.encode(reqUrlStr.toString(),
                                 BtxConsts.DEF_ENCODE.toString()));
-                WebUtils.issueRedirect(request, response, loginurl);
+                WebUtils.issueRedirect(request, response, url);
             } catch (IOException e) {
-                log.error("Cannot redirect to failure url : {}", loginurl, e);
+                log.error("Cannot redirect to failure url : {}", url, e);
             }
         }
         return false;

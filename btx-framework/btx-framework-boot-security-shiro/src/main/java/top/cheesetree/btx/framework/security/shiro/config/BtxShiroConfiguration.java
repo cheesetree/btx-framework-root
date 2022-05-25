@@ -227,7 +227,7 @@ public class BtxShiroConfiguration {
         return r;
     }
 
-    @ConditionalOnProperty(value = "btx.security.shiro.cache.auth-type", havingValue = "CAS")
+    @ConditionalOnProperty(value = "btx.security.shiro.auth-type", havingValue = "CAS")
     @Bean
     public BtxSecurityCasAuthorizingRealm btxSecurityCasAuthorizingRealm() {
         BtxSecurityCasAuthorizingRealm r = new BtxSecurityCasAuthorizingRealm(new BtxNoAuthCredentialsMatcher(),
