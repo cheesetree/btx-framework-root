@@ -1,6 +1,9 @@
 package top.cheesetree.btx.framework.security.shiro.support.cas;
 
-import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -18,11 +21,8 @@ import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.IBtxSecurityPermissionService;
 import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
-import top.cheesetree.btx.framework.security.model.SecurityMenuDTO;
-import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
-import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityAuthUserDTO;
-import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityUserDTO;
+import top.cheesetree.btx.framework.security.shiro.model.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,15 +41,16 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
 
     @Autowired
     @Lazy
-    IBtxSecurityPermissionService<? extends SecurityMenuDTO, ? extends SecurityFuncDTO, ? extends SecurityRoleDTO> btxSecurityPermissionService;
+    IBtxSecurityPermissionService<? extends BtxShiroSecurityMenuDTO, ? extends BtxShiroSecurityFuncDTO, ?
+            extends BtxShiroSecurityRoleDTO> btxSecurityPermissionService;
     @Autowired
     HttpServletRequest request;
     @Autowired
     HttpServletResponse response;
 
-    @Autowired(required = false)
+    @Autowired
     @Lazy
-    private IBtxSecurityUserService<BtxShiroSecurityUserDTO> btxSecurityUserService;
+    private IBtxSecurityUserService<? extends BtxShiroSecurityUserDTO> btxSecurityUserService;
 
     public BtxSecurityCasAuthorizingRealm(BtxNoAuthCredentialsMatcher btxNoAuthCredentialsMatcher,
                                           String casServerUrlPrefix,
@@ -128,14 +129,14 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
             String userId = casPrincipal.getName();
 
             if (btxSecurityUserService != null) {
-                CommJSON<BtxShiroSecurityUserDTO> ret = btxSecurityUserService.getUserInfo(userId);
+                CommJSON<? extends BtxShiroSecurityUserDTO> ret = btxSecurityUserService.getUserInfo(userId);
                 if (ret.checkSuc()) {
                     BtxShiroSecurityAuthUserDTO u = new BtxShiroSecurityAuthUserDTO();
                     u.setUser(ret.getResult());
                     return new SimpleAuthenticationInfo(new SimplePrincipalCollection(u, "user"),
                             ticket);
                 } else {
-                    throw new AccountException(ret.getMsg());
+                    throw new AuthenticationException(ret.getMsg());
                 }
             } else {
                 BtxShiroSecurityAuthUserDTO u = new BtxShiroSecurityAuthUserDTO();
