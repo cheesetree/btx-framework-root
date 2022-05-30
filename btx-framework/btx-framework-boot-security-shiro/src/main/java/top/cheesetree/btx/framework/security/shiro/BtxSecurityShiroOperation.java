@@ -8,8 +8,10 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.IBtxSecurityOperation;
+import top.cheesetree.btx.framework.security.constants.BtxSecurityEnum;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.config.BtxShiroProperties;
@@ -33,8 +35,13 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
         CommJSON<BtxShiroSecurityAuthUserDTO> ret;
 
         AuthenticationToken t = null;
+        BtxSecurityEnum.AuthType authtype = btxShiroProperties.getAuthType();
 
-        switch (btxShiroProperties.getAuthType()) {
+        if (args.length > 2 && StringUtils.hasLength(args[2])) {
+            authtype = BtxSecurityEnum.AuthType.valueOf(args[2]);
+        }
+
+        switch (authtype) {
             case JWT:
                 break;
             case CAS:
