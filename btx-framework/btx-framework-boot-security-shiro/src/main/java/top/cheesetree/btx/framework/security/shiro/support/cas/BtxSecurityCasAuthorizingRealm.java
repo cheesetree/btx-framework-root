@@ -1,5 +1,7 @@
 package top.cheesetree.btx.framework.security.shiro.support.cas;
 
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -34,6 +36,8 @@ import java.util.Set;
  * @date 2022/2/21 09:20
  * @description TODO
  */
+
+@Slf4j
 public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
     private TicketValidator ticketValidator;
     private String serverName;
@@ -112,12 +116,16 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
 
         AttributePrincipal casPrincipal = null;
         String ticket = (String) casToken.getCredentials();
+
+        log.debug("cas ticket->{}", ticket);
+
         if (StringUtils.hasText(ticket)) {
             try {
                 Assertion casAssertion = ticketValidator.validate(ticket, CommonUtils.constructServiceUrl(request,
                         response, null, this.serverName, this.protocol.getServiceParameterName(),
                         this.protocol.getArtifactParameterName(), true));
                 casPrincipal = casAssertion.getPrincipal();
+                log.debug("cas ticket validate success->{}", JSON.toJSON(casAssertion));
             } catch (TicketValidationException e) {
                 throw new CasAuthenticationException("Unable to validate ticket [" + ticket + "]", e);
             }
@@ -130,6 +138,7 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
 
             if (btxSecurityUserService != null) {
                 CommJSON<? extends BtxShiroSecurityUserDTO> ret = btxSecurityUserService.getUserInfo(userId);
+                log.debug("cas ticket to userinfo->", JSON.toJSON(ret));
                 if (ret.checkSuc()) {
                     BtxShiroSecurityAuthUserDTO u = new BtxShiroSecurityAuthUserDTO();
                     u.setUser(ret.getResult());

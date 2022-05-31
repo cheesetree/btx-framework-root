@@ -88,6 +88,8 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                 log.error("Cannot redirect to the default success url", e);
             }
         } else {
+            log.debug("cas check error");
+
             String url = null;
             try {
                 HttpServletRequest req = (HttpServletRequest) request;
