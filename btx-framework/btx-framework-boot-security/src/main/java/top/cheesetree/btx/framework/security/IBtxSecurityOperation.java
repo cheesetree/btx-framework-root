@@ -1,6 +1,7 @@
 package top.cheesetree.btx.framework.security;
 
 import top.cheesetree.btx.framework.core.json.CommJSON;
+import top.cheesetree.btx.framework.core.model.ValueObject;
 import top.cheesetree.btx.framework.security.model.SecurityAuthUserDTO;
 import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 
@@ -18,5 +19,7 @@ public interface IBtxSecurityOperation {
     String getUserId();
 
     <T extends SecurityUserDTO> T getUserInfo();
+
+    <T extends ValueObject> T getAuthInfo();
 
 }

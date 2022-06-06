@@ -15,6 +15,7 @@ import top.cheesetree.btx.framework.security.constants.BtxSecurityEnum;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.config.BtxShiroProperties;
+import top.cheesetree.btx.framework.security.shiro.model.AuthTokenInfo;
 import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityAuthUserDTO;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessToken;
 import top.cheesetree.btx.framework.security.shiro.support.cas.CasToken;
@@ -101,6 +102,12 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
     @Override
     public <T extends SecurityUserDTO> T getUserInfo() {
         return (T) (((BtxShiroSecurityAuthUserDTO) SecurityUtils.getSubject().getPrincipal()).getUser());
+    }
+
+    @Override
+    public AuthTokenInfo getAuthInfo() {
+        return (AuthTokenInfo) (((BtxShiroSecurityAuthUserDTO) SecurityUtils.getSubject().getPrincipal()).getAuthinfo());
+
     }
 
 }
