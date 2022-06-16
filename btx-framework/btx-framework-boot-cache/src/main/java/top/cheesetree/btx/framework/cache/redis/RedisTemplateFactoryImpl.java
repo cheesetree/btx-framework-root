@@ -137,7 +137,7 @@ public class RedisTemplateFactoryImpl {
 
         @Override
         public int hashCode() {
-            return Objects.hash(keyClass, valueClass, needprefix);
+            return Objects.hash(keyClass, valueClass, needprefix, btxRedisSerializer);
         }
     }
 
