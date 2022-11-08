@@ -93,6 +93,7 @@ public class RedisTemplateFactoryImpl {
                         btxRedisSerializer.setValueSerializer(new GenericFastJsonRedisSerializer());
                     }
                 }
+                btxRedisSerializer.setHashValueSerializer(btxRedisSerializer.getValueSerializer());
 
                 result.setValueSerializer(btxRedisSerializer.getValueSerializer());
                 result.setKeySerializer(btxRedisSerializer.getKeySerializer());

@@ -20,18 +20,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--spring framewwork-->
-        <spring-boot.version>2.6.6</spring-boot.version>
+        <spring-boot.version>2.6.11</spring-boot.version>
         <!--spring framewwork-->
 
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
         <com.alibaba.fastjson.version>1.2.83</com.alibaba.fastjson.version>
         <mybatis-plus-boot.version>3.5.1</mybatis-plus-boot.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
-        <cn.hutool.version>5.7.22</cn.hutool.version>
+        <cn.hutool.version>5.8.6</cn.hutool.version>
         <org.apache.shiro.version>1.8.0</org.apache.shiro.version>
         <org.jasig.cas.client.version>3.6.4</org.jasig.cas.client.version>
         <com.fasterxml.jackson.version>2.13.1</com.fasterxml.jackson.version>
         <okhttp.version>4.9.3</okhttp.version>
+        <org.yaml.snakeyaml.version>1.32</org.yaml.snakeyaml.version>
     </properties>
 
     <dependencyManagement>
@@ -47,7 +48,6 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -98,6 +98,11 @@
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${org.yaml.snakeyaml.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

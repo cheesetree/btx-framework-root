@@ -16,7 +16,6 @@
 
     <packaging>pom</packaging>
     <modules>
-        <module>btx-idgenerator</module>
         <module>btx-archetype</module>
         <module>btx-scheduler</module>
         <module>btx-mail</module>
@@ -29,11 +28,17 @@
     </properties>
 
     <dependencies>
-
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>top.cheesetree.btx.framework</groupId>
+                <artifactId>btx-framework-dependencies</artifactId>
+                <version>${project.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

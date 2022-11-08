@@ -43,7 +43,7 @@ public class BtxRedisCacheManager extends RedisCacheManager implements BtxCacheM
 
         if (Boolean.TRUE.equals(defaultCacheConfig.getUseKeyPrefix()) && defaultCacheConfig.getKeyPrefix() != null && !defaultCacheConfig.getKeyPrefix().isEmpty()) {
             redisCacheConfiguration =
-                    redisCacheConfiguration.computePrefixWith(cacheName -> defaultCacheConfig.getKeyPrefix() + cacheName + "::");
+                    redisCacheConfiguration.computePrefixWith(cacheName -> defaultCacheConfig.getKeyPrefix() + cacheName + ":");
         }
 
         if (Boolean.FALSE.equals(defaultCacheConfig.getCacheNullValues())) {
