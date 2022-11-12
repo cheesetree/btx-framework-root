@@ -16,6 +16,7 @@
 
     <packaging>pom</packaging>
     <modules>
+        <module>btx-archetype</module>
         <module>btx-scheduler</module>
         <module>btx-mail</module>
         <module>btx-dts</module>
