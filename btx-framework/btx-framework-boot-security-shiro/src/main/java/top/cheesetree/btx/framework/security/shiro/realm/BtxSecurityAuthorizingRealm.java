@@ -16,6 +16,7 @@ import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
 import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
+import top.cheesetree.btx.framework.security.shiro.config.BtxShiroProperties;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
 import top.cheesetree.btx.framework.security.shiro.model.*;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessToken;
@@ -39,10 +40,15 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     @Lazy
     private IBtxSecurityUserService<? extends BtxShiroSecurityUserDTO> btxSecurityUserService;
 
+    @Autowired
+    @Lazy
+    private BtxShiroProperties btxShiroProperties;
+
     public BtxSecurityAuthorizingRealm(BtxNoAuthCredentialsMatcher btxNoAuthCredentialsMatcher) {
         super(btxNoAuthCredentialsMatcher);
         this.setAuthenticationTokenClass(StatelessToken.class);
     }
+
 
     @Override
     public boolean supports(AuthenticationToken token) {
@@ -93,7 +99,7 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         StatelessToken token = (StatelessToken) authenticationToken;
 
-        if (StringUtils.hasLength(token.getUsername()) && token.getPassword() != null) {
+        if ((btxShiroProperties.isIgnoreToken() || StringUtils.hasLength(token.getUsername())) && token.getPassword() != null) {
             CommJSON<? extends BtxShiroSecurityUserDTO> ret = btxSecurityUserService.login(token.getUsername(),
                     new String(token.getPassword()));
             if (ret.checkSuc()) {

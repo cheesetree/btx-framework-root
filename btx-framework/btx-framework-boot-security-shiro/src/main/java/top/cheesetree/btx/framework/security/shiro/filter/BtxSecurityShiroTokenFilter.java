@@ -27,22 +27,25 @@ import java.io.OutputStream;
 public class BtxSecurityShiroTokenFilter extends AuthenticatingFilter {
     private String tokenKey;
 
-    public BtxSecurityShiroTokenFilter(String tokenKey) {
+    private boolean ignoreToken;
+
+    public BtxSecurityShiroTokenFilter(String tokenKey, boolean ignoreToken) {
         this.tokenKey = tokenKey;
+        this.ignoreToken = ignoreToken;
     }
 
     @SneakyThrows
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        return StringUtils.hasLength(getToken((HttpServletRequest) request)) && super.executeLogin(request, response);
+        return (ignoreToken || StringUtils.hasLength(getToken((HttpServletRequest) request))) && super.executeLogin(request, response);
     }
 
     @Override
     protected AuthenticationToken createToken(ServletRequest servletRequest, ServletResponse servletResponse) {
         StatelessToken token = null;
         String t = getToken((HttpServletRequest) servletRequest);
-        if (StringUtils.hasLength(t)) {
-            token = new StatelessToken(t,"");
+        if (ignoreToken || StringUtils.hasLength(t)) {
+            token = new StatelessToken(t, "");
         }
         return token;
     }

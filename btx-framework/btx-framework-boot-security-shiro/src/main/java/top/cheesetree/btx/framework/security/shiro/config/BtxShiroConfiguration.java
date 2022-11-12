@@ -132,7 +132,8 @@ public class BtxShiroConfiguration {
         switch (btxShiroProperties.getAuthType()) {
             case EXT_TOKEN:
             case TOKEN:
-                filterMap.put("authc", new BtxSecurityShiroTokenFilter(btxShiroProperties.getTokenKey()));
+                filterMap.put("authc", new BtxSecurityShiroTokenFilter(btxShiroProperties.getTokenKey(),
+                        btxShiroProperties.isIgnoreToken()));
                 break;
             case JWT:
                 break;
