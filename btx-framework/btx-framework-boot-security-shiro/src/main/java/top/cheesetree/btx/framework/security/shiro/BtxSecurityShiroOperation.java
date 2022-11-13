@@ -96,18 +96,32 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
 
     @Override
     public String getUserId() {
-        return getUserInfo().getUid();
+        SecurityUserDTO u = getUserInfo();
+        if (u != null) {
+            return u.getUid();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public <T extends SecurityUserDTO> T getUserInfo() {
-        return (T) (((BtxShiroSecurityAuthUserDTO) SecurityUtils.getSubject().getPrincipal()).getUser());
+        Object u = SecurityUtils.getSubject().getPrincipal();
+        if (u != null) {
+            return (T) (((BtxShiroSecurityAuthUserDTO) u).getUser());
+        } else {
+            return null;
+        }
     }
 
     @Override
     public AuthTokenInfo getAuthInfo() {
-        return (AuthTokenInfo) (((BtxShiroSecurityAuthUserDTO) SecurityUtils.getSubject().getPrincipal()).getAuthinfo());
-
+        Object u = SecurityUtils.getSubject().getPrincipal();
+        if (u != null) {
+            return (AuthTokenInfo) (((BtxShiroSecurityAuthUserDTO) u).getAuthinfo());
+        } else {
+            return null;
+        }
     }
 
 }
