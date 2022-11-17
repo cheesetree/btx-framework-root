@@ -3,7 +3,6 @@ package top.cheesetree.btx.framework.security.shiro.config;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
-import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
@@ -32,6 +31,7 @@ import top.cheesetree.btx.framework.security.model.SecurityMenuDTO;
 import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
 import top.cheesetree.btx.framework.security.shiro.filter.*;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
+import top.cheesetree.btx.framework.security.shiro.pam.BtxModularRealmAuthenticator;
 import top.cheesetree.btx.framework.security.shiro.realm.BtxSecurityAuthorizingRealm;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessDefaultSubjectFactory;
 import top.cheesetree.btx.framework.security.shiro.support.cas.BtxSecurityCasAuthorizingRealm;
@@ -155,7 +155,7 @@ public class BtxShiroConfiguration {
 
     @Bean
     public Authenticator authenticator() {
-        ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator();
+        BtxModularRealmAuthenticator authenticator = new BtxModularRealmAuthenticator();
         authenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
         return authenticator;
     }
