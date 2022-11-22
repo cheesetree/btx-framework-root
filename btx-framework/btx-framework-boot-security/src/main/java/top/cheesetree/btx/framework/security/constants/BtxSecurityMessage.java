@@ -17,4 +17,7 @@ public class BtxSecurityMessage extends BtxMessage {
     public static final BtxSecurityMessage SECURIT_UNLOGIN_ERROR = new BtxSecurityMessage(20002, "访问未登录");
 
     public static final BtxSecurityMessage SECURIT_UNAUTH_ERROR = new BtxSecurityMessage(20003, "访问未授权");
+
+    public static final BtxSecurityMessage SECURIT_CAS_TICKET_ERROR = new BtxSecurityMessage(20004, "TICKET校验失败");
+
 }

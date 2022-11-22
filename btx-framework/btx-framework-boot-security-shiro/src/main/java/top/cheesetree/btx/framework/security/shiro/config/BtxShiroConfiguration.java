@@ -138,7 +138,8 @@ public class BtxShiroConfiguration {
             case JWT:
                 break;
             case CAS:
-                filterMap.put("authc", new BtxSecurityShiroCasFilter(btxShiroCasProperties.getServerLoginUrl()));
+                filterMap.put("authc", new BtxSecurityShiroCasFilter(btxShiroCasProperties.getServerLoginUrl(),
+                        btxSecurityProperties.getErrorPath()));
                 break;
             case SESSION:
                 filterMap.put("authc", new BtxSecurityShiroFormFilter());

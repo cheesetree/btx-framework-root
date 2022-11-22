@@ -32,9 +32,11 @@ import java.net.URLEncoder;
 @Slf4j
 public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
     private final String loginurl;
+    private final String errorurl;
 
-    public BtxSecurityShiroCasFilter(String loginurl) {
+    public BtxSecurityShiroCasFilter(String loginurl, String errorurl) {
         this.loginurl = loginurl;
+        this.errorurl = errorurl;
     }
 
     @Override
@@ -94,13 +96,30 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
             try {
                 HttpServletRequest req = (HttpServletRequest) request;
                 StringBuffer reqUrlStr = req.getRequestURL();
-                if (StringUtils.hasLength(req.getQueryString())) {
-                    reqUrlStr.append("?").append(req.getQueryString());
+                if (StringUtils.hasLength(req.getQueryString()) && req.getQueryString().contains(BtxSecurityShiroConst.TICKET_PARAMETER)) {
+                    if (StringUtils.hasLength(errorurl)) {
+                        url = String.format("%s%serrmsg=%s", errorurl, errorurl.contains("?") ? "&" : "?", "ticket " +
+                                "valid  error");
+                        ((HttpServletResponse) response).sendRedirect(url);
+                    } else {
+                        HttpServletResponse rep = (HttpServletResponse) response;
+                        rep.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        rep.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                        rep.setCharacterEncoding(BtxConsts.DEF_ENCODE.toString());
+                        OutputStream outputStream = response.getOutputStream();
+                        outputStream.write(JSON.toJSONBytes(new CommJSON(BtxSecurityMessage.SECURIT_CAS_TICKET_ERROR),
+                                SerializerFeature.WriteMapNullValue));
+                    }
+                } else {
+                    if (StringUtils.hasLength(req.getQueryString())) {
+                        reqUrlStr.append("?").append(req.getQueryString());
+                    }
+                    url = String.format("%s?service=%s", loginurl,
+                            URLEncoder.encode(reqUrlStr.toString(),
+                                    BtxConsts.DEF_ENCODE.toString()));
+
+                    WebUtils.issueRedirect(request, response, url);
                 }
-                url = String.format("%s?service=%s", loginurl,
-                        URLEncoder.encode(reqUrlStr.toString(),
-                                BtxConsts.DEF_ENCODE.toString()));
-                WebUtils.issueRedirect(request, response, url);
             } catch (IOException e) {
                 log.error("Cannot redirect to failure url : {}", url, e);
             }
