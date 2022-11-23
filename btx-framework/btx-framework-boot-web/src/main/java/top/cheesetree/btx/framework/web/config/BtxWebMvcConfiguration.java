@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -45,17 +45,12 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         Iterator<HttpMessageConverter<?>> iterator = converters.iterator();
-        while (iterator.hasNext()) {
-            HttpMessageConverter<?> converter = iterator.next();
-            if (converter instanceof MappingJackson2HttpMessageConverter) {
-                iterator.remove();
-            }
-        }
 
         //创建fastJson消息转换器
         FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
         List<MediaType> supportedMediaTypes = new ArrayList<>();
         supportedMediaTypes.add(MediaType.APPLICATION_JSON);
+        supportedMediaTypes.add(new MediaType("application", "*+json"));
         supportedMediaTypes.add(MediaType.APPLICATION_ATOM_XML);
         supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
         supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
@@ -81,23 +76,27 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
         //DisableCircularReferenceDetect ：消除对同一对象循环引用的问题，默认为false（如果不配置有可能会进入死循环）
         //WriteNullBooleanAsFalse：Boolean字段如果为null,输出为false,而非null
         //WriteMapNullValue：是否输出值为null的字段,默认为false
-        fastJsonConfig.setSerializerFeatures(
-                SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteNullBooleanAsFalse
-        );
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.DisableCircularReferenceDetect,
+                SerializerFeature.WriteNullBooleanAsFalse);
 
         if (btxWebProperties.isWritedateusedateformat()) {
-            fastJsonConfig.setSerializerFeatures(
-                    SerializerFeature.DisableCircularReferenceDetect,
-                    SerializerFeature.WriteNullBooleanAsFalse,
-                    SerializerFeature.WriteDateUseDateFormat
-            );
+            fastJsonConfig.setSerializerFeatures(SerializerFeature.DisableCircularReferenceDetect,
+                    SerializerFeature.WriteNullBooleanAsFalse, SerializerFeature.WriteDateUseDateFormat);
             fastJsonConfig.setDateFormat(btxWebProperties.getDateformat());
         }
 
         fastConverter.setFastJsonConfig(fastJsonConfig);
         //将fastjson添加到视图消息转换器列表内
-        converters.add(fastConverter);
+
+        int i = 0;
+        while (iterator.hasNext()) {
+            HttpMessageConverter<?> converter = iterator.next();
+            if (converter instanceof AbstractJackson2HttpMessageConverter) {
+                converters.add(i, fastConverter);
+                break;
+            }
+            i++;
+        }
     }
 
     @Bean
@@ -133,15 +132,12 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
 
         //创建配置类
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
-        fastJsonConfig.setSerializerFeatures(
-                SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteNullBooleanAsFalse
-        );
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.DisableCircularReferenceDetect,
+                SerializerFeature.WriteNullBooleanAsFalse);
         fastConverter.setFastJsonConfig(fastJsonConfig);
         OkHttpClient okclient =
                 new OkHttpClient().newBuilder().connectionPool(new ConnectionPool(btxRestProperties.getMaxPoolIdle(),
-                        btxRestProperties.getMaxPoolLiveTime(), TimeUnit.MINUTES)).retryOnConnectionFailure(false).connectTimeout(btxRestProperties.getConnectTimeOut(),
-                        TimeUnit.SECONDS).readTimeout(btxRestProperties.getReadTimeOut(), TimeUnit.SECONDS).writeTimeout(btxRestProperties.getWriteTimeOut(), TimeUnit.SECONDS).build();
+                        btxRestProperties.getMaxPoolLiveTime(), TimeUnit.MINUTES)).retryOnConnectionFailure(false).connectTimeout(btxRestProperties.getConnectTimeOut(), TimeUnit.SECONDS).readTimeout(btxRestProperties.getReadTimeOut(), TimeUnit.SECONDS).writeTimeout(btxRestProperties.getWriteTimeOut(), TimeUnit.SECONDS).build();
         return new RestTemplate(new OkHttp3ClientHttpRequestFactory(okclient));
     }
 
@@ -158,17 +154,13 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
 
         //创建配置类
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
-        fastJsonConfig.setSerializerFeatures(
-                SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteNullBooleanAsFalse
-        );
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.DisableCircularReferenceDetect,
+                SerializerFeature.WriteNullBooleanAsFalse);
         fastConverter.setFastJsonConfig(fastJsonConfig);
         OkHttpClient okclient =
                 new OkHttpClient().newBuilder().connectionSpecs(Arrays.asList(ConnectionSpec.MODERN_TLS,
                         ConnectionSpec.COMPATIBLE_TLS)).sslSocketFactory(new CustomSSLSocketFactory(),
-                        new CustomTrustManager()).hostnameVerifier((hostname, session) -> true).connectionPool(new ConnectionPool(btxRestProperties.getMaxPoolIdle(),
-                        btxRestProperties.getMaxPoolLiveTime(), TimeUnit.MINUTES)).retryOnConnectionFailure(false).connectTimeout(btxRestProperties.getConnectTimeOut(),
-                        TimeUnit.SECONDS).readTimeout(btxRestProperties.getReadTimeOut(), TimeUnit.SECONDS).writeTimeout(btxRestProperties.getWriteTimeOut(), TimeUnit.SECONDS).build();
+                        new CustomTrustManager()).hostnameVerifier((hostname, session) -> true).connectionPool(new ConnectionPool(btxRestProperties.getMaxPoolIdle(), btxRestProperties.getMaxPoolLiveTime(), TimeUnit.MINUTES)).retryOnConnectionFailure(false).connectTimeout(btxRestProperties.getConnectTimeOut(), TimeUnit.SECONDS).readTimeout(btxRestProperties.getReadTimeOut(), TimeUnit.SECONDS).writeTimeout(btxRestProperties.getWriteTimeOut(), TimeUnit.SECONDS).build();
         return new RestTemplate(new OkHttp3ClientHttpRequestFactory(okclient));
     }
 }
