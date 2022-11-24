@@ -23,12 +23,14 @@ import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.IBtxSecurityPermissionService;
 import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
+import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
 import top.cheesetree.btx.framework.security.shiro.model.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -87,7 +89,6 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        Set<String> stringPermissions = new HashSet<>();
 
         Object principal = principalCollection.getPrimaryPrincipal();
         String uid;
@@ -98,10 +99,39 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
             } else {
                 uid = ((AttributePrincipal) p.getAuthinfo()).getName();
             }
-            btxSecurityPermissionService.getFunc(uid).forEach((SecurityFuncDTO f) -> {
-                stringPermissions.add(f.getFuncCode());
-            });
-            info.setStringPermissions(stringPermissions);
+            List<? extends SecurityFuncDTO> funcs;
+            List<? extends SecurityRoleDTO> roles;
+
+            BtxShiroSecurityAuthUserDTO u = (BtxShiroSecurityAuthUserDTO) principalCollection.getPrimaryPrincipal();
+
+            if (u.getUser().getFuncs() != null && u.getUser().getFuncs().size() > 0) {
+                funcs = u.getUser().getFuncs();
+            } else {
+                funcs = btxSecurityPermissionService.getFunc(u.getUser().getUid());
+            }
+
+            if (u.getUser().getRoles() != null && u.getUser().getRoles().size() > 0) {
+                roles = u.getUser().getRoles();
+            } else {
+                roles = btxSecurityPermissionService.getRole(u.getUser().getUid());
+            }
+
+            if (funcs != null) {
+                Set<String> stringPermissions = new HashSet<>();
+                funcs.forEach((SecurityFuncDTO f) -> {
+                    stringPermissions.add(f.getFuncCode());
+                });
+                info.setStringPermissions(stringPermissions);
+            }
+
+            if (roles != null) {
+                Set<String> stringRoles = new HashSet<>();
+                roles.forEach((SecurityRoleDTO f) -> {
+                    stringRoles.add(f.getRoleCode());
+                });
+                info.setRoles(stringRoles);
+            }
+
         }
 
         return info;
