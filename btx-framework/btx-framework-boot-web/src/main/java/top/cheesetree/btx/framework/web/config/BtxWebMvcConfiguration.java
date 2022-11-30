@@ -93,9 +93,14 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
             HttpMessageConverter<?> converter = iterator.next();
             if (converter instanceof AbstractJackson2HttpMessageConverter) {
                 converters.add(i, fastConverter);
+                i = -1;
                 break;
             }
             i++;
+        }
+
+        if (i > -1) {
+            converters.add(fastConverter);
         }
     }
 
