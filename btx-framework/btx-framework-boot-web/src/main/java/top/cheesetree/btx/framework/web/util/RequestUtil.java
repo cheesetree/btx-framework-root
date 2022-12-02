@@ -21,7 +21,7 @@ public class RequestUtil {
      */
     public static boolean isAjaxRequest(HttpServletRequest request) {
         String accept = request.getHeader(HttpHeaders.ACCEPT);
-        if (accept != null && accept.indexOf(MediaType.APPLICATION_JSON_VALUE) != -1) {
+        if (accept != null && (accept.contains(MediaType.APPLICATION_JSON_VALUE) || accept.contains(MediaType.ALL_VALUE))) {
             return true;
         }
 
