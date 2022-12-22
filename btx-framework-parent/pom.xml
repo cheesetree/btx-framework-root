@@ -30,7 +30,7 @@
         <cn.hutool.version>5.8.6</cn.hutool.version>
         <org.apache.shiro.version>1.8.0</org.apache.shiro.version>
         <org.jasig.cas.client.version>3.6.4</org.jasig.cas.client.version>
-        <com.fasterxml.jackson.version>2.13.1</com.fasterxml.jackson.version>
+        <com.fasterxml.jackson.version>2.13.4.2</com.fasterxml.jackson.version>
         <okhttp.version>4.9.3</okhttp.version>
         <org.yaml.snakeyaml.version>1.32</org.yaml.snakeyaml.version>
     </properties>
