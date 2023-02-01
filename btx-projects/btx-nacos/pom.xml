@@ -15,7 +15,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <nacos.client.version>2.1.0</nacos.client.version>
+        <nacos.client.version>2.2.0</nacos.client.version>
         <nacos.springboot.version>0.2.10</nacos.springboot.version>
     </properties>
 

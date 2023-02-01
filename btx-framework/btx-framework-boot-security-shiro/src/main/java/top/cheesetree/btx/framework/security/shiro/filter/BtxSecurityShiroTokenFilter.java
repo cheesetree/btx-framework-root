@@ -45,7 +45,7 @@ public class BtxSecurityShiroTokenFilter extends AuthenticatingFilter {
         StatelessToken token = null;
         String t = getToken((HttpServletRequest) servletRequest);
         if (ignoreToken || StringUtils.hasLength(t)) {
-            token = new StatelessToken(t, "");
+            token = new StatelessToken(t);
         }
         return token;
     }
