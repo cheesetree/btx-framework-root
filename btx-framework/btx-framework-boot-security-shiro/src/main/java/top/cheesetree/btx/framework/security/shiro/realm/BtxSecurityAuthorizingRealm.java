@@ -1,6 +1,7 @@
 package top.cheesetree.btx.framework.security.shiro.realm;
 
 import com.alibaba.fastjson.JSON;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -16,6 +17,8 @@ import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
 import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
+import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
+import top.cheesetree.btx.framework.security.shiro.config.BtxShiroCacheProperties;
 import top.cheesetree.btx.framework.security.shiro.config.BtxShiroProperties;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
 import top.cheesetree.btx.framework.security.shiro.model.*;
@@ -43,6 +46,9 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     @Autowired
     @Lazy
     private BtxShiroProperties btxShiroProperties;
+
+    @Autowired
+    BtxShiroCacheProperties btxShiroCacheProperties;
 
     public BtxSecurityAuthorizingRealm(BtxNoAuthCredentialsMatcher btxNoAuthCredentialsMatcher) {
         super(btxNoAuthCredentialsMatcher);
@@ -122,4 +128,9 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     protected Object getAuthenticationCacheKey(AuthenticationToken token) {
         return token != null ? ((StatelessToken) token).getToken() : null;
     }
+
+    public void clearUserAuthorization(BtxShiroSecurityAuthUserDTO u) {
+        this.doClearCache(new SimplePrincipalCollection(u, "user"));
+    }
+
 }

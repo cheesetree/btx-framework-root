@@ -6,19 +6,30 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.mgt.RealmSecurityManager;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import top.cheesetree.btx.framework.core.json.CommJSON;
+import top.cheesetree.btx.framework.core.model.ValueObject;
 import top.cheesetree.btx.framework.security.IBtxSecurityOperation;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityEnum;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
+import top.cheesetree.btx.framework.security.shiro.config.BtxShiroCacheProperties;
 import top.cheesetree.btx.framework.security.shiro.config.BtxShiroProperties;
+import top.cheesetree.btx.framework.security.shiro.constants.BtxSecurityShiroMessage;
 import top.cheesetree.btx.framework.security.shiro.model.AuthTokenInfo;
 import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityAuthUserDTO;
+import top.cheesetree.btx.framework.security.shiro.model.BtxShiroSecurityUserDTO;
+import top.cheesetree.btx.framework.security.shiro.realm.BtxSecurityAuthorizingRealm;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessToken;
 import top.cheesetree.btx.framework.security.shiro.support.cas.CasToken;
+
+import javax.annotation.Resource;
 
 /**
  * @Author: van
@@ -30,6 +41,8 @@ import top.cheesetree.btx.framework.security.shiro.support.cas.CasToken;
 public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
     @Autowired
     BtxShiroProperties btxShiroProperties;
+    @Autowired
+    BtxShiroCacheProperties btxShiroCacheProperties;
 
     @Override
     public CommJSON<BtxShiroSecurityAuthUserDTO> login(String... args) {
@@ -112,6 +125,24 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public <T extends SecurityUserDTO> CommJSON runas(T user) {
+        Subject subject = SecurityUtils.getSubject();
+
+        BtxShiroSecurityAuthUserDTO au =  ((BtxShiroSecurityAuthUserDTO)SecurityUtils.getSubject().getPrincipal());
+
+        if (btxShiroCacheProperties.isEnabled()) {
+            RealmSecurityManager rsm = (RealmSecurityManager) SecurityUtils.getSecurityManager();
+            BtxSecurityAuthorizingRealm shiroRealm = (BtxSecurityAuthorizingRealm) rsm.getRealms().iterator().next();
+            shiroRealm.clearUserAuthorization(au);
+        }
+
+        au.setUser(user);
+        subject.runAs(new SimplePrincipalCollection(au, "user"));
+
+        return new CommJSON("");
     }
 
     @Override
