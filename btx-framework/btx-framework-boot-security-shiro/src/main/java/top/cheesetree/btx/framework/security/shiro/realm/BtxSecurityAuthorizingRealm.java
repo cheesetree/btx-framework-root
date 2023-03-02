@@ -1,10 +1,10 @@
 package top.cheesetree.btx.framework.security.shiro.realm;
 
 import com.alibaba.fastjson.JSON;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.Cache;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
@@ -17,7 +17,6 @@ import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
 import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
 import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
-import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
 import top.cheesetree.btx.framework.security.shiro.config.BtxShiroCacheProperties;
 import top.cheesetree.btx.framework.security.shiro.config.BtxShiroProperties;
 import top.cheesetree.btx.framework.security.shiro.matcher.BtxNoAuthCredentialsMatcher;
@@ -129,8 +128,28 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
         return token != null ? ((StatelessToken) token).getToken() : null;
     }
 
-    public void clearUserAuthorization(BtxShiroSecurityAuthUserDTO u) {
+    public void clearUserAuthorization(BtxShiroSecurityAuthUserDTO u, AuthenticationToken token) {
         this.doClearCache(new SimplePrincipalCollection(u, "user"));
+
+        if (btxShiroCacheProperties.isEnabled()) {
+            Cache<Object, AuthorizationInfo> azcache = this.getAuthorizationCache();
+            if (azcache != null) {
+                azcache.remove(getAuthenticationCacheKey(token));
+            }
+            Cache<Object, AuthenticationInfo> accache = this.getAuthenticationCache();
+            if (accache != null) {
+                accache.remove(getAuthenticationCacheKey(token));
+            }
+        }
+    }
+
+    public void setUserAuthenticationCache(BtxShiroSecurityAuthUserDTO u, AuthenticationToken token) {
+        Cache<Object, AuthenticationInfo> accache = this.getAuthenticationCache();
+        if (accache != null) {
+            Object key = this.getAuthenticationCacheKey(token);
+            accache.put(key, new SimpleAuthenticationInfo(new SimplePrincipalCollection(u, "user"),
+                    token.getPrincipal()));
+        }
     }
 
 }
