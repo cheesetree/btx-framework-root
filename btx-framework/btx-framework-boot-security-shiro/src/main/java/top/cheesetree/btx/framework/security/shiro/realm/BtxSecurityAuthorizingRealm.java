@@ -14,7 +14,6 @@ import org.springframework.util.StringUtils;
 import top.cheesetree.btx.framework.core.json.CommJSON;
 import top.cheesetree.btx.framework.security.IBtxSecurityPermissionService;
 import top.cheesetree.btx.framework.security.IBtxSecurityUserService;
-import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.model.SecurityFuncDTO;
 import top.cheesetree.btx.framework.security.model.SecurityRoleDTO;
 import top.cheesetree.btx.framework.security.shiro.config.BtxShiroCacheProperties;
@@ -104,21 +103,19 @@ public class BtxSecurityAuthorizingRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         StatelessToken token = (StatelessToken) authenticationToken;
 
-        if ((btxShiroProperties.isIgnoreToken() || StringUtils.hasLength(token.getUsername())) && token.getPassword() != null) {
-            CommJSON<? extends BtxShiroSecurityUserDTO> ret = btxSecurityUserService.login(token.getUsername(),
-                    new String(token.getPassword()));
-            if (ret.checkSuc()) {
-                BtxShiroSecurityAuthUserDTO u = new BtxShiroSecurityAuthUserDTO();
-                u.setUser(ret.getResult());
-                AuthTokenInfo t = new AuthTokenInfo();
-                t.setAccessToken(token.getToken());
-                u.setAuthinfo(t);
-                return new SimpleAuthenticationInfo(new SimplePrincipalCollection(u, "user"), t.getAccessToken());
-            } else {
-                throw new AccountException(JSON.toJSONString(ret));
-            }
+        CommJSON<? extends BtxShiroSecurityUserDTO> ret =
+                btxSecurityUserService.login(StringUtils.hasLength(token.getUsername()) ? token.getUsername() :
+                                token.getToken(),
+                        token.getPassword() == null ? null : new String(token.getPassword()));
+        if (ret.checkSuc()) {
+            BtxShiroSecurityAuthUserDTO u = new BtxShiroSecurityAuthUserDTO();
+            u.setUser(ret.getResult());
+            AuthTokenInfo t = new AuthTokenInfo();
+            t.setAccessToken(token.getToken());
+            u.setAuthinfo(t);
+            return new SimpleAuthenticationInfo(new SimplePrincipalCollection(u, "user"), t.getAccessToken());
         } else {
-            throw new AccountException(BtxSecurityMessage.SECURIT_LOGIN_ERROR.getMessage());
+            throw new AccountException(JSON.toJSONString(ret));
         }
 
     }

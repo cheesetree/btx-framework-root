@@ -1,6 +1,5 @@
 package top.cheesetree.btx.framework.cache.redis;
 
-import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +73,7 @@ public class RedisTemplateFactoryImpl {
                             btxRedisSerializer.setKeySerializer(result.getStringSerializer());
                         }
                     } else {
-                        btxRedisSerializer.setKeySerializer(new BtxFastJsonRedisSerializer());
+                        btxRedisSerializer.setKeySerializer(new BtxFastJsonRedisSerializer<TKey>(keyClz));
                     }
                 }
 
@@ -82,7 +81,7 @@ public class RedisTemplateFactoryImpl {
                     if (String.class.isAssignableFrom(valueClz)) {
                         btxRedisSerializer.setHashKeySerializer(result.getStringSerializer());
                     } else {
-                        btxRedisSerializer.setHashKeySerializer(new BtxFastJsonRedisSerializer());
+                        btxRedisSerializer.setHashKeySerializer(new BtxFastJsonRedisSerializer<TKey>(keyClz));
                     }
                 }
 
@@ -90,7 +89,7 @@ public class RedisTemplateFactoryImpl {
                     if (String.class.isAssignableFrom(valueClz)) {
                         btxRedisSerializer.setValueSerializer(result.getStringSerializer());
                     } else {
-                        btxRedisSerializer.setValueSerializer(new BtxFastJsonRedisSerializer());
+                        btxRedisSerializer.setValueSerializer(new BtxFastJsonRedisSerializer<TValue>(valueClz));
                     }
                 }
                 btxRedisSerializer.setHashValueSerializer(btxRedisSerializer.getValueSerializer());
