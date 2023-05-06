@@ -1,7 +1,6 @@
 package top.cheesetree.btx.framework.database.config;
 
 
-import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
@@ -27,6 +26,6 @@ public class MybatisPlusConfigure {
     @Bean
     @Primary
     public PaginationInnerInterceptor mysqlPaginationInnerInterceptor() {
-        return new PaginationInnerInterceptor(DbType.MYSQL);
+        return new PaginationInnerInterceptor();
     }
 }
