@@ -13,7 +13,6 @@
         <module>btx-framework</module>
         <module>btx-common</module>
         <module>btx-projects</module>
-        <module>btx-cloud</module>
     </modules>
 
     <properties>
