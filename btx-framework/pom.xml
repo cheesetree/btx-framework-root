@@ -19,10 +19,8 @@
         <module>btx-framework-boot-session</module>
         <module>btx-framework-boot-security</module>
         <module>btx-framework-boot-security-shiro</module>
-        <module>btx-framework-boot-security-cas</module>
         <module>btx-framework-boot-database</module>
         <module>btx-framework-boot-web</module>
-        <module>btx-framework-boot-security-basic</module>
         <module>btx-framework-dependencies</module>
         <module>btx-framework-boot-security-shiro-redis</module>
     </modules>
