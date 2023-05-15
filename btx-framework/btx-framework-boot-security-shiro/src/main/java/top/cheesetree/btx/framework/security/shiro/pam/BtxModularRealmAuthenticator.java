@@ -58,6 +58,8 @@ public class BtxModularRealmAuthenticator extends ModularRealmAuthenticator {
 
                 if (t instanceof AccountException) {
                     throw (AuthenticationException) t;
+                } else if (t instanceof AuthenticationException) {
+                    throw (AuthenticationException) t;
                 }
 
                 aggregate = strategy.afterAttempt(realm, token, info, aggregate, t);
@@ -69,4 +71,5 @@ public class BtxModularRealmAuthenticator extends ModularRealmAuthenticator {
         aggregate = strategy.afterAllAttempts(token, aggregate);
         return aggregate;
     }
+
 }

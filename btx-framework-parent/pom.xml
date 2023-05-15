@@ -20,22 +20,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--spring framewwork-->
-        <spring-boot.version>2.7.6</spring-boot.version>
+        <spring-boot.version>2.6.11</spring-boot.version>
         <!--spring framewwork-->
 
         <lombok.version>1.18.24</lombok.version>
         <com.alibaba.fastjson.version>1.2.83</com.alibaba.fastjson.version>
-        <com.alibaba.fastjson2.version>2.0.20</com.alibaba.fastjson2.version>
-        <mybatis-plus-boot.version>3.5.2</mybatis-plus-boot.version>
-        <mybatis-plus.version>3.5.2</mybatis-plus.version>
-        <cn.hutool.version>5.8.10</cn.hutool.version>
-        <org.apache.shiro.version>1.10.1</org.apache.shiro.version>
+        <mybatis-plus-boot.version>3.5.1</mybatis-plus-boot.version>
+        <mybatis-plus.version>3.5.1</mybatis-plus.version>
+        <cn.hutool.version>5.8.6</cn.hutool.version>
+        <org.apache.shiro.version>1.8.0</org.apache.shiro.version>
         <org.jasig.cas.client.version>3.6.4</org.jasig.cas.client.version>
-        <com.fasterxml.jackson.version>2.14.1</com.fasterxml.jackson.version>
-        <okhttp.version>4.10.0</okhttp.version>
-        <org.yaml.snakeyaml.version>1.33</org.yaml.snakeyaml.version>
-        <com.google.guava.version>31.1-jre</com.google.guava.version>
-        <org.redisson.version>3.18.0</org.redisson.version>
+        <com.fasterxml.jackson.version>2.13.4.2</com.fasterxml.jackson.version>
+        <okhttp.version>4.9.3</okhttp.version>
+        <org.yaml.snakeyaml.version>1.32</org.yaml.snakeyaml.version>
     </properties>
 
     <dependencyManagement>
@@ -106,16 +103,6 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>${org.yaml.snakeyaml.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${com.google.guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.redisson</groupId>
-                <artifactId>redisson-spring-boot-starter</artifactId>
-                <version>${org.redisson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

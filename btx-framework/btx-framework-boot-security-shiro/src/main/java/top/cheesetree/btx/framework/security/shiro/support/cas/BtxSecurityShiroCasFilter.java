@@ -20,6 +20,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.beans.Encoder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -96,10 +97,13 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
             try {
                 HttpServletRequest req = (HttpServletRequest) request;
                 StringBuffer reqUrlStr = req.getRequestURL();
+                String errmsg = StringUtils.hasLength(ae.getMessage()) ? ae.getMessage() :
+                        BtxSecurityMessage.SECURIT_CAS_TICKET_ERROR.getMessage();
+
                 if (StringUtils.hasLength(req.getQueryString()) && req.getQueryString().contains(BtxSecurityShiroConst.TICKET_PARAMETER)) {
                     if (StringUtils.hasLength(errorurl)) {
-                        url = String.format("%s%serrmsg=%s", errorurl, errorurl.contains("?") ? "&" : "?", "ticket " +
-                                "valid  error");
+                        url = String.format("%s%serrmsg=%s", errorurl, errorurl.contains("?") ? "&" : "?",
+                                URLEncoder.encode(errmsg, BtxConsts.DEF_ENCODE.toString()));
                         ((HttpServletResponse) response).sendRedirect(url);
                     } else {
                         HttpServletResponse rep = (HttpServletResponse) response;
@@ -107,7 +111,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                         rep.setContentType(MediaType.APPLICATION_JSON_VALUE);
                         rep.setCharacterEncoding(BtxConsts.DEF_ENCODE.toString());
                         OutputStream outputStream = response.getOutputStream();
-                        outputStream.write(JSON.toJSONBytes(new CommJSON(BtxSecurityMessage.SECURIT_CAS_TICKET_ERROR),
+                        outputStream.write(JSON.toJSONBytes(new CommJSON(BtxSecurityMessage.SECURIT_CAS_TICKET_ERROR.getCode(), errmsg),
                                 SerializerFeature.WriteMapNullValue));
                     }
                 } else {

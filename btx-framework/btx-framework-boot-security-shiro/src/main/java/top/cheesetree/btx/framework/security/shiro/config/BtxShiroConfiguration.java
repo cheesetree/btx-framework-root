@@ -201,15 +201,15 @@ public class BtxShiroConfiguration {
             securityManager.setCacheManager(cm);
         }
 
-        if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION && btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.CAS) {
-            // 禁用session
-            DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
-            DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
-            defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
-            subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
-            securityManager.setSubjectDAO(subjectDAO);
-            securityManager.setSubjectFactory(subjectFactory());
-        }
+//        if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION && btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.CAS) {
+//            // 禁用session
+//            DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+//            DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+//            defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
+//            subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
+//            securityManager.setSubjectDAO(subjectDAO);
+//            securityManager.setSubjectFactory(subjectFactory());
+//        }
 
         securityManager.setSessionManager(sessionManager());
 

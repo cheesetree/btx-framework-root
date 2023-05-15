@@ -1,6 +1,5 @@
 package top.cheesetree.btx.framework.cache.redis;
 
-import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,7 @@ public class RedisTemplateFactoryImpl {
     public <TKey, TValue> RedisTemplate<TKey, TValue> generateRedisTemplate(Class<TKey> keyClz,
                                                                             Class<TValue> valueClz,
                                                                             boolean needprefix) {
-        return generateRedisTemplate(keyClz, valueClz, needprefix, new BtxRedisSerializer());
+        return generateRedisTemplate(keyClz, valueClz, needprefix, null);
     }
 
     public <TKey, TValue> RedisTemplate<TKey, TValue> generateRedisTemplate(Class<TKey> keyClz,
@@ -57,51 +56,49 @@ public class RedisTemplateFactoryImpl {
         KeyValueMapKey redisTemplateMapKey = new KeyValueMapKey(keyClz, valueClz, needprefix, btxRedisSerializer);
         RedisTemplate<TKey, TValue> result = (RedisTemplate<TKey, TValue>) redisTemplateMap.get(redisTemplateMapKey);
         if (result == null) {
-            result = (RedisTemplate<TKey, TValue>) redisTemplateMap.get(redisTemplateMapKey);
-            if (result == null) {
-                result = new RedisTemplate<>();
-                redisTemplateMap.put(redisTemplateMapKey, result);
-                result.setConnectionFactory(redisConnectionFactory);
-
-                RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
-                redisTemplate.setConnectionFactory(redisConnectionFactory);
-
-                if (btxRedisSerializer.getKeySerializer() == null) {
-                    if (String.class.isAssignableFrom(keyClz)) {
-                        if (needprefix) {
-                            btxRedisSerializer.setKeySerializer(new BtxKeyStringRedisSerializer(btxRedisCacheProperties.getKeyPrefix()));
-                        } else {
-                            btxRedisSerializer.setKeySerializer(result.getStringSerializer());
-                        }
-                    } else {
-                        btxRedisSerializer.setKeySerializer(new GenericFastJsonRedisSerializer());
-                    }
-                }
-
-                if (btxRedisSerializer.getHashKeySerializer() == null) {
-                    if (String.class.isAssignableFrom(valueClz)) {
-                        btxRedisSerializer.setHashKeySerializer(result.getStringSerializer());
-                    } else {
-                        btxRedisSerializer.setHashKeySerializer(new GenericFastJsonRedisSerializer());
-                    }
-                }
-
-                if (btxRedisSerializer.getValueSerializer() == null) {
-                    if (String.class.isAssignableFrom(valueClz)) {
-                        btxRedisSerializer.setValueSerializer(result.getStringSerializer());
-                    } else {
-                        btxRedisSerializer.setValueSerializer(new GenericFastJsonRedisSerializer());
-                    }
-                }
-                btxRedisSerializer.setHashValueSerializer(btxRedisSerializer.getValueSerializer());
-
-                result.setValueSerializer(btxRedisSerializer.getValueSerializer());
-                result.setKeySerializer(btxRedisSerializer.getKeySerializer());
-                result.setHashValueSerializer(btxRedisSerializer.getHashValueSerializer());
-                result.setHashKeySerializer(btxRedisSerializer.getHashKeySerializer());
-                result.setStringSerializer(btxRedisSerializer.getStringSerializer());
-                result.afterPropertiesSet();
+            if (btxRedisSerializer == null) {
+                btxRedisSerializer = new BtxRedisSerializer();
             }
+            result = new RedisTemplate<>();
+            result.setConnectionFactory(redisConnectionFactory);
+
+            if (btxRedisSerializer.getKeySerializer() == null) {
+                if (String.class.isAssignableFrom(keyClz)) {
+                    if (needprefix) {
+                        btxRedisSerializer.setKeySerializer(new BtxKeyStringRedisSerializer(btxRedisCacheProperties.getKeyPrefix()));
+                    } else {
+                        btxRedisSerializer.setKeySerializer(result.getStringSerializer());
+                    }
+                } else {
+                    btxRedisSerializer.setKeySerializer(new BtxFastJsonRedisSerializer<TKey>(keyClz));
+                }
+            }
+
+            if (btxRedisSerializer.getHashKeySerializer() == null) {
+                if (String.class.isAssignableFrom(valueClz)) {
+                    btxRedisSerializer.setHashKeySerializer(result.getStringSerializer());
+                } else {
+                    btxRedisSerializer.setHashKeySerializer(new BtxFastJsonRedisSerializer<TKey>(keyClz));
+                }
+            }
+
+            if (btxRedisSerializer.getValueSerializer() == null) {
+                if (String.class.isAssignableFrom(valueClz)) {
+                    btxRedisSerializer.setValueSerializer(result.getStringSerializer());
+                } else {
+                    btxRedisSerializer.setValueSerializer(new BtxFastJsonRedisSerializer<TValue>(valueClz));
+                }
+            }
+            btxRedisSerializer.setHashValueSerializer(btxRedisSerializer.getValueSerializer());
+
+            result.setValueSerializer(btxRedisSerializer.getValueSerializer());
+            result.setKeySerializer(btxRedisSerializer.getKeySerializer());
+            result.setHashValueSerializer(btxRedisSerializer.getHashValueSerializer());
+            result.setHashKeySerializer(btxRedisSerializer.getHashKeySerializer());
+            result.setStringSerializer(btxRedisSerializer.getStringSerializer());
+            result.afterPropertiesSet();
+
+            redisTemplateMap.put(redisTemplateMapKey, result);
         }
 
         return result;
@@ -133,7 +130,8 @@ public class RedisTemplateFactoryImpl {
                 return false;
             }
             KeyValueMapKey that = (KeyValueMapKey) o;
-            return keyClass.equals(that.keyClass) && valueClass.equals(that.valueClass) && needprefix == that.needprefix && btxRedisSerializer.equals(that.btxRedisSerializer);
+            return keyClass.equals(that.keyClass) && valueClass.equals(that.valueClass) && needprefix == that.needprefix && (Objects.equals(btxRedisSerializer, that.btxRedisSerializer));
+
         }
 
         @Override
