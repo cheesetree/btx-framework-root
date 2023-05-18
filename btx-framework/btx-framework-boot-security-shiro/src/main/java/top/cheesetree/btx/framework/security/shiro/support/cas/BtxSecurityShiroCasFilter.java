@@ -114,14 +114,13 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                                 SerializerFeature.WriteMapNullValue));
                     }
                 } else {
-                    this.saveRequest(request);
                     if (StringUtils.hasLength(req.getQueryString())) {
                         reqUrlStr.append("?").append(req.getQueryString());
                     }
                     url = String.format("%s?service=%s", loginurl,
                             URLEncoder.encode(reqUrlStr.toString(),
                                     BtxConsts.DEF_ENCODE.toString()));
-
+                    this.saveRequest(request);
                     WebUtils.issueRedirect(request, response, url);
                 }
             } catch (IOException e) {
