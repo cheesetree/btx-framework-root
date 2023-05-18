@@ -20,7 +20,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.beans.Encoder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -115,6 +114,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                                 SerializerFeature.WriteMapNullValue));
                     }
                 } else {
+                    this.saveRequest(request);
                     if (StringUtils.hasLength(req.getQueryString())) {
                         reqUrlStr.append("?").append(req.getQueryString());
                     }
