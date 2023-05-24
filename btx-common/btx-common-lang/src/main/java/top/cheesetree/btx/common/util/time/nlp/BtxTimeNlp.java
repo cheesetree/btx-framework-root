@@ -970,7 +970,7 @@ public class BtxTimeNlp {
             localDateTime = DateTimeCalculatorUtil.withDayOfWeek(localDateTime, week);
             timePointType = isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK :
                     AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = isWeek ? nweek : 1;
+            timePointNum = 1;
         }
 
         pattern = AllEnums.TimeNlpRegexEnum.NormCurRelatedWeekAfterAny.getPattern();
@@ -996,7 +996,7 @@ public class BtxTimeNlp {
             localDateTime = DateTimeCalculatorUtil.withDayOfWeek(localDateTime, week);
             timePointType = isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK :
                     AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = isWeek ? nweek : 1;
+            timePointNum = 1;
         }
 
         pattern = RegexEnum.NormCurRelatedWeek.getPattern();
