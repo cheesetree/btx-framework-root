@@ -1,17 +1,20 @@
 package top.cheesetree.btx.framework.web.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import top.cheesetree.btx.framework.web.http.HttpsClientRequestFactory;
+import top.cheesetree.btx.framework.web.model.dto.FileInfoDTO;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * @Author: van
@@ -22,6 +25,7 @@ import java.util.Map;
 public class HttpUtil {
     private final static int DEF_TIMEOUT = 10000;
     private final static int DEF_CON_TIMEOUT = 1000;
+    private final static int DEF_FILE_TIMEOUT = 60000;
 
     public static String httpGet(String url, boolean isHttps) {
         return httpGet(url, null, DEF_TIMEOUT, isHttps);
@@ -70,6 +74,46 @@ public class HttpUtil {
         }
 
         return httpPost(url, param, headers, to, isHttps);
+    }
+
+    public static String httpUploadFile(String url, FileInfoDTO info,
+                                        boolean isHttps) {
+        return httpUploadFile(url, info, null, DEF_FILE_TIMEOUT, isHttps);
+    }
+
+    public static String httpUploadFile(String url, FileInfoDTO info, HashMap<String, String> headers,
+                                        boolean isHttps) {
+        return httpUploadFile(url, info, headers, DEF_FILE_TIMEOUT, isHttps);
+
+    }
+
+    public static String httpUploadFile(String url, FileInfoDTO info, HashMap<String, String> headers, int to,
+                                        boolean isHttps) {
+        if (info == null) {
+            return "";
+        }
+        if (headers == null) {
+            headers = new HashMap<>(1);
+        }
+
+        headers.put(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE);
+        String filekey = StringUtils.hasLength(info.getFilekey()) ? info.getFilekey() : "file";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        ContentDisposition contentDisposition =
+                ContentDisposition
+                        .builder("form-data")
+                        .filename(info.getFilename())
+                        .name(filekey)
+                        .build();
+
+        params.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
+        HttpEntity<Resource> fileEntity =
+                new HttpEntity<>(new ByteArrayResource(Base64.getDecoder().decode(info.getFiledata())), params);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add(filekey, fileEntity);
+        return httpPost(url, body, headers, to, isHttps);
     }
 
     /**
@@ -141,6 +185,12 @@ public class HttpUtil {
             hrf.setReadTimeout(timeout);
             restTemplate = new RestTemplate(hrf);
         }
+
+        restTemplate.getMessageConverters().forEach(httpMessageConverter -> {
+            if (httpMessageConverter instanceof StringHttpMessageConverter) {
+                ((StringHttpMessageConverter) httpMessageConverter).setDefaultCharset(StandardCharsets.UTF_8);
+            }
+        });
 
         return restTemplate;
     }
