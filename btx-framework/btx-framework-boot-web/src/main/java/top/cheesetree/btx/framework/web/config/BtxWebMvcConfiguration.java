@@ -133,6 +133,7 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
         supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
         supportedMediaTypes.add(MediaType.TEXT_HTML);
         supportedMediaTypes.add(MediaType.TEXT_PLAIN);
+        supportedMediaTypes.add(MediaType.MULTIPART_FORM_DATA);
         fastConverter.setSupportedMediaTypes(supportedMediaTypes);
 
         //创建配置类
@@ -155,6 +156,7 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
         supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
         supportedMediaTypes.add(MediaType.TEXT_HTML);
         supportedMediaTypes.add(MediaType.TEXT_PLAIN);
+        supportedMediaTypes.add(MediaType.MULTIPART_FORM_DATA);
         fastConverter.setSupportedMediaTypes(supportedMediaTypes);
 
         //创建配置类
