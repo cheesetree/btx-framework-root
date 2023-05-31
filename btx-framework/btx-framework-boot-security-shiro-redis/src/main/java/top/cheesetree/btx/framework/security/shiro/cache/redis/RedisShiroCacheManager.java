@@ -3,6 +3,8 @@ package top.cheesetree.btx.framework.security.shiro.cache.redis;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 import org.apache.shiro.cache.CacheManager;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import top.cheesetree.btx.framework.cache.redis.BtxRedisSerializer;
 import top.cheesetree.btx.framework.cache.redis.RedisTemplateFactoryImpl;
 
 import java.lang.reflect.ParameterizedType;
@@ -30,8 +32,11 @@ public class RedisShiroCacheManager implements CacheManager {
             z = (Class<V>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         }
 
+        BtxRedisSerializer rs = new BtxRedisSerializer();
+        rs.setValueSerializer(new JdkSerializationRedisSerializer());
+
         return new RedisShiroCache<>(redisTemplateFactory.generateRedisTemplate(String.class,
-                z), name
+                z, rs), name
                 , expire);
     }
 }
