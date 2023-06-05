@@ -941,7 +941,6 @@ public class BtxTimeNlp {
                 localDateTime = localDateTime.plusDays(2 + day);
             }
 
-
             timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
             timePointNum = isDay ? (2 + day) : 1;
         }
@@ -1017,7 +1016,7 @@ public class BtxTimeNlp {
             localDateTime = preferFutureWeek(week, localDateTime);
             timePointType = isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK :
                     AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = isWeek ? 0 : 1;
+            timePointNum = isWeek ? 1 : 0;
         }
 
         String s = DateTimeFormatterUtil.format(localDateTime, "yyyy-MM-dd-HH-mm-ss");
@@ -1064,7 +1063,7 @@ public class BtxTimeNlp {
                     Integer.valueOf(ini[5]).intValue());
         }
         int curWeekday = curDateTime.get(ChronoField.DAY_OF_WEEK);
-        if (curWeekday < weekday) {
+        if (curWeekday <= weekday) {
             return localDateTime;
         }
 
