@@ -40,4 +40,6 @@ public class BtxShiroCasProperties {
 
     private Boolean skipTicketValidation = false;
 
+    private String devUserName;
+
 }

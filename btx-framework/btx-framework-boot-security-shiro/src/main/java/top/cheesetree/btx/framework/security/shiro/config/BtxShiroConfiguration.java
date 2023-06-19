@@ -5,8 +5,6 @@ import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
-import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
-import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.realm.Realm;
@@ -139,7 +137,7 @@ public class BtxShiroConfiguration {
                 break;
             case CAS:
                 filterMap.put("authc", new BtxSecurityShiroCasFilter(btxShiroCasProperties.getServerLoginUrl(),
-                        btxSecurityProperties.getErrorPath()));
+                        btxSecurityProperties.getErrorPath(), btxShiroCasProperties.getSkipTicketValidation()));
                 break;
             case SESSION:
                 filterMap.put("authc", new BtxSecurityShiroFormFilter());
@@ -201,7 +199,8 @@ public class BtxShiroConfiguration {
             securityManager.setCacheManager(cm);
         }
 
-//        if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION && btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.CAS) {
+//        if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION && btxShiroProperties.getAuthType
+//        () != BtxSecurityEnum.AuthType.CAS) {
 //            // 禁用session
 //            DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
 //            DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();

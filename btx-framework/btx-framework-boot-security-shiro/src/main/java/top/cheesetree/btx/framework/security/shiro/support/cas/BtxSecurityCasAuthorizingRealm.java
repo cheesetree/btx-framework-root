@@ -57,6 +57,8 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
     @Autowired
     @Lazy
     private IBtxSecurityUserService<? extends BtxShiroSecurityUserDTO> btxSecurityUserService;
+    @Autowired
+    private BtxShiroCasProperties btxShiroCasProperties;
 
     public BtxSecurityCasAuthorizingRealm(BtxNoAuthCredentialsMatcher btxNoAuthCredentialsMatcher,
                                           String casServerUrlPrefix,
@@ -149,7 +151,7 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
 
         log.debug("cas ticket->{}", ticket);
 
-        if (StringUtils.hasText(ticket)) {
+        if (StringUtils.hasText(ticket) && !btxShiroCasProperties.getSkipTicketValidation()) {
             try {
                 Assertion casAssertion = ticketValidator.validate(ticket, CommonUtils.constructServiceUrl(request,
                         response, null, this.serverName, this.protocol.getServiceParameterName(),
@@ -161,9 +163,11 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
             }
         } else if (StringUtils.hasText(casToken.getUserId())) {
             casPrincipal = new AttributePrincipalImpl(casToken.getUserId());
+        } else {
+            casPrincipal = new AttributePrincipalImpl(btxShiroCasProperties.getDevUserName());
         }
 
-        if (casPrincipal != null) {
+        if (casPrincipal != null && StringUtils.hasLength(casPrincipal.getName())) {
             String userId = casPrincipal.getName();
 
             if (btxSecurityUserService != null) {

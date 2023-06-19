@@ -34,9 +34,12 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
     private final String loginurl;
     private final String errorurl;
 
-    public BtxSecurityShiroCasFilter(String loginurl, String errorurl) {
+    private final Boolean skipTicketValidation;
+
+    public BtxSecurityShiroCasFilter(String loginurl, String errorurl, Boolean skipTicketValidation) {
         this.loginurl = loginurl;
         this.errorurl = errorurl;
+        this.skipTicketValidation = skipTicketValidation;
     }
 
     @Override
@@ -83,7 +86,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                                      ServletResponse response) {
         // is user authenticated or in remember me mode ?
         Subject subject = getSubject(request, response);
-        if (subject.isAuthenticated() || subject.isRemembered()) {
+        if (subject.isAuthenticated() || subject.isRemembered() || skipTicketValidation) {
             try {
                 issueSuccessRedirect(request, response);
             } catch (Exception e) {
