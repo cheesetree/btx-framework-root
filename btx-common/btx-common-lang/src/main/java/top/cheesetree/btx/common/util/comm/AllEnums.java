@@ -14,13 +14,12 @@ public class AllEnums {
     //time_point时间点类型
     public enum TimePointType implements Behaviour {
         TIME_POINT_TYPE_YEAR(1, "年"),
-        TIME_POINT_TYPE_MONTH(2, "月"),
-        TIME_POINT_TYPE_DAY(3, "日"),
-        TIME_POINT_TYPE_HOUR(4, "时"),
-        TIME_POINT_TYPE_MINUTE(5, "分"),
-        TIME_POINT_TYPE_WEEK(6, "周"),
-
-        TIME_POINT_TYPE_SEASON(7, "季");
+        TIME_POINT_TYPE_SEASON(2, "季"),
+        TIME_POINT_TYPE_MONTH(3, "月"),
+        TIME_POINT_TYPE_WEEK(4, "周"),
+        TIME_POINT_TYPE_DAY(5, "日"),
+        TIME_POINT_TYPE_HOUR(6, "时"),
+        TIME_POINT_TYPE_MINUTE(7, "分");
 
         private int value;
         private String name;

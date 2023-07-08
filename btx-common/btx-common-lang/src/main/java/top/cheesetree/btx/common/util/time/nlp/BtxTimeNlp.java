@@ -71,7 +71,7 @@ public class BtxTimeNlp {
     private Date time;
     private LocalDateTime localDateTime;
 
-    private AllEnums.TimePointType timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
+    private AllEnums.TimePointType timePointType = null;
     private int timePointNum = 1;
 
     private boolean isFirstTimeSolveContext = true;
@@ -159,6 +159,7 @@ public class BtxTimeNlp {
         Pattern pattern = RegexEnum.NormYearTwo.getPattern();
         Matcher match = pattern.matcher(timeExpression);
         if (match.find()) {
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_YEAR;
             timeContext.getTunit()[0] = Integer.parseInt(match.group());
             if (timeContext.getTunit()[0] >= 0 && timeContext.getTunit()[0] < 100) {
                 if (timeContext.getTunit()[0] < 30) /**30以下表示2000年以后的年份*/ {
@@ -186,10 +187,12 @@ public class BtxTimeNlp {
         Pattern pattern = RegexEnum.NormMonth.getPattern();
         Matcher match = pattern.matcher(timeExpression);
         if (match.find()) {
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MONTH;
             timeContext.getTunit()[1] = Integer.parseInt(match.group());
-
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(1);
+
+
         }
     }
 
@@ -207,6 +210,7 @@ public class BtxTimeNlp {
             String matchStr = match.group();
             Pattern p = Pattern.compile("(月|\\.|\\-)");
             Matcher m = p.matcher(matchStr);
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MONTH;
             if (m.find()) {
                 int splitIndex = m.start();
                 String month = matchStr.substring(0, splitIndex);
@@ -214,6 +218,8 @@ public class BtxTimeNlp {
 
                 timeContext.getTunit()[1] = Integer.parseInt(month);
                 timeContext.getTunit()[2] = Integer.parseInt(date);
+
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
 
                 /**处理倾向于未来时间的情况  @author kexm*/
                 preferFuture(1);
@@ -230,6 +236,7 @@ public class BtxTimeNlp {
         Pattern pattern = RegexEnum.NormDay.getPattern();
         Matcher match = pattern.matcher(timeExpression);
         if (match.find()) {
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
             timeContext.getTunit()[2] = Integer.parseInt(match.group());
 
             /**处理倾向于未来时间的情况  @author kexm*/
@@ -249,7 +256,7 @@ public class BtxTimeNlp {
             timeContext.getTunit()[3] = Integer.parseInt(match.group());
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(3);
-            timePointType = null;
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_HOUR;
         }
         /*
          * 对关键字：早（包含早上/早晨/早间），上午，中午,午间,下午,午后,晚上,傍晚,晚间,晚,pm,PM的正确时间计算
@@ -269,7 +276,7 @@ public class BtxTimeNlp {
             }
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(3);
-            timePointType = null;
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_HOUR;
         }
 
         pattern = RegexEnum.NormHourEarlyMorning.getPattern();
@@ -280,7 +287,7 @@ public class BtxTimeNlp {
             }
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(3);
-            timePointType = null;
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_HOUR;
         }
 
         pattern = RegexEnum.NormHourMorning.getPattern();
@@ -291,7 +298,7 @@ public class BtxTimeNlp {
             }
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(3);
-            timePointType = null;
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_HOUR;
         }
 
         pattern = RegexEnum.NormHourNoon.getPattern();
@@ -305,7 +312,7 @@ public class BtxTimeNlp {
             }
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(3);
-            timePointType = null;
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_HOUR;
         }
 
         pattern = RegexEnum.NormHourAfternoon.getPattern();
@@ -319,7 +326,7 @@ public class BtxTimeNlp {
             }
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(3);
-            timePointType = null;
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_HOUR;
         }
 
         pattern = RegexEnum.NormHourNight.getPattern();
@@ -335,7 +342,7 @@ public class BtxTimeNlp {
 
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(3);
-            timePointType = null;
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_HOUR;
         }
 
     }
@@ -361,7 +368,7 @@ public class BtxTimeNlp {
                 timeContext.getTunit()[4] = Integer.parseInt(match.group());
                 /**处理倾向于未来时间的情况  @author kexm*/
                 preferFuture(4);
-                timePointType = null;
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MINUTE;
             }
         }
         /** 加对一刻，半，3刻的正确识别（1刻为15分，半为30分，3刻为45分）*/
@@ -371,7 +378,7 @@ public class BtxTimeNlp {
             timeContext.getTunit()[4] = 15;
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(4);
-            timePointType = null;
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MINUTE;
         }
 
         pattern = RegexEnum.NormMinuteHalf.getPattern();
@@ -380,7 +387,7 @@ public class BtxTimeNlp {
             timeContext.getTunit()[4] = 30;
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(4);
-            timePointType = null;
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MINUTE;
         }
 
         pattern = RegexEnum.NormMinuteThreeQuarter.getPattern();
@@ -389,7 +396,7 @@ public class BtxTimeNlp {
             timeContext.getTunit()[4] = 45;
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(4);
-            timePointType = null;
+            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MINUTE;
         }
 
     }
@@ -404,6 +411,7 @@ public class BtxTimeNlp {
         Pattern pattern = RegexEnum.NormSecondSpec.getPattern();
         Matcher match = pattern.matcher(timeExpression);
         if (match.find()) {
+            timePointType = null;
             return;
         }
         /*
@@ -761,8 +769,15 @@ public class BtxTimeNlp {
      * 设置当前时间相关的时间表达式
      */
     private void normCurRelated() {
-        String[] timeGrid = new String[6];
-        timeGrid = timeContextOrigin.getOldTimeBase().split("-");
+        String[] timeGrid = timeContextOrigin.getOldTimeBase().split("-");
+        boolean isTimePoint = timePointType == null;
+
+        for (int i = 0; i < 6; i++) {
+            if (-1 != this.timeContext.getTunit()[i]) {
+                timeGrid[i] = String.valueOf(this.timeContext.getTunit()[i]);
+            }
+        }
+
         int[] ini = new int[6];
         for (int i = 0; i < 6; i++) {
             ini[i] = Integer.parseInt(timeGrid[i]);
@@ -779,8 +794,10 @@ public class BtxTimeNlp {
         if (match.find()) {
             flag[0] = true;
             localDateTime = localDateTime.minusYears(2);
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_YEAR;
-            timePointNum = 2;
+            if (isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_YEAR.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_YEAR;
+                timePointNum = 2;
+            }
         }
 
         pattern = RegexEnum.NormCurRelatedYearBefore.getPattern();
@@ -788,8 +805,10 @@ public class BtxTimeNlp {
         if (match.find()) {
             flag[0] = true;
             localDateTime = localDateTime.minusYears(1);
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_YEAR;
-            timePointNum = 1;
+            if (isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_YEAR.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_YEAR;
+                timePointNum = 1;
+            }
         }
 
         pattern = RegexEnum.NormCurRelatedYear.getPattern();
@@ -797,8 +816,10 @@ public class BtxTimeNlp {
         if (match.find()) {
             flag[0] = true;
             localDateTime = localDateTime.plusYears(0);
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_YEAR;
-            timePointNum = 0;
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_YEAR.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_YEAR;
+                timePointNum = 0;
+            }
         }
 
         pattern = RegexEnum.NormCurRelatedYearAfter.getPattern();
@@ -806,8 +827,10 @@ public class BtxTimeNlp {
         if (match.find()) {
             flag[0] = true;
             localDateTime = localDateTime.plusYears(1);
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_YEAR;
-            timePointNum = 1;
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_YEAR.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_YEAR;
+                timePointNum = 1;
+            }
         }
 
         pattern = RegexEnum.NormCurRelatedYearAfterNext.getPattern();
@@ -815,8 +838,10 @@ public class BtxTimeNlp {
         if (match.find()) {
             flag[0] = true;
             localDateTime = localDateTime.plusYears(2);
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_YEAR;
-            timePointNum = 2;
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_YEAR.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_YEAR;
+                timePointNum = 2;
+            }
         }
 
         pattern = RegexEnum.NormCurRelatedMonthBefore.getPattern();
@@ -824,8 +849,10 @@ public class BtxTimeNlp {
         if (match.find()) {
             flag[1] = true;
             localDateTime = localDateTime.minusMonths(1);
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MONTH;
-            timePointNum = 1;
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_MONTH.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MONTH;
+                timePointNum = 1;
+            }
         }
 
         pattern = RegexEnum.NormCurRelatedMonth.getPattern();
@@ -833,8 +860,10 @@ public class BtxTimeNlp {
         if (match.find()) {
             flag[1] = true;
             localDateTime = localDateTime.plusMonths(0);
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MONTH;
-            timePointNum = 0;
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_MONTH.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MONTH;
+                timePointNum = 0;
+            }
         }
 
         pattern = RegexEnum.NormCurRelatedMonthAfter.getPattern();
@@ -842,8 +871,10 @@ public class BtxTimeNlp {
         if (match.find()) {
             flag[1] = true;
             localDateTime = localDateTime.plusMonths(1);
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MONTH;
-            timePointNum = 1;
+            if (isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_MONTH.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MONTH;
+                timePointNum = 1;
+            }
         }
 
         boolean isDay = false;
@@ -859,8 +890,10 @@ public class BtxTimeNlp {
             }
 
             localDateTime = localDateTime.minusDays(2 + day);
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = 1;
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_DAY.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
+                timePointNum = 1;
+            }
             isDay = true;
         }
 
@@ -872,8 +905,10 @@ public class BtxTimeNlp {
                 localDateTime = localDateTime.minusDays(2);
             }
 
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = isDay ? 2 : 1;
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_DAY.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
+                timePointNum = isDay ? 2 : 1;
+            }
             isDay = true;
         }
 
@@ -885,8 +920,11 @@ public class BtxTimeNlp {
                 localDateTime = localDateTime.minusDays(1);
             }
 
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = 1;
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_DAY.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
+                timePointNum = 1;
+            }
+
             isDay = true;
         }
 
@@ -897,8 +935,12 @@ public class BtxTimeNlp {
             if (!isDay) {
                 localDateTime = localDateTime.plusDays(0);
             }
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = isDay ? 0 : 1;
+
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_DAY.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
+                timePointNum = isDay ? 0 : 1;
+            }
+
             isDay = true;
         }
 
@@ -909,8 +951,12 @@ public class BtxTimeNlp {
             if (!isDay) {
                 localDateTime = localDateTime.plusDays(1);
             }
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = 1;
+
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_DAY.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
+                timePointNum = 1;
+            }
+
             isDay = true;
         }
 
@@ -921,8 +967,12 @@ public class BtxTimeNlp {
             if (!isDay) {
                 localDateTime = localDateTime.plusDays(2);
             }
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = isDay ? 2 : 1;
+
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_DAY.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
+                timePointNum = isDay ? 2 : 1;
+            }
+
             isDay = true;
         }
 
@@ -941,8 +991,10 @@ public class BtxTimeNlp {
                 localDateTime = localDateTime.plusDays(2 + day);
             }
 
-            timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = isDay ? (2 + day) : 1;
+            if(isTimePoint || timePointType.getValue() <= AllEnums.TimePointType.TIME_POINT_TYPE_DAY.getValue()) {
+                timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
+                timePointNum = isDay ? (2 + day) : 1;
+            }
         }
 
         pattern = AllEnums.TimeNlpRegexEnum.NormCurRelatedWeekBeforeAny.getPattern();
@@ -967,9 +1019,13 @@ public class BtxTimeNlp {
 
             localDateTime = localDateTime.minusWeeks(nweek);
             localDateTime = DateTimeCalculatorUtil.withDayOfWeek(localDateTime, week);
-            timePointType = isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK :
-                    AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = 1;
+
+            if(isTimePoint || timePointType.getValue() <= (isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK.getValue() :
+                    AllEnums.TimePointType.TIME_POINT_TYPE_DAY.getValue())) {
+                timePointType = isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK :
+                        AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
+                timePointNum = 1;
+            }
         }
 
         pattern = AllEnums.TimeNlpRegexEnum.NormCurRelatedWeekAfterAny.getPattern();
@@ -993,9 +1049,13 @@ public class BtxTimeNlp {
 
             localDateTime = localDateTime.plusWeeks(nweek);
             localDateTime = DateTimeCalculatorUtil.withDayOfWeek(localDateTime, week);
-            timePointType = isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK :
-                    AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = 1;
+
+            if(isTimePoint || timePointType.getValue() <= (isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK.getValue() :
+                    AllEnums.TimePointType.TIME_POINT_TYPE_DAY.getValue())) {
+                timePointType = isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK :
+                        AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
+                timePointNum = 1;
+            }
         }
 
         pattern = RegexEnum.NormCurRelatedWeek.getPattern();
@@ -1014,9 +1074,13 @@ public class BtxTimeNlp {
             localDateTime = DateTimeCalculatorUtil.withDayOfWeek(localDateTime, week);
             /**处理未来时间倾向 @author kexm*/
             localDateTime = preferFutureWeek(week, localDateTime);
-            timePointType = isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK :
-                    AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
-            timePointNum = isWeek ? 1 : 0;
+
+            if(isTimePoint || timePointType.getValue() <= (isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK.getValue() :
+                    AllEnums.TimePointType.TIME_POINT_TYPE_DAY.getValue())) {
+                timePointType = isWeek ? AllEnums.TimePointType.TIME_POINT_TYPE_WEEK :
+                        AllEnums.TimePointType.TIME_POINT_TYPE_DAY;
+                timePointNum = isWeek ? 1 : 0;
+            }
         }
 
         String s = DateTimeFormatterUtil.format(localDateTime, "yyyy-MM-dd-HH-mm-ss");
