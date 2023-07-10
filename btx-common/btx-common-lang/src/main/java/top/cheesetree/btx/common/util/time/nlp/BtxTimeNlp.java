@@ -184,15 +184,13 @@ public class BtxTimeNlp {
      * 该方法识别时间表达式单元的月字段
      */
     private void normMonth() {
-        Pattern pattern = RegexEnum.NormMonth.getPattern();
+        Pattern pattern = AllEnums.TimeNlpRegexEnum.NormMonth.getPattern();
         Matcher match = pattern.matcher(timeExpression);
         if (match.find()) {
             timePointType = AllEnums.TimePointType.TIME_POINT_TYPE_MONTH;
             timeContext.getTunit()[1] = Integer.parseInt(match.group());
             /**处理倾向于未来时间的情况  @author kexm*/
             preferFuture(1);
-
-
         }
     }
 

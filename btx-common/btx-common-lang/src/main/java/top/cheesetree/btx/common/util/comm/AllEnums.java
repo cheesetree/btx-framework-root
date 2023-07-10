@@ -48,6 +48,7 @@ public class AllEnums {
     }
 
     public enum TimeNlpRegexEnum implements Behaviour {
+        NormMonth("((10)|(11)|(12)|([1-9]))(?=(月|月份))", 0),
         NormCurRelatedDayBeforeAny("^[大]+前天$", 0),
         NormCurRelatedDayAfterAny("^[大]+后天$", 0),
 
