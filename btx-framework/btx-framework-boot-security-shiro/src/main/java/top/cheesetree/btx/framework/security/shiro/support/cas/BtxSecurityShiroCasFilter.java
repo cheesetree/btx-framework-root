@@ -50,7 +50,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest req = (HttpServletRequest) request;
-        if (RequestUtil.isAjaxRequest(req)) {
+        if (RequestUtil.isAjaxRequest(req) && !skipTicketValidation) {
             HttpServletResponse rep = (HttpServletResponse) response;
             rep.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             rep.setContentType(MediaType.APPLICATION_JSON_VALUE);
