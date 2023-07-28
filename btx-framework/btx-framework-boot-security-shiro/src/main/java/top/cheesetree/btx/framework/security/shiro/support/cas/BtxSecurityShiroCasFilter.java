@@ -48,14 +48,9 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
     }
 
     @Override
-    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        return skipTicketValidation || super.isAccessAllowed(request, response, mappedValue);
-    }
-
-    @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest req = (HttpServletRequest) request;
-        if (RequestUtil.isAjaxRequest(req)) {
+        if (RequestUtil.isAjaxRequest(req) && !skipTicketValidation) {
             HttpServletResponse rep = (HttpServletResponse) response;
             rep.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             rep.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -91,7 +86,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                                      ServletResponse response) {
         // is user authenticated or in remember me mode ?
         Subject subject = getSubject(request, response);
-        if (subject.isAuthenticated() || subject.isRemembered()) {
+        if (subject.isAuthenticated() || subject.isRemembered() || skipTicketValidation) {
             try {
                 issueSuccessRedirect(request, response);
             } catch (Exception e) {
