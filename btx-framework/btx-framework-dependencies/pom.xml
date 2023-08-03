@@ -81,6 +81,11 @@
                 <groupId>top.cheesetree.btx.project.scheduler</groupId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <artifactId>btx-nacos</artifactId>
+                <groupId>top.cheesetree.btx.project</groupId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
