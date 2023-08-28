@@ -109,13 +109,13 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
             if (u.getUser().getFuncs() != null && u.getUser().getFuncs().size() > 0) {
                 funcs = u.getUser().getFuncs();
             } else {
-                funcs = btxSecurityPermissionService.getFunc(u.getUser().getUid());
+                funcs = btxSecurityPermissionService.getFunc(u.getUser().getLoginName());
             }
 
             if (u.getUser().getRoles() != null && u.getUser().getRoles().size() > 0) {
                 roles = u.getUser().getRoles();
             } else {
-                roles = btxSecurityPermissionService.getRole(u.getUser().getUid());
+                roles = btxSecurityPermissionService.getRole(u.getUser().getLoginName());
             }
 
             if (funcs != null) {

@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class SecurityUserDTO implements ValueObject {
     private String uid;
     private String hdUrl;
-    private String loginname;
+    private String loginName;
     private String name;
     private String phone;
     private String email;
