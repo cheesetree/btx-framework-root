@@ -35,9 +35,12 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
     private final String loginurl;
     private final String errorurl;
 
-    public BtxSecurityShiroCasFilter(String loginurl, String errorurl) {
+    private final Boolean skipTicketValidation;
+
+    public BtxSecurityShiroCasFilter(String loginurl, String errorurl, Boolean skipTicketValidation) {
         this.loginurl = loginurl;
         this.errorurl = errorurl;
+        this.skipTicketValidation = skipTicketValidation;
     }
 
     @Override
@@ -48,7 +51,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest req = (HttpServletRequest) request;
-        if (RequestUtil.isAjaxRequest(req)) {
+        if (RequestUtil.isAjaxRequest(req) && !skipTicketValidation) {
             HttpServletResponse rep = (HttpServletResponse) response;
             rep.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             rep.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -84,7 +87,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                                      ServletResponse response) {
         // is user authenticated or in remember me mode ?
         Subject subject = getSubject(request, response);
-        if (subject.isAuthenticated() || subject.isRemembered()) {
+        if (subject.isAuthenticated() || subject.isRemembered() || skipTicketValidation) {
             try {
                 issueSuccessRedirect(request, response);
             } catch (Exception e) {
@@ -121,7 +124,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                     url = String.format("%s?service=%s", loginurl,
                             URLEncoder.encode(reqUrlStr.toString(),
                                     BtxConsts.DEF_ENCODE.toString()));
-
+                    this.saveRequest(request);
                     WebUtils.issueRedirect(request, response, url);
                 }
             } catch (IOException e) {

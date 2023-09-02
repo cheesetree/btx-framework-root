@@ -5,8 +5,6 @@ import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
-import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
-import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.realm.Realm;
@@ -53,14 +51,19 @@ import java.util.*;
 @Slf4j
 public class BtxShiroConfiguration {
     @Autowired
+    @Lazy
     BtxSecurityProperties btxSecurityProperties;
     @Autowired
+    @Lazy
     BtxShiroCacheProperties btxShiroCacheProperties;
     @Autowired
+    @Lazy
     BtxShiroProperties btxShiroProperties;
     @Autowired
+    @Lazy
     BtxShiroCasProperties btxShiroCasProperties;
     @Autowired
+    @Lazy
     BtxShiroCorsProperties btxShiroCorsProperties;
     @Autowired
     @Lazy
@@ -71,6 +74,7 @@ public class BtxShiroConfiguration {
      * 使用代理方式;所以需要开启代码支持;
      */
     @Bean
+    @Lazy
     public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         advisorAutoProxyCreator.setProxyTargetClass(true);
@@ -78,6 +82,7 @@ public class BtxShiroConfiguration {
     }
 
     @Bean(name = "shiroFilterFactoryBean")
+    @Lazy
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         // 必须设置 SecurityManager
@@ -139,7 +144,7 @@ public class BtxShiroConfiguration {
                 break;
             case CAS:
                 filterMap.put("authc", new BtxSecurityShiroCasFilter(btxShiroCasProperties.getServerLoginUrl(),
-                        btxSecurityProperties.getErrorPath()));
+                        btxSecurityProperties.getErrorPath(), btxShiroCasProperties.getSkipTicketValidation()));
                 break;
             case SESSION:
                 filterMap.put("authc", new BtxSecurityShiroFormFilter());
@@ -155,6 +160,7 @@ public class BtxShiroConfiguration {
     }
 
     @Bean
+    @Lazy
     public Authenticator authenticator() {
         BtxModularRealmAuthenticator authenticator = new BtxModularRealmAuthenticator();
         authenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
@@ -168,11 +174,13 @@ public class BtxShiroConfiguration {
     }
 
     @Bean
+    @Lazy
     public DefaultWebSubjectFactory subjectFactory() {
         return new StatelessDefaultSubjectFactory();
     }
 
     @Bean
+    @Lazy
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setGlobalSessionTimeout(btxShiroProperties.getSessionTimeOut() * 1000);
@@ -184,6 +192,7 @@ public class BtxShiroConfiguration {
      * 注入 securityManager
      */
     @Bean
+    @Lazy
     public SessionsSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
@@ -201,7 +210,8 @@ public class BtxShiroConfiguration {
             securityManager.setCacheManager(cm);
         }
 
-//        if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION && btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.CAS) {
+//        if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION && btxShiroProperties.getAuthType
+//        () != BtxSecurityEnum.AuthType.CAS) {
 //            // 禁用session
 //            DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
 //            DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
@@ -217,6 +227,7 @@ public class BtxShiroConfiguration {
     }
 
     @Bean
+    @Lazy
     public BtxSecurityAuthorizingRealm btxSecurityAuthorizingRealm() {
         BtxSecurityAuthorizingRealm r = new BtxSecurityAuthorizingRealm(new BtxNoAuthCredentialsMatcher());
         if (btxShiroCacheProperties.isEnabled()) {

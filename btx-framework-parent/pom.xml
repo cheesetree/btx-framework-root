@@ -23,11 +23,11 @@
         <spring-boot.version>2.6.11</spring-boot.version>
         <!--spring framewwork-->
 
-        <lombok.version>1.18.24</lombok.version>
+        <lombok.version>1.18.28</lombok.version>
         <com.alibaba.fastjson.version>1.2.83</com.alibaba.fastjson.version>
         <mybatis-plus-boot.version>3.5.1</mybatis-plus-boot.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
-        <cn.hutool.version>5.8.6</cn.hutool.version>
+        <cn.hutool.version>5.8.20</cn.hutool.version>
         <org.apache.shiro.version>1.8.0</org.apache.shiro.version>
         <org.jasig.cas.client.version>3.6.4</org.jasig.cas.client.version>
         <com.fasterxml.jackson.version>2.13.4.2</com.fasterxml.jackson.version>
@@ -63,11 +63,6 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus-boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>top.cheesetree.btx.project.archetype</groupId>
-                <artifactId>btx-classic-service-archetype</artifactId>
-                <version>1.2.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.hutool</groupId>
