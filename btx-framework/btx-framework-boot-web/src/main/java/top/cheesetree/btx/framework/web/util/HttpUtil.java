@@ -144,6 +144,27 @@ public class HttpUtil {
     }
 
     public static <T> String httpPost(String url, T params, HashMap<String, String> headers, int to, boolean isHttps) {
+        return httpRequest(url, params, headers, to, isHttps, HttpMethod.POST);
+    }
+
+    public static <T> String httpPut(String url, HashMap<String, String> headers, T params, boolean isHttps) {
+        return httpRequest(url, params, headers, DEF_FILE_TIMEOUT, isHttps, HttpMethod.PUT);
+    }
+
+    public static <T> String httpPut(String url, T params, HashMap<String, String> headers, int to, boolean isHttps) {
+        return httpRequest(url, params, headers, to, isHttps, HttpMethod.PUT);
+    }
+
+    public static <T> String httpDel(String url, HashMap<String, String> headers, T params, boolean isHttps) {
+        return httpRequest(url, params, headers, DEF_FILE_TIMEOUT, isHttps, HttpMethod.DELETE);
+    }
+
+    public static <T> String httpDel(String url, T params, HashMap<String, String> headers, int to, boolean isHttps) {
+        return httpRequest(url, params, headers, to, isHttps, HttpMethod.DELETE);
+    }
+
+    public static <T> String httpRequest(String url, T params, HashMap<String, String> headers, int to, boolean isHttps,
+                                         HttpMethod method) {
         String ret = "";
         RestTemplate restTemplate = geRestTemplate(isHttps, to);
         HttpHeaders header = new HttpHeaders();
@@ -162,7 +183,7 @@ public class HttpUtil {
         }
 
         HttpEntity<T> httpEntity = new HttpEntity<T>(params, header);
-        ResponseEntity<String> res = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        ResponseEntity<String> res = restTemplate.exchange(url, method, httpEntity, String.class);
         if (HttpStatus.OK.equals(res.getStatusCode())) {
             ret = res.getBody();
         } else {

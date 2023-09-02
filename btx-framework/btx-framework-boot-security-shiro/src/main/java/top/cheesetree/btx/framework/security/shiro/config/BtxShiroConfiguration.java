@@ -51,14 +51,19 @@ import java.util.*;
 @Slf4j
 public class BtxShiroConfiguration {
     @Autowired
+    @Lazy
     BtxSecurityProperties btxSecurityProperties;
     @Autowired
+    @Lazy
     BtxShiroCacheProperties btxShiroCacheProperties;
     @Autowired
+    @Lazy
     BtxShiroProperties btxShiroProperties;
     @Autowired
+    @Lazy
     BtxShiroCasProperties btxShiroCasProperties;
     @Autowired
+    @Lazy
     BtxShiroCorsProperties btxShiroCorsProperties;
     @Autowired
     @Lazy
@@ -69,6 +74,7 @@ public class BtxShiroConfiguration {
      * 使用代理方式;所以需要开启代码支持;
      */
     @Bean
+    @Lazy
     public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         advisorAutoProxyCreator.setProxyTargetClass(true);
@@ -76,6 +82,7 @@ public class BtxShiroConfiguration {
     }
 
     @Bean(name = "shiroFilterFactoryBean")
+    @Lazy
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         // 必须设置 SecurityManager
@@ -153,6 +160,7 @@ public class BtxShiroConfiguration {
     }
 
     @Bean
+    @Lazy
     public Authenticator authenticator() {
         BtxModularRealmAuthenticator authenticator = new BtxModularRealmAuthenticator();
         authenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
@@ -166,11 +174,13 @@ public class BtxShiroConfiguration {
     }
 
     @Bean
+    @Lazy
     public DefaultWebSubjectFactory subjectFactory() {
         return new StatelessDefaultSubjectFactory();
     }
 
     @Bean
+    @Lazy
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setGlobalSessionTimeout(btxShiroProperties.getSessionTimeOut() * 1000);
@@ -182,6 +192,7 @@ public class BtxShiroConfiguration {
      * 注入 securityManager
      */
     @Bean
+    @Lazy
     public SessionsSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
@@ -216,6 +227,7 @@ public class BtxShiroConfiguration {
     }
 
     @Bean
+    @Lazy
     public BtxSecurityAuthorizingRealm btxSecurityAuthorizingRealm() {
         BtxSecurityAuthorizingRealm r = new BtxSecurityAuthorizingRealm(new BtxNoAuthCredentialsMatcher());
         if (btxShiroCacheProperties.isEnabled()) {

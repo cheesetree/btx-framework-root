@@ -63,7 +63,7 @@ public class RedisTemplateFactoryImpl {
             result.setConnectionFactory(redisConnectionFactory);
 
             if (btxRedisSerializer.getKeySerializer() == null) {
-                if (userStringSerializer(keyClz)) {
+                if (String.class.isAssignableFrom(keyClz) ) {
                     if (needprefix) {
                         btxRedisSerializer.setKeySerializer(new BtxKeyStringRedisSerializer(btxRedisCacheProperties.getKeyPrefix()));
                     } else {
@@ -75,7 +75,7 @@ public class RedisTemplateFactoryImpl {
             }
 
             if (btxRedisSerializer.getHashKeySerializer() == null) {
-                if (userStringSerializer(keyClz)) {
+                if (String.class.isAssignableFrom(valueClz) ) {
                     btxRedisSerializer.setHashKeySerializer(result.getStringSerializer());
                 } else {
                     btxRedisSerializer.setHashKeySerializer(new BtxFastJsonRedisSerializer<TKey>(keyClz));
@@ -83,7 +83,7 @@ public class RedisTemplateFactoryImpl {
             }
 
             if (btxRedisSerializer.getValueSerializer() == null) {
-                if (userStringSerializer(keyClz)) {
+                if (String.class.isAssignableFrom(valueClz) ) {
                     btxRedisSerializer.setValueSerializer(result.getStringSerializer());
                 } else {
                     btxRedisSerializer.setValueSerializer(new BtxFastJsonRedisSerializer<TValue>(valueClz));
@@ -138,10 +138,6 @@ public class RedisTemplateFactoryImpl {
             return Objects.hash(keyClass, valueClass, needprefix, btxRedisSerializer);
         }
 
-    }
-
-    private boolean userStringSerializer(Class keyClz) {
-        return String.class.isAssignableFrom(keyClz) || Long.class.isAssignableFrom(keyClz) || Integer.class.isAssignableFrom(keyClz) || Double.class.isAssignableFrom(keyClz) || Float.class.isAssignableFrom(keyClz);
     }
 
 }
