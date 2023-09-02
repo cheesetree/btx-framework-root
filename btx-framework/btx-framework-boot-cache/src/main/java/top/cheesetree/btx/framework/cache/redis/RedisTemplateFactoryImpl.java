@@ -75,7 +75,7 @@ public class RedisTemplateFactoryImpl {
             }
 
             if (btxRedisSerializer.getHashKeySerializer() == null) {
-                if (String.class.isAssignableFrom(valueClz) ) {
+                if (String.class.isAssignableFrom(keyClz) ) {
                     btxRedisSerializer.setHashKeySerializer(result.getStringSerializer());
                 } else {
                     btxRedisSerializer.setHashKeySerializer(new BtxFastJsonRedisSerializer<TKey>(keyClz));
