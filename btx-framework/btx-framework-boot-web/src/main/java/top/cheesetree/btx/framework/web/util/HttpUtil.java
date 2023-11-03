@@ -24,7 +24,7 @@ import java.util.*;
 @Slf4j
 public class HttpUtil {
     private final static int DEF_TIMEOUT = 10000;
-    private final static int DEF_CON_TIMEOUT = 1000;
+    private final static int DEF_CON_TIMEOUT = 5000;
     private final static int DEF_FILE_TIMEOUT = 60000;
 
     public static String httpGet(String url, boolean isHttps) {

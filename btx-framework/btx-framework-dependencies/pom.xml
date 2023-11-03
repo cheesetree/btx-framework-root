@@ -86,6 +86,11 @@
                 <groupId>top.cheesetree.btx.project</groupId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>top.cheesetree.btx.framework.local</groupId>
+                <artifactId>btx-framework-boot-web-tongweb</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
