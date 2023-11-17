@@ -106,13 +106,13 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
 
             BtxShiroSecurityAuthUserDTO u = (BtxShiroSecurityAuthUserDTO) principalCollection.getPrimaryPrincipal();
 
-            if (u.getUser().getFuncs() != null && u.getUser().getFuncs().size() > 0) {
+            if (u.getUser().getFuncs() != null && !u.getUser().getFuncs().isEmpty()) {
                 funcs = u.getUser().getFuncs();
             } else {
                 funcs = btxSecurityPermissionService.getFunc(u.getUser().getLoginName());
             }
 
-            if (u.getUser().getRoles() != null && u.getUser().getRoles().size() > 0) {
+            if (u.getUser().getRoles() != null && !u.getUser().getRoles().isEmpty()) {
                 roles = u.getUser().getRoles();
             } else {
                 roles = btxSecurityPermissionService.getRole(u.getUser().getLoginName());

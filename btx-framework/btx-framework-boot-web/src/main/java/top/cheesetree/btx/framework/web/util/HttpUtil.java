@@ -120,8 +120,13 @@ public class HttpUtil {
      * get方法
      */
     public static String httpGet(String url, HashMap<String, String> headers, int to, boolean isHttps) {
+        return httpGet(url, headers, to, isHttps, true);
+    }
+
+    public static String httpGet(String url, HashMap<String, String> headers, int to, boolean isHttps,
+                                 boolean ndBufferBody) {
         String ret = "";
-        RestTemplate restTemplate = geRestTemplate(isHttps, to);
+        RestTemplate restTemplate = geRestTemplate(isHttps, to, ndBufferBody);
         HttpHeaders header = new HttpHeaders();
 
         if (headers != null) {
@@ -144,8 +149,14 @@ public class HttpUtil {
     }
 
     public static <T> String httpPost(String url, T params, HashMap<String, String> headers, int to, boolean isHttps) {
-        return httpRequest(url, params, headers, to, isHttps, HttpMethod.POST);
+        return httpPost(url, params, headers, to, isHttps, true);
     }
+
+    public static <T> String httpPost(String url, T params, HashMap<String, String> headers, int to, boolean isHttps,
+                                      boolean ndBufferBody) {
+        return httpRequest(url, params, headers, to, isHttps, HttpMethod.POST, ndBufferBody);
+    }
+
 
     public static <T> String httpPut(String url, HashMap<String, String> headers, T params, boolean isHttps) {
         return httpRequest(url, params, headers, DEF_FILE_TIMEOUT, isHttps, HttpMethod.PUT);
@@ -164,9 +175,9 @@ public class HttpUtil {
     }
 
     public static <T> String httpRequest(String url, T params, HashMap<String, String> headers, int to, boolean isHttps,
-                                         HttpMethod method) {
+                                         HttpMethod method, boolean ndBufferBody) {
         String ret = "";
-        RestTemplate restTemplate = geRestTemplate(isHttps, to);
+        RestTemplate restTemplate = geRestTemplate(isHttps, to, ndBufferBody);
         HttpHeaders header = new HttpHeaders();
 
         if (headers != null) {
@@ -193,17 +204,24 @@ public class HttpUtil {
         return ret;
     }
 
-    public static RestTemplate geRestTemplate(boolean isHttps, int timeout) {
+    public static <T> String httpRequest(String url, T params, HashMap<String, String> headers, int to, boolean isHttps,
+                                         HttpMethod method) {
+        return httpRequest(url, params, headers, to, isHttps, method, true);
+    }
+
+    public static RestTemplate geRestTemplate(boolean isHttps, int timeout, boolean ndBufferBody) {
         RestTemplate restTemplate;
         if (isHttps) {
             HttpsClientRequestFactory hcr = new HttpsClientRequestFactory();
             hcr.setConnectTimeout(DEF_CON_TIMEOUT);
             hcr.setReadTimeout(timeout);
+            hcr.setBufferRequestBody(ndBufferBody);
             restTemplate = new RestTemplate(hcr);
         } else {
             SimpleClientHttpRequestFactory hrf = new SimpleClientHttpRequestFactory();
             hrf.setConnectTimeout(DEF_CON_TIMEOUT);
             hrf.setReadTimeout(timeout);
+            hrf.setBufferRequestBody(ndBufferBody);
             restTemplate = new RestTemplate(hrf);
         }
 
@@ -214,6 +232,10 @@ public class HttpUtil {
         });
 
         return restTemplate;
+    }
+
+    public static RestTemplate geRestTemplate(boolean isHttps, int timeout) {
+        return geRestTemplate(isHttps, timeout, true);
     }
 
 }

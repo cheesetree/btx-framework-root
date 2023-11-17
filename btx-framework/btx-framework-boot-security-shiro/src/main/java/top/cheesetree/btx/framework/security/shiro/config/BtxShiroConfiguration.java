@@ -5,6 +5,8 @@ import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
+import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.realm.Realm;
@@ -184,7 +186,7 @@ public class BtxShiroConfiguration {
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setGlobalSessionTimeout(btxShiroProperties.getSessionTimeOut() * 1000);
-        sessionManager.setSessionValidationSchedulerEnabled(!btxShiroCacheProperties.isEnabled());
+//        sessionManager.setSessionValidationSchedulerEnabled(!btxShiroCacheProperties.isEnabled());
         return sessionManager;
     }
 
@@ -210,16 +212,16 @@ public class BtxShiroConfiguration {
             securityManager.setCacheManager(cm);
         }
 
-//        if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION && btxShiroProperties.getAuthType
-//        () != BtxSecurityEnum.AuthType.CAS) {
-//            // 禁用session
-//            DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
-//            DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
-//            defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
-//            subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
-//            securityManager.setSubjectDAO(subjectDAO);
-//            securityManager.setSubjectFactory(subjectFactory());
-//        }
+        if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION && btxShiroProperties.getAuthType
+        () != BtxSecurityEnum.AuthType.CAS) {
+            // 禁用session
+            DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+            DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+            defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
+            subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
+            securityManager.setSubjectDAO(subjectDAO);
+            securityManager.setSubjectFactory(subjectFactory());
+        }
 
         securityManager.setSessionManager(sessionManager());
 
