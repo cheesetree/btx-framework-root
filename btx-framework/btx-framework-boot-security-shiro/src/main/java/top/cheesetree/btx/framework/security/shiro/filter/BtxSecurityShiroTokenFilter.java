@@ -5,11 +5,11 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.SneakyThrows;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
+import org.apache.shiro.web.util.WebUtils;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import top.cheesetree.btx.framework.core.constants.BtxConsts;
 import top.cheesetree.btx.framework.core.json.CommJSON;
-import top.cheesetree.btx.framework.security.constants.BtxSecurityMessage;
 import top.cheesetree.btx.framework.security.shiro.subject.StatelessToken;
 import top.cheesetree.btx.framework.web.util.RequestUtil;
 
@@ -18,6 +18,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+
+import static top.cheesetree.btx.framework.security.constants.BtxSecurityMessage.SECURIT_UNLOGIN_ERROR;
 
 /**
  * @author van
@@ -29,9 +32,17 @@ public class BtxSecurityShiroTokenFilter extends AuthenticatingFilter {
 
     private boolean ignoreToken;
 
+    private String errorurl;
+
     public BtxSecurityShiroTokenFilter(String tokenKey, boolean ignoreToken) {
         this.tokenKey = tokenKey;
         this.ignoreToken = ignoreToken;
+    }
+
+    public BtxSecurityShiroTokenFilter(String tokenKey, boolean ignoreToken, String errorurl) {
+        this.tokenKey = tokenKey;
+        this.ignoreToken = ignoreToken;
+        this.errorurl = errorurl;
     }
 
     @SneakyThrows
@@ -59,9 +70,20 @@ public class BtxSecurityShiroTokenFilter extends AuthenticatingFilter {
             rep.setContentType(MediaType.APPLICATION_JSON_VALUE);
             rep.setCharacterEncoding(BtxConsts.DEF_ENCODE.toString());
             OutputStream outputStream = response.getOutputStream();
-            outputStream.write(JSON.toJSONBytes(new CommJSON(BtxSecurityMessage.SECURIT_UNLOGIN_ERROR),
+            outputStream.write(JSON.toJSONBytes(new CommJSON(SECURIT_UNLOGIN_ERROR),
                     SerializerFeature.WriteMapNullValue));
+        } else {
+            String url = String.format("%s%serrmsg=%s", errorurl, errorurl.contains("?") ? "&" : "?",
+                    URLEncoder.encode(SECURIT_UNLOGIN_ERROR.getMessage(), BtxConsts.DEF_ENCODE.toString()));
+            ((HttpServletResponse) response).sendRedirect(url);
+
+            if (url.startsWith("http") || url.startsWith("https")) {
+                ((HttpServletResponse) response).sendRedirect(url);
+            } else {
+                WebUtils.issueRedirect(request, response, url);
+            }
         }
+
         return false;
     }
 

@@ -140,7 +140,8 @@ public class BtxShiroConfiguration {
             case EXT_TOKEN:
             case TOKEN:
                 filterMap.put("authc", new BtxSecurityShiroTokenFilter(btxShiroProperties.getTokenKey(),
-                        btxShiroProperties.isIgnoreToken()));
+                        btxShiroProperties.isIgnoreToken(),
+                        btxSecurityProperties.getErrorPath()));
                 break;
             case JWT:
                 break;
@@ -213,7 +214,7 @@ public class BtxShiroConfiguration {
         }
 
         if (btxShiroProperties.getAuthType() != BtxSecurityEnum.AuthType.SESSION && btxShiroProperties.getAuthType
-        () != BtxSecurityEnum.AuthType.CAS) {
+                () != BtxSecurityEnum.AuthType.CAS) {
             // 禁用session
             DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
             DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
