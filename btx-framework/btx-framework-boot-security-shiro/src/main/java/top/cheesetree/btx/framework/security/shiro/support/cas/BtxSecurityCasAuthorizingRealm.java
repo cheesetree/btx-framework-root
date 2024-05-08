@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author van
@@ -81,6 +82,8 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
         this.serverName = serverName;
         this.setAuthenticationTokenClass(CasToken.class);
         this.protocol = validationType;
+
+        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -143,6 +146,7 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         CasToken casToken = (CasToken) token;
         if (token == null) {
+            log.warn("cas token is null");
             return null;
         }
 

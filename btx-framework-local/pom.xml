@@ -18,6 +18,7 @@
     </modules>
 
     <properties>
+        <tongweb.version>7.0.E.6_P4</tongweb.version>
     </properties>
 
     <dependencyManagement>
@@ -28,6 +29,13 @@
                 <version>${project.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.tongweb</groupId>
+                <artifactId>tongweb-embed-dependencies</artifactId>
+                <version>${tongweb.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

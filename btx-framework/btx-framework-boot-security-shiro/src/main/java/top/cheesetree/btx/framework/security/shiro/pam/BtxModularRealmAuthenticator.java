@@ -11,7 +11,6 @@ import org.apache.shiro.authc.pam.ShortCircuitIterationException;
 import org.apache.shiro.realm.Realm;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * @author van
@@ -29,11 +28,7 @@ public class BtxModularRealmAuthenticator extends ModularRealmAuthenticator {
             log.trace("Iterating through {} realms for PAM authentication", realms.size());
         }
 
-        Iterator var5 = realms.iterator();
-
-        while (var5.hasNext()) {
-            Realm realm = (Realm) var5.next();
-
+        for (Realm realm : realms) {
             try {
                 aggregate = strategy.beforeAttempt(realm, token, aggregate);
             } catch (ShortCircuitIterationException var11) {

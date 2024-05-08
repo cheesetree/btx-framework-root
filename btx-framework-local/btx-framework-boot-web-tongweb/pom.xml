@@ -30,13 +30,11 @@
         </dependency>
         <dependency>
             <groupId>com.tongweb.springboot</groupId>
-            <artifactId>tongweb-spring-boot-starter</artifactId>
-            <version>${com.tongweb.springboot.version}</version>
+            <artifactId>tongweb-spring-boot-starter-2.x</artifactId>
         </dependency>
         <dependency>
             <groupId>com.tongweb</groupId>
-            <artifactId>tongweb-embed</artifactId>
-            <version>${com.tongweb.embed.version}</version>
+            <artifactId>tongweb-embed-core</artifactId>
         </dependency>
     </dependencies>
 </project>
