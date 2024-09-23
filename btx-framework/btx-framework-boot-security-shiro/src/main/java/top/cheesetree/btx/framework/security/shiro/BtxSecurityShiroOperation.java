@@ -129,6 +129,8 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
         RealmSecurityManager rsm = (RealmSecurityManager) SecurityUtils.getSecurityManager();
         BtxSecurityAuthorizingRealm shiroRealm = (BtxSecurityAuthorizingRealm) rsm.getRealms().iterator().next();
         AuthenticationToken tk = null;
+        boolean isSession =
+                BtxSecurityEnum.AuthType.SESSION.equals(btxShiroProperties.getAuthType()) || BtxSecurityEnum.AuthType.CAS.equals(btxShiroProperties.getAuthType());
         switch (btxShiroProperties.getAuthType()) {
             case CAS:
                 break;
@@ -144,7 +146,9 @@ public class BtxSecurityShiroOperation implements IBtxSecurityOperation {
             shiroRealm.clearUserAuthorization(au, tk);
         }
         au.setUser(user);
-        subject.runAs(new SimplePrincipalCollection(au, "user"));
+        if (isSession) {
+            subject.runAs(new SimplePrincipalCollection(au, "user"));
+        }
 
         if (btxShiroCacheProperties.isEnabled()) {
             shiroRealm.setUserAuthenticationCache(au, tk);
