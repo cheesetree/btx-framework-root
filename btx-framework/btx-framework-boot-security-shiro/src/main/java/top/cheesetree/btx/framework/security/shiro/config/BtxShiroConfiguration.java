@@ -13,6 +13,7 @@ import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.DefaultWebSubjectFactory;
+import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,7 +188,10 @@ public class BtxShiroConfiguration {
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setGlobalSessionTimeout(btxShiroProperties.getSessionTimeOut() * 1000);
-//        sessionManager.setSessionValidationSchedulerEnabled(!btxShiroCacheProperties.isEnabled());
+
+        if (StringUtils.hasText(btxShiroProperties.getCookieName())) {
+            sessionManager.setSessionIdCookie(new SimpleCookie(btxShiroProperties.getCookieName()));
+        }
         return sessionManager;
     }
 

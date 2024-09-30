@@ -20,7 +20,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.beans.Encoder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -89,6 +88,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
         Subject subject = getSubject(request, response);
         if (subject.isAuthenticated() || subject.isRemembered() || skipTicketValidation) {
             try {
+                log.debug("Redirect to the default success url");
                 issueSuccessRedirect(request, response);
             } catch (Exception e) {
                 log.error("Cannot redirect to the default success url", e);
@@ -109,6 +109,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                                 URLEncoder.encode(errmsg, BtxConsts.DEF_ENCODE.toString()));
                         ((HttpServletResponse) response).sendRedirect(url);
                     } else {
+                        log.debug("Return error message : {}", errmsg);
                         HttpServletResponse rep = (HttpServletResponse) response;
                         rep.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         rep.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -124,6 +125,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                     url = String.format("%s?service=%s", loginurl,
                             URLEncoder.encode(reqUrlStr.toString(),
                                     BtxConsts.DEF_ENCODE.toString()));
+                    log.debug("Redirect to cas login url : {}", url);
                     this.saveRequest(request);
                     WebUtils.issueRedirect(request, response, url);
                 }

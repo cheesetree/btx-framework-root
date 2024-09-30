@@ -171,12 +171,14 @@ public class BtxSecurityCasAuthorizingRealm extends AuthorizingRealm {
             casPrincipal = new AttributePrincipalImpl(btxShiroCasProperties.getDevUserName());
         }
 
+        log.debug("cas ticket to principal->{}", JSON.toJSONString(casPrincipal));
+
         if (casPrincipal != null && StringUtils.hasLength(casPrincipal.getName())) {
             String userId = casPrincipal.getName();
 
             if (btxSecurityUserService != null) {
                 CommJSON<? extends BtxShiroSecurityUserDTO> ret = btxSecurityUserService.getUserInfo(userId);
-                log.debug("cas ticket to userinfo->", JSON.toJSON(ret));
+                log.debug("cas ticket to userinfo->{}", JSON.toJSONString(ret));
                 if (ret.checkSuc()) {
                     BtxShiroSecurityAuthUserDTO u = new BtxShiroSecurityAuthUserDTO();
                     u.setUser(ret.getResult());

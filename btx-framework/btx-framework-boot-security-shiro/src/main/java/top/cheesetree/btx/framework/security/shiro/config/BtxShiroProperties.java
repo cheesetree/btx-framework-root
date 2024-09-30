@@ -20,4 +20,5 @@ public class BtxShiroProperties {
     private String tokenKey = BtxSecurityShiroConst.AUTHORIZATION_KEY;
     private boolean autoPermission = false;
     private boolean ignoreToken = false;
+    private String cookieName;
 }

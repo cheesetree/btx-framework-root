@@ -9,4 +9,7 @@ import top.cheesetree.btx.framework.core.constants.BtxConsts;
  */
 public interface BtxSecurityConst extends BtxConsts {
     String AUTHORIZATION_KEY = "Authorization";
+
+    String COOIKE_NAME = "BtxCookie";
+
 }
