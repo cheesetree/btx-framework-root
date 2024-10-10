@@ -18,7 +18,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import top.cheesetree.btx.framework.web.http.CustomSSLSocketFactory;
@@ -38,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Configuration
 @EnableConfigurationProperties({BtxWebProperties.class, BtxRestProperties.class})
-@EnableWebMvc
+//@EnableWebMvc
 public class BtxWebMvcConfiguration implements WebMvcConfigurer {
     @Autowired
     BtxWebProperties btxWebProperties;
@@ -158,4 +157,5 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
 
         return rt;
     }
+
 }
