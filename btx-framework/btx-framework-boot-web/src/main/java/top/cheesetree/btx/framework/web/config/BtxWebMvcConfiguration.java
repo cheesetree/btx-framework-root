@@ -37,7 +37,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Configuration
 @EnableConfigurationProperties({BtxWebProperties.class, BtxRestProperties.class})
-//@EnableWebMvc
 public class BtxWebMvcConfiguration implements WebMvcConfigurer {
     @Autowired
     BtxWebProperties btxWebProperties;
