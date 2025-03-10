@@ -50,7 +50,7 @@ import java.util.*;
  */
 @Configuration
 @EnableConfigurationProperties({BtxShiroProperties.class, BtxShiroCacheProperties.class, BtxShiroCasProperties.class,
-        BtxShiroCorsProperties.class})
+        BtxShiroCorsProperties.class, BtxShiroCsrfProperties.class})
 @Slf4j
 public class BtxShiroConfiguration {
     @Autowired
@@ -68,6 +68,9 @@ public class BtxShiroConfiguration {
     @Autowired
     @Lazy
     BtxShiroCorsProperties btxShiroCorsProperties;
+    @Autowired
+    @Lazy
+    BtxShiroCsrfProperties btxShiroCsrfProperties;
     @Autowired
     @Lazy
     IBtxSecurityPermissionService<? extends SecurityMenuDTO, ? extends SecurityFuncDTO, ? extends SecurityRoleDTO> btxSecurityPermissionService;
@@ -272,6 +275,16 @@ public class BtxShiroConfiguration {
         registration.addUrlPatterns("/*");
         registration.setName("CorsFilter");
         registration.setOrder(1);
+        return registration;
+    }
+
+    @ConditionalOnProperty(value = "btx.security.shiro.csrf.enabled", havingValue = "true")
+    @Bean
+    public FilterRegistrationBean csrfFilterRegistrationBean() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(new BtxSecurityShiroCsrfFilter(btxShiroCsrfProperties));
+        registration.setEnabled(true);
+        registration.addUrlPatterns("/*");
         return registration;
     }
 

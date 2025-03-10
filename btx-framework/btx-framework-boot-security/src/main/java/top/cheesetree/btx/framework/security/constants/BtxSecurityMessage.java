@@ -20,4 +20,6 @@ public class BtxSecurityMessage extends BtxMessage {
 
     public static final BtxSecurityMessage SECURIT_CAS_TICKET_ERROR = new BtxSecurityMessage(20004, "TICKET校验失败");
 
+    public static final BtxSecurityMessage SECURIT_CSRF_ERROR = new BtxSecurityMessage(20005, "CSRF校验失败");
+
 }
