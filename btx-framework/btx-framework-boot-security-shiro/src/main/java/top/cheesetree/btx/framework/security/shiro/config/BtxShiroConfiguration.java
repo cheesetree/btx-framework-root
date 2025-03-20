@@ -245,6 +245,9 @@ public class BtxShiroConfiguration {
             r.setAuthorizationCachingEnabled(true);
             r.setAuthenticationCacheName(btxShiroCacheProperties.getAuthenticationCacheName());
             r.setAuthorizationCacheName(btxShiroCacheProperties.getAuthorizationCacheName());
+        }else{
+            r.setAuthenticationCachingEnabled(false);
+            r.setAuthorizationCachingEnabled(false);
         }
 
         return r;
@@ -261,6 +264,9 @@ public class BtxShiroConfiguration {
             r.setAuthorizationCachingEnabled(true);
             r.setAuthenticationCacheName(btxShiroCacheProperties.getAuthenticationCacheName());
             r.setAuthorizationCacheName(btxShiroCacheProperties.getAuthorizationCacheName());
+        } else {
+            r.setAuthenticationCachingEnabled(false);
+            r.setAuthorizationCachingEnabled(false);
         }
 
         return r;

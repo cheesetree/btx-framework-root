@@ -28,7 +28,7 @@
         <mybatis-plus-boot.version>3.5.1</mybatis-plus-boot.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
         <cn.hutool.version>5.8.20</cn.hutool.version>
-        <org.apache.shiro.version>1.8.0</org.apache.shiro.version>
+        <org.apache.shiro.version>1.13.0</org.apache.shiro.version>
         <org.jasig.cas.client.version>3.6.4</org.jasig.cas.client.version>
         <com.fasterxml.jackson.version>2.13.4.2</com.fasterxml.jackson.version>
         <okhttp.version>4.9.3</okhttp.version>
