@@ -1,8 +1,9 @@
 package top.cheesetree.btx.project.dts.dtm.client.common.config;
 
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.alibaba.fastjson.support.config.FastJsonConfig;
-import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.support.config.FastJsonConfig;
+import com.alibaba.fastjson2.support.spring.http.converter.FastJsonHttpMessageConverter;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import org.mybatis.spring.annotation.MapperScan;
@@ -51,12 +52,11 @@ public class BtxDtmConfigure {
 
         //创建配置类
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
-        fastJsonConfig.setSerializerFeatures(
-                SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteMapNullValue,
-                SerializerFeature.WriteNullListAsEmpty,
-                SerializerFeature.WriteNullStringAsEmpty,
-                SerializerFeature.WriteNullBooleanAsFalse
+        fastJsonConfig.setWriterFeatures(
+                JSONWriter.Feature.WriteMapNullValue,
+                JSONWriter.Feature.WriteNullListAsEmpty,
+                JSONWriter.Feature.WriteNullStringAsEmpty,
+                JSONWriter.Feature.WriteNullBooleanAsFalse
         );
         fastConverter.setFastJsonConfig(fastJsonConfig);
         converters.add(fastConverter);

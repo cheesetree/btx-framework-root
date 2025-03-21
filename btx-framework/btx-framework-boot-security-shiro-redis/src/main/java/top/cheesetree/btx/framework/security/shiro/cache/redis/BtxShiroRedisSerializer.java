@@ -1,9 +1,10 @@
 package top.cheesetree.btx.framework.security.shiro.cache.redis;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.ParserConfig;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.alibaba.fastjson.util.IOUtils;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONFactory;
+import com.alibaba.fastjson2.JSONWriter;
+import org.jasig.cas.client.util.IOUtils;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
@@ -15,9 +16,9 @@ import org.springframework.data.redis.serializer.SerializationException;
 public class BtxShiroRedisSerializer implements RedisSerializer<Object> {
 
     static {
-        ParserConfig.getGlobalInstance().addAccept("org.apache.shiro.authc");
-        ParserConfig.getGlobalInstance().addAccept("top.cheesetree.btx.framework.security.model");
-        ParserConfig.getGlobalInstance().addAccept("top.cheesetree.btx.framework.security.shiro.model");
+        JSONFactory.getDefaultObjectReaderProvider().addAutoTypeAccept("org.apache.shiro.authc");
+        JSONFactory.getDefaultObjectReaderProvider().addAutoTypeAccept("top.cheesetree.btx.framework.security.model");
+        JSONFactory.getDefaultObjectReaderProvider().addAutoTypeAccept("top.cheesetree.btx.framework.security.shiro.model");
     }
 
     @Override
@@ -26,7 +27,7 @@ public class BtxShiroRedisSerializer implements RedisSerializer<Object> {
             return new byte[0];
         } else {
             try {
-                return JSON.toJSONBytes(object, new SerializerFeature[]{SerializerFeature.WriteClassName});
+                return JSON.toJSONBytes(object, JSONWriter.Feature.WriteClassName);
             } catch (Exception var3) {
                 throw new SerializationException("Could not serialize: " + var3.getMessage(), var3);
             }

@@ -1,7 +1,8 @@
 package top.cheesetree.btx.framework.security.shiro.support.cas;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -57,7 +58,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
             rep.setCharacterEncoding(BtxConsts.DEF_ENCODE.toString());
             OutputStream outputStream = response.getOutputStream();
             outputStream.write(JSON.toJSONBytes(new CommJSON(BtxSecurityMessage.SECURIT_UNLOGIN_ERROR),
-                    SerializerFeature.WriteMapNullValue));
+                    JSONWriter.Feature.WriteMapNullValue));
             return false;
         } else {
             return this.executeLogin(request, response);
@@ -116,7 +117,7 @@ public class BtxSecurityShiroCasFilter extends AuthenticatingFilter {
                         rep.setCharacterEncoding(BtxConsts.DEF_ENCODE.toString());
                         OutputStream outputStream = response.getOutputStream();
                         outputStream.write(JSON.toJSONBytes(new CommJSON(BtxSecurityMessage.SECURIT_CAS_TICKET_ERROR.getCode(), errmsg),
-                                SerializerFeature.WriteMapNullValue));
+                                JSONWriter.Feature.WriteMapNullValue));
                     }
                 } else {
                     if (StringUtils.hasLength(req.getQueryString())) {

@@ -1,7 +1,8 @@
 package top.cheesetree.btx.framework.security.shiro.filter;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.springframework.http.MediaType;
 import top.cheesetree.btx.framework.core.constants.BtxConsts;
@@ -36,7 +37,7 @@ public class BtxSecurityShiroFormFilter extends FormAuthenticationFilter {
             rep.setCharacterEncoding(BtxConsts.DEF_ENCODE.toString());
             OutputStream outputStream = response.getOutputStream();
             outputStream.write(JSON.toJSONBytes(new CommJSON(BtxSecurityMessage.SECURIT_UNLOGIN_ERROR),
-                    SerializerFeature.WriteMapNullValue));
+                    JSONWriter.Feature.WriteMapNullValue));
             return false;
         } else {
             return super.onAccessDenied(request, response);

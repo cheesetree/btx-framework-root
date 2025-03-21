@@ -20,19 +20,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--spring framewwork-->
-        <spring-boot.version>2.6.11</spring-boot.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
         <!--spring framewwork-->
 
-        <lombok.version>1.18.28</lombok.version>
-        <com.alibaba.fastjson.version>1.2.83</com.alibaba.fastjson.version>
-        <mybatis-plus-boot.version>3.5.1</mybatis-plus-boot.version>
-        <mybatis-plus.version>3.5.1</mybatis-plus.version>
-        <cn.hutool.version>5.8.20</cn.hutool.version>
+        <lombok.version>1.18.36</lombok.version>
+        <com.alibaba.fastjson2.version>2.0.56</com.alibaba.fastjson2.version>
+        <mybatis-plus-boot.version>3.5.10.1</mybatis-plus-boot.version>
+        <cn.hutool.version>5.8.36</cn.hutool.version>
         <org.apache.shiro.version>1.13.0</org.apache.shiro.version>
         <org.jasig.cas.client.version>3.6.4</org.jasig.cas.client.version>
-        <com.fasterxml.jackson.version>2.13.4.2</com.fasterxml.jackson.version>
-        <okhttp.version>4.9.3</okhttp.version>
-        <org.yaml.snakeyaml.version>1.32</org.yaml.snakeyaml.version>
+        <com.fasterxml.jackson.version>2.13.5</com.fasterxml.jackson.version>
+        <okhttp.version>4.12.0</okhttp.version>
+        <org.yaml.snakeyaml.version>1.33</org.yaml.snakeyaml.version>
     </properties>
 
     <dependencyManagement>
@@ -50,9 +49,14 @@
                 <version>${lombok.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${com.alibaba.fastjson.version}</version>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${com.alibaba.fastjson2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2-extension-spring5</artifactId>
+                <version>${com.alibaba.fastjson2.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.cheesetree.btx.common</groupId>
@@ -61,18 +65,17 @@
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <artifactId>mybatis-plus-bom</artifactId>
                 <version>${mybatis-plus-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>cn.hutool</groupId>
-                <artifactId>hutool-core</artifactId>
+                <artifactId>hutool-bom</artifactId>
                 <version>${cn.hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-crypto</artifactId>
-                <version>${cn.hutool.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.shiro</groupId>

@@ -1,7 +1,8 @@
 package top.cheesetree.btx.framework.security.shiro.filter;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import lombok.SneakyThrows;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
@@ -71,7 +72,7 @@ public class BtxSecurityShiroTokenFilter extends AuthenticatingFilter {
             rep.setCharacterEncoding(BtxConsts.DEF_ENCODE.toString());
             OutputStream outputStream = response.getOutputStream();
             outputStream.write(JSON.toJSONBytes(new CommJSON(SECURIT_UNLOGIN_ERROR),
-                    SerializerFeature.WriteMapNullValue));
+                    JSONWriter.Feature.WriteMapNullValue));
         } else {
             String url = String.format("%s%serrmsg=%s", errorurl, errorurl.contains("?") ? "&" : "?",
                     URLEncoder.encode(SECURIT_UNLOGIN_ERROR.getMessage(), BtxConsts.DEF_ENCODE.toString()));

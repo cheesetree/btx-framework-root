@@ -1,20 +1,18 @@
 package top.cheesetree.btx.framework.cache.redis;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.ParserConfig;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.alibaba.fastjson.util.IOUtils;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author van
  */
 public class BtxFastJsonRedisSerializer<T extends Object> implements RedisSerializer {
-    private final static ParserConfig defaultRedisConfig = new ParserConfig();
-
     private Type classType;
 
     public BtxFastJsonRedisSerializer(Type classType) {
@@ -31,7 +29,7 @@ public class BtxFastJsonRedisSerializer<T extends Object> implements RedisSerial
             return new byte[0];
         }
         try {
-            return JSON.toJSONBytes(object, SerializerFeature.NotWriteRootClassName);
+            return JSON.toJSONBytes(object, JSONWriter.Feature.NotWriteRootClassName);
         } catch (Exception ex) {
             throw new SerializationException("Could not serialize: " + ex.getMessage(), ex);
         }
@@ -43,7 +41,7 @@ public class BtxFastJsonRedisSerializer<T extends Object> implements RedisSerial
             return null;
         }
         try {
-            return JSON.parseObject(new String(bytes, IOUtils.UTF8), classType, defaultRedisConfig);
+            return JSON.parseObject(new String(bytes, StandardCharsets.UTF_8), classType);
         } catch (Exception ex) {
             throw new SerializationException("Could not deserialize: " + ex.getMessage(), ex);
         }

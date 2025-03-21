@@ -1,6 +1,6 @@
 package top.cheesetree.btx.project.dts.dtm.client.common.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Builder;
 import lombok.Data;
 import top.cheesetree.btx.framework.core.model.ValueObject;

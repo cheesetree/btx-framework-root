@@ -1,7 +1,8 @@
 package top.cheesetree.btx.framework.security.shiro.filter;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import org.apache.shiro.web.servlet.OncePerRequestFilter;
 import org.springframework.http.MediaType;
 import top.cheesetree.btx.framework.core.constants.BtxConsts;
@@ -71,7 +72,7 @@ public class BtxSecurityShiroCsrfFilter extends OncePerRequestFilter {
         response.setCharacterEncoding(BtxConsts.DEF_ENCODE.toString());
         OutputStream outputStream = response.getOutputStream();
         outputStream.write(JSON.toJSONBytes(new CommJSON<String>(BtxSecurityMessage.SECURIT_CSRF_ERROR),
-                SerializerFeature.WriteMapNullValue));
+                JSONWriter.Feature.WriteMapNullValue));
     }
 
     private boolean verifyDomains(HttpServletRequest request) {

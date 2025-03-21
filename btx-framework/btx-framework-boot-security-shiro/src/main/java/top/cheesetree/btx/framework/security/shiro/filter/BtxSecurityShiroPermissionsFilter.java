@@ -1,7 +1,8 @@
 package top.cheesetree.btx.framework.security.shiro.filter;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter;
 import org.springframework.http.MediaType;
 import top.cheesetree.btx.framework.core.constants.BtxConsts;
@@ -37,7 +38,7 @@ public class BtxSecurityShiroPermissionsFilter extends PermissionsAuthorizationF
             rep.setCharacterEncoding(BtxConsts.DEF_ENCODE.toString());
             OutputStream outputStream = response.getOutputStream();
             outputStream.write(JSON.toJSONBytes(new CommJSON(BtxSecurityMessage.SECURIT_UNAUTH_ERROR),
-                    SerializerFeature.WriteMapNullValue));
+                    JSONWriter.Feature.WriteMapNullValue));
             return false;
         } else {
             return super.onAccessDenied(request, response);
