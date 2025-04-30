@@ -1,8 +1,10 @@
 package top.cheesetree.btx.framework.web.config;
 
 
+import com.alibaba.fastjson2.JSONFactory;
 import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.PropertyNamingStrategy;
 import com.alibaba.fastjson2.support.config.FastJsonConfig;
 import com.alibaba.fastjson2.support.spring.http.converter.FastJsonHttpMessageConverter;
 import okhttp3.ConnectionPool;
@@ -81,12 +83,12 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
             fastJsonConfig.setWriterFeatures(JSONWriter.Feature.WriteNullBooleanAsFalse,
                     JSONWriter.Feature.WriteMapNullValue,
                     JSONWriter.Feature.NotWriteRootClassName);
+            fastJsonConfig.setReaderFeatures(JSONReader.Feature.SupportSmartMatch);
             fastJsonConfig.setDateFormat(btxWebProperties.getDateformat());
         }
 
         fastConverter.setFastJsonConfig(fastJsonConfig);
         //将fastjson添加到视图消息转换器列表内
-
         int i = 0;
         while (iterator.hasNext()) {
             HttpMessageConverter<?> converter = iterator.next();
@@ -101,6 +103,9 @@ public class BtxWebMvcConfiguration implements WebMvcConfigurer {
         if (i > -1) {
             converters.add(fastConverter);
         }
+
+        JSONFactory.getDefaultObjectWriterProvider().setNamingStrategy(PropertyNamingStrategy.CamelCase1x);
+
     }
 
     @Bean

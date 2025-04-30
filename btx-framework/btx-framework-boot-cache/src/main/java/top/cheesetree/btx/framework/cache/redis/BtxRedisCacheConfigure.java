@@ -1,5 +1,7 @@
 package top.cheesetree.btx.framework.cache.redis;
 
+import com.alibaba.fastjson2.JSONFactory;
+import com.alibaba.fastjson2.PropertyNamingStrategy;
 import com.alibaba.fastjson2.support.spring.data.redis.GenericFastJsonRedisSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +65,8 @@ public class BtxRedisCacheConfigure extends CachingConfigurerSupport {
             cacheConfig.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericFastJsonRedisSerializer()));
             initialCacheConfiguration.put(cacheName, cacheConfig);
         }
+
+        JSONFactory.getDefaultObjectWriterProvider().setNamingStrategy(PropertyNamingStrategy.CamelCase1x);
 
         return new BtxRedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory),
                 defaultCacheConfig, initialCacheConfiguration);

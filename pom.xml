@@ -14,7 +14,6 @@
         <module>btx-common</module>
         <module>btx-projects</module>
         <module>btx-framework-local</module>
-        <module>btx-framework/btx-framework-boot-webflux</module>
     </modules>
 
     <properties>
@@ -69,7 +68,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.2.7</version>
+                <version>1.7.0</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>

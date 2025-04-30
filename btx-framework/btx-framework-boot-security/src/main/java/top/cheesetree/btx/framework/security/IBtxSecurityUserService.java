@@ -9,8 +9,7 @@ import top.cheesetree.btx.framework.security.model.SecurityUserDTO;
  * @Description: TODO
  */
 public interface IBtxSecurityUserService<T extends SecurityUserDTO> {
-    CommJSON<T> login(String loginid,
-                      String loginpwd);
+    CommJSON<T> login(String... loginArgs);
 
     CommJSON logout();
 

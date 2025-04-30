@@ -56,7 +56,6 @@ public class BtxSecurityShiroCorsFilter extends OncePerRequestFilter {
                         request.getHeader(BtxSecurityShiroConst.ACCESS_CONTROL_REQUEST_HEADERS
                         ));
 
-
         if (RequestMethod.OPTIONS.toString().equals(request.getMethod())) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
             return;
