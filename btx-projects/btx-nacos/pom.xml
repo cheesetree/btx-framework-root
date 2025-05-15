@@ -11,11 +11,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>btx-nacos</artifactId>
-    <groupId>top.cheesetree.btx.project</groupId>
     <name>${project.artifactId}</name>
 
     <properties>
-        <nacos.client.version>2.2.2</nacos.client.version>
+        <nacos.client.version>3.0.0</nacos.client.version>
         <nacos.springboot.version>0.2.12</nacos.springboot.version>
     </properties>
 

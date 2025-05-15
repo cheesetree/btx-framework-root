@@ -23,7 +23,6 @@
     </modules>
 
     <properties>
-        <lombok.version>1.18.20</lombok.version>
     </properties>
 
     <dependencies>
