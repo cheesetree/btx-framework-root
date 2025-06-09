@@ -14,7 +14,10 @@ import top.cheesetree.btx.framework.web.http.HttpsClientRequestFactory;
 import top.cheesetree.btx.framework.web.model.dto.FileInfoDTO;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @Author: van
@@ -46,6 +49,10 @@ public class HttpUtil {
 
     public static String httpPostJson(String url, HashMap<String, String> headers, String pa, boolean isHttps) {
         return httpPost(url, pa, headers, DEF_TIMEOUT, isHttps);
+    }
+
+    public static String httpPostJson(String url, HashMap<String, String> headers, String pa,int to, boolean isHttps) {
+        return httpPost(url, pa, headers, to, isHttps);
     }
 
     public static String httpPostJson(String url, String pa, int to, boolean isHttps) {
@@ -109,7 +116,7 @@ public class HttpUtil {
 
         params.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
         HttpEntity<Resource> fileEntity =
-                new HttpEntity<>(new ByteArrayResource(Base64.getDecoder().decode(info.getFiledata())), params);
+                new HttpEntity<>(new ByteArrayResource(info.getFiledata()), params);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add(filekey, fileEntity);
